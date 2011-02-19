@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" media="screen" href="[% c.uri_for_static('css/ui-lightness/jquery-ui-1.8.9.custom.css') %]" />
+    <link rel="stylesheet" type="text/css" media="screen" href="[% c.uri_for_static('css/jqGrid/ui.jqgrid.css') %]" />
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    font-size: 50%;
+}
+</style>
+    <script type="text/javascript" src="[% c.uri_for_static('js/ext/jquery/jquery-1.5.min.js') %]"></script> 
+    <script type="text/javascript" src="[% c.uri_for_static('js/ext/plugins/jqGrid/i18n/grid.locale-de.js') %]"></script> 
+    <script type="text/javascript" src="[% c.uri_for_static('js/ext/plugins/jqGrid/jquery.jqGrid.min.js') %]"></script> 
+
+<script type="text/javascript">
+$(document).ready(function() {
+jQuery("#scanfiles").jqGrid({
+    url:"[% json_url %]",
+    datatype: "json",
+    colNames:['Dateiname', 'Format', 'Farbe', 'Auflösung', 'Bildgröße [px]', 'Seitenformat [cm]', 'Dateigröße [MB]'],
+    colModel:[
+        {name:'filename',index:'filename', width:150},
+        {name:'format',index:'format', width:80},
+        {name:'colortype',index:'colortype', width:80},
+        {name:'resolution',index:'resolution', width:80},
+        {name:'imagesize',index:'imagesize', width:150},
+        {name:'papersize',index:'papersize', width:150},
+        {name:'filesize',index:'filesize', width:80},
+    ],
+    rowNum:15,
+    rownumbers: true,
+    height: 350,
+    rowList:[10,20,30,40,50,60,70,80,90,100],
+    pager: '#pager_scanfiles',
+    sortname: 'id',
+    viewrecords: true,
+    sortorder: "asc",
+    caption:"Scandateien zum Auftrag [% order.order_id %]"
+});
+jQuery("#scanfiles").jqGrid('navGrid','#pager_scanfiles',{edit:false,add:false,del:false});
+});
+</script>
+    <title>Testbeispiel für jqGrid</title>
+</head>
+<body>
+ <div>       
+ <div><table id="scanfiles"></table></div><div id="pager_scanfiles"></div></div> 
+</body>
+</html>

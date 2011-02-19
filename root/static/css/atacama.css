@@ -1,0 +1,203 @@
+body {
+	font-family: Tahoma, Helvetica, sans-serif;
+	color: #333333;
+	font-size: 97%;
+	background: url("images/bg-grad_braun.jpg") repeat scroll 0 0 #EFEFEE; 
+	margin: 0;
+	padding: 0;
+}
+
+.row {
+	margin-top: 1em;
+}
+
+.left,label {
+	display: inline;
+	float: left;
+	width: 9em;
+	font-size: 110%;
+}
+
+.set {
+	margin: 30px 0 10px;
+}
+
+.set label {
+	float: none;
+}
+
+.block {
+	display: block;
+	height: 0;
+}
+
+.strong {
+	font-weight: bold;
+	color: DarkKhaki;
+}
+
+hr {
+	border: none;
+	background-image: url("images/hr.png");
+	background-repeat: repeat-x;
+	margin-top: 32px;
+	margin-bottom: -5px; width : 840px;
+	margin-left: -20px;
+	width: 840px
+}
+
+a,a:link {
+	color: darkkhaki !important;
+	text-decoration: none;
+	padding: 0 2px;
+}
+
+a:visited {
+	color: silver !important;
+	text-decoration: underline;
+}
+
+a:focus {
+	font-weight: bold;
+}
+
+a:hover {
+	color: darkkhaki;
+	text-decoration: underline;
+}
+
+a:active {
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+#container { /*
+	background: url("images/h1_bg.png") repeat-x scroll center 204px
+		transparent;
+		*/
+	
+}
+
+input[type='text'],input[type='submit'],input[type='password'],select,textarea
+	{
+	-moz-border-radius: 4px 4px 4px 4px;
+	background-color: rgba(255, 255, 255, 0.6);
+	border: 1px solid #E9E9E9;
+	font-family: Tahoma, Helvetica, sans-serif;
+	color: #333333;
+	font-size: 97%;
+	padding: 1px;
+}
+
+fieldset {
+	border: none;
+}
+
+.breit {
+	width: 642px;
+}
+
+input[type='submit'] {
+	font-size: 110%;
+	padding: 10px;
+	font-weight: bold;
+}
+
+input[type='submit'].send {
+	margin: 9px 0 52px 0;
+	background-color: white;
+	float: right;
+}
+
+textarea {
+	margin-left: 10em;
+}
+
+label {
+	vertical-align: top;
+}
+
+#titel,#bemerkung,.innen {
+	padding-left: 10em;
+}
+
+.innen,.set {
+	line-height: 30px;
+}
+
+div.set ul {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+div.set ul li {
+	margin: 8px 0;
+	background-repeat: no-repeat;
+	padding-left: 42px;
+}
+
+ul#publikation li {
+	padding-left: 0px;
+}
+
+ul#projekt li {
+	background-image: url(images/Projekt.png);
+}
+
+ul#scanner li {
+	background-image: url(images/Scanner.png);
+	background-position: 0 .4em;
+}
+
+#bibliothek label {
+	vertical-align: middle;
+}
+
+#powered {
+	float: right;
+}
+
+img {
+	border: 0 none;
+	vertical-align: middle;
+}
+
+#footer {
+	width: 800px;
+	padding: 20px;
+	margin: 0 auto;
+}
+
+#footer p {
+	margin: 0;
+}
+
+p#name {
+	font-size: 70%;
+	padding: 0.2em 0 0 0;
+}
+
+h1,h1.main {
+	color: DarkKhaki;
+	font-weight: normal;
+}
+
+#header {
+	background-image: url("images/atacamaLama3.png");
+	background-repeat: no-repeat;
+	height: 82px;
+	margin: 12px auto -23px;
+	padding: 10px;
+	position: relative;
+	right: -300px;
+	top: 6px;
+	width: 262px;
+}
+
+#content {
+	width: 800px;
+	margin: 4px auto 0;
+	background-color: white;
+	padding: 30px 20px 94px;
+}

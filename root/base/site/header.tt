@@ -1,0 +1,17 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>
+        [% title %]
+    </title>
+    <link title="main stylesheet" href="[%c.uri_for_static('css/atacama.css')%]" type="text/css" rel="stylesheet" />
+    <link title="EuropeanaTravel-Scanauftrag via Signatur erstellen"     href="[%c.uri_for_static('EuropeanaTravel-Scanauftrag_via_Signatur.xml')%]" rel="search" type="application/opensearchdescription+xml" />
+    <link title="EuropeanaTravel-Scanauftrag via Mediennummer erstellen"     href="[%c.uri_for_static('EuropeanaTravel-Scanauftrag_via_Mediennummer.xml')%]" rel="search" type="application/opensearchdescription+xml" />
+	
+<script type="text/javascript" src="[%c.uri_for_static('js/ext/jquery/jquery-1.5.min.js')%]"></script>
+<script type="text/javascript" src="[%c.uri_for_static('js/main.js')%]"></script>
+</head>
+<body id="page">
+
+    <div id="container">

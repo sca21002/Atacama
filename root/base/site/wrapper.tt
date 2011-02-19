@@ -1,0 +1,17 @@
+[% PROCESS site/header.tt %]
+<div id="header">
+   <h1>
+        [% title %]
+   </h1>
+  
+</div>
+[% IF error %]
+    <p><span class="error">[% error | html %]</span></p>
+[% END %]
+[% IF message %]
+    <p><span class="message">[% message | html %]</span></p>
+[% END %]
+<div id="content" class=[% class %]>
+[% content %]
+</div>
+[% PROCESS site/footer.tt %]

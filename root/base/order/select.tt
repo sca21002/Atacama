@@ -1,0 +1,11 @@
+Include Datei
+
+<label>[% label %]</label>
+<select name="status">
+  <option value="">-- select --</option>
+[%- FOR option IN options %]
+  <option value="[% ${id} -%]">
+[%- options.name -%]
+</option>
+[%- END %]
+</select>
