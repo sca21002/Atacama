@@ -151,6 +151,31 @@ sub scanoptions {
     return \@scanoptions;
 }
 
+sub scanoptions_without_options {
+    my $self = shift;
+    
+    return unless $self->scanner;
+    my @scanoptions;
+    my @scanoptionkeys = $self->scanner->scanoptionkeys;
+    foreach my $scanoptionkey (@scanoptionkeys) {
+        my %scanoption;
+        $scanoption{scanoptionkey_id} = $scanoptionkey->scanoptionkey_id;
+        $scanoption{skey} = $scanoptionkey->skey;
+        
+        my $scanoptionvalue = $self->search_related(
+            'scanoptionvalues',
+            { scanoptionkey_id => $scanoptionkey->scanoptionkey_id }
+        )->single;
+        $scanoption{value_id} = $scanoptionvalue->value_id if $scanoptionvalue;
+        push @scanoptions, \%scanoption;
+    }
+    return \@scanoptions;
+}
+
+
+
+
+
 sub save_scanoptions {
     my $self = shift;
     my $params = shift;

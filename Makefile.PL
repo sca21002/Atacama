@@ -2,6 +2,7 @@
 # IMPORTANT: if you delete this file your app will not work as
 # expected.  You have been warned.
 use inc::Module::Install;
+use File::Copy::Recursive;
 use Module::Install::Catalyst; # Complain loudly if you don't have
                                # Catalyst::Devel installed or haven't said
                                # 'make dist' to create a standalone tarball.
@@ -11,9 +12,26 @@ all_from 'lib/Atacama.pm';
 
 requires 'Catalyst::Runtime' => '5.80029';
 requires 'Catalyst::Plugin::ConfigLoader';
+requires 'Session Session::Store::FastMmap';
+requires 'Algorithm::Merge';
+requires 'Archive::Zip';
+requires 'Catalyst::View::JSON';
+requires 'Catalyst::Plugin::Authentication';
+requires 'Catalyst::Authentication::Store::DBIx::Class';
+requires 'Catalyst::Plugin::Session::State::Cookie';
 requires 'Catalyst::Plugin::Static::Simple';
+requires 'Catalyst::Plugin::Unicode::Encoding';
 requires 'Catalyst::Action::RenderView';
+requires 'CatalystX::SimpleLogin';
+requires 'DateTime::Format::Mail';
+requires 'DBIx::Class::DateTime::Epoch';
+requires 'DBIx::Class::EncodedColumn';
+requires 'File::MMagic';
+requires 'Image::Math::Constrain';
+requires 'Imager';
 requires 'Moose';
+requires 'Number::Format';
+requires 'Text::Textile';
 requires 'namespace::autoclean';
 requires 'Config::General'; # This should reflect the config file format you've chosen
                  # See Catalyst::Plugin::ConfigLoader for supported formats

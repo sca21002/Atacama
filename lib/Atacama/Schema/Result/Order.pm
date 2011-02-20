@@ -247,6 +247,7 @@ sub get_data_from_rels {
         scanparameters => 'scanoptions',
         publications => 'publicationoptions',
     );
+    
     my $rs = $self->$rel;
     while (my $row = $rs->next) {
         my $href = {$row->get_inflated_columns};
@@ -257,42 +258,19 @@ sub get_data_from_rels {
     return $data;
 }
 
-sub get_new_result_as_href {
-    my ($self, $rel) = @_;    
-
-    my $row = $self->$rel->new_result({});
-    my $href = {$row->get_inflated_columns};
-    my @columns = $row->columns;
-    foreach my $column (@columns) {
-        $href->{$column} = '' unless exists $href->{$column};
-    }    
-    return $href;
-}
-
-sub get_data_from_rels_plus_new {
-    my ($self, $rel) = @_;
-
-    return unless $rel;
-    my $data = $self->get_data_from_rels($rel);    
-    push @$data, $self->get_new_result_as_href($rel);     
-    return $data;
-}
-
-sub display {
+sub properties {
     my $self = shift;
     
-    my $display;
+    my $properties;
     my $order = {$self->get_inflated_columns};
     $order->{titel} = $self->titel && {$self->titel->get_inflated_columns};
     $order->{titel}{titel_isbd} = $self->titel && $self->titel->titel_isbd;
     foreach my $rel ('orders_projects', 'scanparameters',  'publications') {
-        $order->{$rel} = $self->get_data_from_rels_plus_new($rel);
+        $order->{$rel} = $self->get_data_from_rels($rel);
     }
     $order->{scanfiles_count} = $self->scanfiles->count;
     $order->{pdffiles_count} = $self->pdffiles->count;
-    $display->{order_href} = $order;
-    
-    
+    $properties->{order_href} = $order;
     
     my %rel = (
         status => {resultset => 'Status', columns => ['status_id', 'name']},
@@ -306,13 +284,13 @@ sub display {
         platforms => {resultset => 'Platform', columns => ['platform_id', 'name']},
     );           
     while ( my($rel, $val) = each %rel ) {
-        $display->{$rel} = [$self->result_source->schema->resultset($val->{resultset})
+        $properties->{$rel} = [$self->result_source->schema->resultset($val->{resultset})
             ->search({},{
                 result_class => 'DBIx::Class::ResultClass::HashRefInflator',
                 columns => $val->{columns},
             })->all];    
     }
-    return $display;    
+    return $properties;    
 }
 
 # You can replace this text with custom content, and it will be preserved on regeneration

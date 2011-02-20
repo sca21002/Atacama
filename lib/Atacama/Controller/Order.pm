@@ -125,16 +125,14 @@ sub save : Private {
     my $order = $c->stash->{order} || $c->model('AtacamaDB::Orders')->new_result({});
     if ($c->req->method eq 'POST') {
         my $order_params = $self->list_to_hash($c->req->params);
-        $c->log->debug(Dumper($order_params));
+        # $c->log->debug(Dumper($order_params));
         $order->save($order_params);
     }
-    
-    # if the item doesn't exist, we'll just create a new result
-    my %display = %{$order->display};
-    while ( my($key, $val) = each %display ) {
-        $c->stash->{$key} = $val;    
-    }    
-    $c->stash->{template} => 'order/edit.tt';
+    $c->log->debug(Dumper($order->properties));
+    $c->stash(
+        %{$order->properties},      
+        template => 'order/edit.tt',   
+    );
 }
 
 sub not_found : Local {
