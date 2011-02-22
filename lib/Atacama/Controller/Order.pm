@@ -122,7 +122,7 @@ sub add : Chained('orders') {
 sub save : Private {
     my ($self, $c) = @_;
 
-    my $order = $c->stash->{order} || $c->model('AtacamaDB::Orders')->new_result({});
+    my $order = $c->stash->{order} || $c->model('AtacamaDB::Order')->new_result({});
     if ($c->req->method eq 'POST') {
         my $order_params = $self->list_to_hash($c->req->params);
         # $c->log->debug(Dumper($order_params));
