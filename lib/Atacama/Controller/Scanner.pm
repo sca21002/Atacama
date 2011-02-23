@@ -37,19 +37,30 @@ sub scanners : Chained('/') PathPart('scanner') CaptureArgs(0) {
 sub scanner : Chained('scanners') PathPart('') CaptureArgs(1) {
     my ($self, $c, $scanner_id) = @_;
 
-    my $scanparameter = $c->stash->{scanparameter} = $c->stash->{scanparameters}->find($scanparameter_id)
+    my $scanner = $c->stash->{scanner} = $c->stash->{scanners}->find($scanner_id)
         || $c->detach('not_found');
+}
+
+
+sub scanoptionkeys: Chained('scanners') PathPart('scanoptionkeys') CaptureArgs(0) {
+    my ($self, $c) = @_;
+
+    my $scanoptionkeys = $c->stash->{scanoptionkeys} = $c->stash->{scanner}->scanoptionkeys
+        || $c->detach('not_found');
+
+    
 }
 
 sub json : Chained('scanner') {
     my ($self, $c) = @_;
     
     my $json_data;
-    my $scanner = $c->stash->{scanner};
+    my $scanoptionkeys = $c->stash->{scanoptionkeys};
     
-    $json_data = {$scanner->get_inflated_columns};
-    $json_data->{scanoptions} = $scanparameter->scanoptions;
-     
+    while (my $scanoptionkey = $scanoptionkeys->next) {
+        push @$json_data, {$scanoptionkey->get_inflated_columns};
+    
+    }
     $c->stash(
         json_data => $json_data,
         current_view => 'JSON'
