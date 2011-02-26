@@ -27,6 +27,17 @@ sub index :Path :Args(0) {
     $c->response->body('Matched Atacama::Controller::Remedi in Remedi.');
 }
 
+sub remedi : Chained ('order/order') PathPart('remedi') Args(0) {
+    my ( $self, $c ) = @_;
+    
+    my $order = $c->stash->{order};
+    
+    $c->stash(
+        order    => $order,
+        template => 'remedi/remedi.tt',
+    );     
+}
+
 
 =head1 AUTHOR
 

@@ -1,0 +1,7 @@
+<table>
+<tr><td> Auftrag:   </td><td> [% order.order_id %]          </td></tr>
+<tr><td> Signatur:  </td><td> [% order.titel.signatur %]    </td></tr>
+<tr><td> BV-Nr.:    </td><td> [% order.titel.bvnr %]        </td></tr>
+<tr><td> Autor:     </td><td> [% order.titel.autor_avs %]   </td></tr>
+<tr><td> Titel:     </td><td> [% order.titel.titel_isbd %]  </td></tr>
+</table>
