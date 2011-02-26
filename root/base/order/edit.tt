@@ -11,10 +11,40 @@
                 $("#pages").hide();
             }
         });
+
+      
+         $('a#add_scanner').live("click", function(){
+            var count = $("ul#scanner li").size();
+            $('<li><input type="hidden"	name="scanparameters.' + count +'.scanparameter_id"	value="[% scanparameter.scanparameter_id %]"> <select class="select_scanner" name="scanparameters.' + count +'.scanner_id">	<option value="">-- select --</option>	[%- FOR scanner IN scanners %]	<option value="[% scanner.scanner_id %]" [%-  IF scanner.scanner_id==scanparameter.scanner_id -%] selected="selected"[%-  END -%]>	[%- scanner.name -%]</option>[%- END %]	</select>').appendTo('ul#scanner'); 
+           	$.scrollTo( 'label#scan_label', 500, {axis:'y'} );
+
+            $('select.select_scanner').change(function(){
+                alert ("Hole Felder");
+                $.ajax({
+                    type: "GET",
+                    url: "[% c.uri_for('edit') %]",
+                    dataType: "json",
+                    data: "ScannerID",
+                    cache: false,
+                    success: function(json){
+                        var $pq = $("<span>" + json.quote + "</span>");
+                        $pq.hide();
+                        if ($(".set").children().size() > 0) 
+                            $(".set").append(" &middot; ");
+                        $("ul#scanner li").append($pq);
+                        $pq.fadeIn();
+                    }
+                });
+            });       
+            
+        });
+
         
+
+
+
         
-        
-        
+     
         $('label.strong').click(function(){
             $.ajax({
                 type: "GET",
@@ -32,7 +62,7 @@
             });
         });
         
-        
+      
         
 //        $("select option:selected").each(function(){
 //            if ($("this").text() == "-- selected --") {
@@ -87,270 +117,224 @@
         
     });
 </script>
-<h1 class="main"> Auftrag [% order_href.order_id %] bearbeiten</h1>
+<h1 class="main">Auftrag [% order_href.order_id %] bearbeiten</h1>
 <div class="row">
-    <div class="left">
-        Auftragsnummer:
-    </div>
-    [% order_href.order_id %]
-    [% IF order_href.scanfiles_count %]
-    ( Scandateien:<a href="[% c.uri_for("/order/${order_href.order_id}/scanfiles/index") %]"> [%   order_href.scanfiles_count %]
- </a>
-    )
-    [% END %][% IF order_href.pdffiles_count %]
-    ( PDF-Dateien:<a href="[% c.uri_for("/pdffile/${order_href.order_id}") %]"> [%   order_href.pdffiles_count %]
- </a>
-    )
-    [% END %]
-</div>
+<div class="left">Auftragsnummer:</div>
+[% order_href.order_id %] [% IF order_href.scanfiles_count %] (
+Scandateien:<a href="[% c.uri_for("/order/${order_href.order_id}/scanfiles/index") %]">
+[% order_href.scanfiles_count %] </a> ) [% END %][% IF
+order_href.pdffiles_count %] ( PDF-Dateien:<a href="[% c.uri_for("/pdffile/${order_href.order_id}") %]">
+[% order_href.pdffiles_count %] </a> ) [% END %]</div>
 <div class="row">
-    <div class="left">
-        angelegt:
-    </div>
-    [% order_href.creation_date.dmy('.') %] [% 
-    order_href.creation_date.hms %]
-</div>
+<div class="left">angelegt:</div>
+[% order_href.creation_date.dmy('.') %] [% order_href.creation_date.hms
+%]</div>
 <div class="row">
-    <div class="left">
-        ge&auml;ndert:
-    </div>
-    [% order_href.modification_date.dmy('.') %] 
-    [% order_href.modification_date.hms %]
-</div>
+<div class="left">ge&auml;ndert:</div>
+[% order_href.modification_date.dmy('.') %] [%
+order_href.modification_date.hms %]</div>
 <div class="row">
-    <div class="left">
-        Titel: 
-    </div>
-    <div id="titel">
-        [% order_href.titel.titel_isbd %]
-        <form action="" method="post">
-    </div>
+<div class="left">Titel:</div>
+<div id="titel">[% order_href.titel.titel_isbd %]
+<form action="" method="post">
 </div>
-<div class="row">
-    <label for="status">
-        Status
-    </label>
-    <select id="status" name="status_id">
-        <option value="">-- select --</option>
-        [%- FOR status_value IN status %]<option value="[% status_value.status_id -%]" [%-  IF status_value.status_id == order_href.status_id -%]
- selected="selected" [%-  END -%]
-> [%-   status_value.name -%]
- </option>
-        [%- END %]
-    </select>
 </div>
-<div class="row">
-    <label for="documenttype">
-        Medientyp
-    </label>
-    <select id="documenttype" name="documenttype_id">
-        <option value="">-- select --</option>
-        [%- FOR documenttype IN documenttypes %]<option value="[% documenttype.documenttype_id %]" [%-  IF documenttype.documenttype_id == order_href.documenttype_id -%]
- selected="selected" [%-  END -%]
-> [%-   documenttype.name -%]
- </option>
-        [%- END %]
-    </select>
-</div>
-[%  IF order_href.titel.autor_uw -%]
-<div class="row">
-    <label for="autor_uw">
-        Aufsatzautor
-    </label>
-    <input class="breit" id="autor_uw" name="titel.autor_uw" value="[% order_href.titel.autor_uw %]" type="text" size="80" />
-</div>
-<div class="row">
-    <label for="titel_uw">
-        Aufsatztitel
-    </label>
-    <input class="breit" id="titel_uw" name="titel.titel_uw" value="[% order_href.titel.titel_uw %]" type="text" size="80" />
-</div> [%- END %]
-<div id ="pages" class="row">
-    <label for="pages">
-        Seiten
-    </label>
-    <input id="pages" name="titel.pages" value="[% order_href.titel.pages %]" type="text" size="40" />
-</div>
+<div class="row"><label for="status"> Status </label> <select
+	id="status" name="status_id">
+	<option value="">-- select --</option>
+	[%- FOR status_value IN status %]
+	<option value="[% status_value.status_id -%]" [%-  IF
+		status_value.status_id==
+		order_href.status_id -%]
+ selected="selected"[%-  END -%]
+>
+	[%- status_value.name -%]</option>
+	[%- END %]
+</select></div>
+<div class="row"><label for="documenttype"> Medientyp </label> <select
+	id="documenttype" name="documenttype_id">
+	<option value="">-- select --</option>
+	[%- FOR documenttype IN documenttypes %]
+	<option value="[% documenttype.documenttype_id %]" [%-  IF
+		documenttype.documenttype_id==
+		order_href.documenttype_id -%]
+ selected="selected"[%-  END -%]
+>
+	[%- documenttype.name -%]</option>
+	[%- END %]
+</select></div>
+[% IF order_href.titel.autor_uw -%]
+<div class="row"><label for="autor_uw"> Aufsatzautor </label> <input
+	class="breit" id="autor_uw" name="titel.autor_uw"
+	value="[% order_href.titel.autor_uw %]" type="text" size="80" /></div>
+<div class="row"><label for="titel_uw"> Aufsatztitel </label> <input
+	class="breit" id="titel_uw" name="titel.titel_uw"
+	value="[% order_href.titel.titel_uw %]" type="text" size="80" /></div>
+[%- END %]
+<div id="pages" class="row"><label for="pages"> Seiten </label> <input
+	id="pages" name="titel.pages" value="[% order_href.titel.pages %]"
+	type="text" size="40" /></div>
 <hr />
-<div class="set">
-    <label for="library" class="block">
-        Bibliothek
-    </label>
-    <div class="innen">
-        <select id="library" name="titel.library_id">
-            <option value="">-- select --</option>
-            [%- FOR library IN libraries %]<option value="[% library.library_id %]" [%-  IF library.library_id == order_href.titel.library_id -%]
- selected="selected" [%-  END -%]
-> [%-   library.name -%]
- </option>
-            [%- END %]
-        </select>
-        <label for="signatur">
-            Signatur
-        </label>
-        <input id="signatur" name="titel.signatur" type="text" value="[% order_href.titel.signatur %]" size="25" />
-        <br/>
-        <label for="bvnr">
-            BV-Nr.
-        </label>
-        <input id="bvnr" name="titel.bvnr" type="text" value="[% order_href.titel.bvnr %]" size="13" />
-        <label for="katkey">
-            Katkey
-        </label>
-        <input id="katkey" name="titel.katkey" type="text" value="[% order_href.titel.katkey %]" size="9" />
-        <label for="mediennr">
-            Mediennr.
-        </label>
-        <input id="mediennr" name="titel.mediennr" type="text" value="[% order_href.titel.mediennr %]" size="15" />
-    </div>
+<div class="set"><label for="library" class="block">
+Bibliothek </label>
+<div class="innen"><select id="library" name="titel.library_id">
+	<option value="">-- select --</option>
+	[%- FOR library IN libraries %]
+	<option value="[% library.library_id %]" [%-  IF library.library_id==
+		order_href.titel.library_id -%]
+ selected="selected"[%-  END -%]
+>
+	[%- library.name -%]</option>
+	[%- END %]
+</select> <label for="signatur"> Signatur </label> <input id="signatur"
+	name="titel.signatur" type="text"
+	value="[% order_href.titel.signatur %]" size="25" /> <br />
+<label for="bvnr"> BV-Nr. </label> <input id="bvnr" name="titel.bvnr"
+	type="text" value="[% order_href.titel.bvnr %]" size="13" /> <label
+	for="katkey"> Katkey </label> <input id="katkey" name="titel.katkey"
+	type="text" value="[% order_href.titel.katkey %]" size="9" /> <label
+	for="mediennr"> Mediennr. </label> <input id="mediennr"
+	name="titel.mediennr" type="text"
+	value="[% order_href.titel.mediennr %]" size="15" /></div>
 </div>
-<div class ="row">
-    <label for="ocr">
-        Mit OCR
-    </label>
-    <input id="ocr" name="ocr" type="checkbox" value="1" [%-  IF order.ocr == 1 -%]
+<div class="row"><label for="ocr"> Mit OCR </label> <input
+	id="ocr" name="ocr" type="checkbox" value="1" [%-  IF order.ocr==
+	1 -%]
  checked="checked" [%-  END -%]
-/>
-</div>
-<div class="row">
-    <label for="control">
-        geprüft
-    </label>
-    <input class="breit" id="control" name="control" type="text" value="[% order_href.control %]" size="80" />
-</div>
-<div class="row">
-    <label for="remark" class="block">
-        Bemerkung
-    </label>
-    <textarea class="breit" id="remark" name="remark" cols="80" rows="4">
+/></div>
+<div class="row"><label for="control"> geprüft </label> <input
+	class="breit" id="control" name="control" type="text"
+	value="[% order_href.control %]" size="80" /></div>
+<div class="row"><label for="remark" class="block">
+Bemerkung </label> <textarea class="breit" id="remark" name="remark" cols="80"
+	rows="4">
         [% order_href.remark %]
-    </textarea>
+    </textarea></div>
+<hr />
+<div class="set"><label id="scan_label" class="strong"> Scanner </label>
+<ul id="scanner">
+	[% FOR scanparameter IN order_href.scanparameters %]
+	<li><input type="hidden"
+		name="scanparameters.[% loop.count - 1 %].scanparameter_id"
+		value="[% scanparameter.scanparameter_id %]"> <select
+		name="scanparameters.[% loop.count - 1  %].scanner_id">
+		<option value="">-- select --</option>
+		[%- FOR scanner IN scanners %]
+		<option value="[% scanner.scanner_id %]" [%-  IF scanner.scanner_id==
+			scanparameter.scanner_id -%] selected="selected"[%-  END -%]>
+		[%- scanner.name -%]</option>
+		[%- END %]
+	</select> <span id="scanner[% loop.count - 1  %]"> <select
+		name="scanparameters.[% loop.count - 1 %].format_id">
+		<option value="">-- select --</option>
+		[%- FOR format IN formats %]
+		<option value="[% format.format_id %]" [%-  IF format.format_id==scanparameter.format_id -%] selected="selected"[%-  END -%]>
+		[%- format.name -%]</option>
+		[%- END %]
+	</select> <select name="scanparameters.[% loop.count - 1 %].resolution_id">
+		<option value="">-- select --</option>
+		[%- FOR resolution IN resolutions %]
+		<option value="[% resolution.resolution_id %]" [%-  IF
+			resolution.resolution_id==
+			scanparameter.resolution_id -%]
+ selected="selected"[%-  END -%]
+>
+		[%- resolution.value -%]</option>
+		[%- END %]
+	</select> <label for="range"> Bereich </label> <input id="range"
+		name="scanparameters.[% loop.count - 1 %].range"
+		value="[% scanparameter.range %]" type="text" />[%- SET
+	scanparameter_count = loop.count - 1 -%] [%- FOR scanoption IN
+	scanparameter.scanoptions %]<input type="hidden"
+		name="scanparameters.[% scanparameter_count %].scanoptions.[% loop.count - 1 %].scanoptionkey_id"
+		value="[% scanoption.scanoptionkey_id %]"> <select
+		id="scanner_options"
+		name="scanparameters.[% scanparameter_count %].scanoptions.[% loop.count - 1 %].value_id">
+		[%- FOR option IN scanoption.options %]
+		<option value="[% option.value_id %]" [%-  IF option.value_id==
+			scanoption.value_id -%]  selected="selected"[%-  END -%] >
+		[%- option.name -%]</option>
+		[%- END %]
+	</select> [%- END %] [%- IF scanparameter.scanparameter_id -%] <label>
+	Löschen </label> <input name="scanparameters.[% loop.count - 1 %].DELETED"
+		type="checkbox" value="1" /></li>
+	[%- END -%] [%- END -%]
+</ul>
+
+
+
+<a href='#' id='add_scanner'><img src='[% c.uri_for_static('images/add.png') %]' alt='neuen Scanner einfuegen' /></a>
+</div>
+<div class="row"><label> Verbreitungsrecht </label> <select
+	name="copyright_id">
+	<option value="">-- select --</option>
+	[%- FOR copyright IN copyrights %]
+	<option value="[% copyright.copyright_id %]" [%-  IF
+		copyright.copyright_id==
+		order_href.copyright_id -%]
+ 		selected="selected"[%-  END -%]>
+	[%- copyright.name -%]</option>
+	[%- END %]
+</select></div>
+<hr />
+<div class="set"><label class="strong"> Projekt/ID </label>
+<ul id="projekt">
+	[%- FOR orderproject IN order_href.orders_projects %]
+	<li><input type="hidden"
+		name="orders_projects.[% loop.count - 1 %].ordersprojects_id"
+		value="[% orderproject.ordersprojects_id %]"> <select
+		name="orders_projects.[% loop.count - 1 %].project_id">
+		<option value="">-- select --</option>
+		[%- FOR project IN projects %]
+		<option value="[% project.project_id %]" [%-  IF project.project_id==
+			orderproject.project_id -%]  selected="selected"[%-  END -%]>
+		[%- project.name -%]</option>
+		[%- END %]
+	</select> [%- SET orderproject_count = (loop.count - 1) -%] [%- FOR
+	projectoption IN orderproject.projectoptions %]<input type="hidden"
+		name="orders_projects.[% orderproject_count %].projectoptions.[% loop.count - 1 %].projectkey_id"
+		value="[% projectoption.projectkey_id %]"> <label> [%
+	projectoption.pkey %] </label> <input
+		name="orders_projects.[% orderproject_count %].projectoptions.[% loop.count - 1 %].value"
+		value="[% projectoption.value %]" type="text" />[%- END %] [%- IF
+	orderproject.ordersprojects_id -%] <label> Löschen </label> <input
+		name="orders_projects.[% loop.count - 1 %].DELETED" type="checkbox"
+		value="1" />[%- END -%] [%- END -%]</li>
+</ul>
 </div>
 <hr />
-<div class="set">
-    <label class="strong">
-        Scanner
-    </label>
-    <ul id="scanner">
-        [% FOR scanparameter IN order_href.scanparameters %]
-        <li>
-            <input type="hidden" name="scanparameters.[% loop.count - 1 %].scanparameter_id" value="[% scanparameter.scanparameter_id %]">
-            <select name="scanparameters.[% loop.count - 1  %].scanner_id">
-                <option value="">-- select --</option>
-                [%- FOR scanner IN scanners %]<option value="[% scanner.scanner_id %]" [%-  IF scanner.scanner_id == scanparameter.scanner_id -%]
- selected="selected" [%-  END -%]
-> [%-   scanner.name -%]
- </option>
-                [%- END %]
-            </select>
-            <span id="scanner[% loop.count - 1  %]">
-                <select name="scanparameters.[% loop.count - 1 %].format_id">
-                    <option value="">-- select --</option>
-                    [%- FOR format IN formats %]<option value="[% format.format_id %]" [%-  IF format.format_id == scanparameter.format_id -%]
- selected="selected" [%-  END -%]
-> [%-   format.name -%]
- </option>
-                    [%- END %]
-                </select>
-                <select name="scanparameters.[% loop.count - 1 %].resolution_id">
-                    <option value="">-- select --</option>
-                    [%- FOR resolution IN resolutions %]<option value="[% resolution.resolution_id %]" [%-  IF resolution.resolution_id == scanparameter.resolution_id -%]
- selected="selected" [%-  END -%]
-> [%-   resolution.value -%]
- </option>
-                    [%- END %]
-                </select>
-                <label for="range">
-                    Bereich
-                </label>
-                <input id="range" name="scanparameters.[% loop.count - 1 %].range" value="[% scanparameter.range %]" type="text" />[%- SET scanparameter_count = loop.count - 1 -%]
-                [%- FOR scanoption IN scanparameter.scanoptions %]<input type="hidden" name="scanparameters.[% scanparameter_count %].scanoptions.[% loop.count - 1 %].scanoptionkey_id" value="[% scanoption.scanoptionkey_id %]">
-                <select id="scanner_options" name="scanparameters.[% scanparameter_count %].scanoptions.[% loop.count - 1 %].value_id">
-                    [%- FOR option IN scanoption.options %]<option value="[% option.value_id %]" [%-  IF option.value_id == scanoption.value_id -%]  selected="selected" [%-  END -%] > [%-   option.name -%]  </option>
-                    [%- END %]
-                </select>
-                [%- END %]
-                [%- IF scanparameter.scanparameter_id -%]
-                <label>
-                    Löschen
-                </label>
-                <input name="scanparameters.[% loop.count - 1 %].DELETED" type="checkbox" value="1"/>
-                </li>[%- END -%]
-                [%- END -%]</span>
-            </ul>
-        </div>
-        <div class="row">
-            <label>
-                Verbreitungsrecht
-            </label>
-            <select name="copyright_id">
-                <option value="">-- select --</option>
-                [%- FOR copyright IN copyrights %]<option value="[% copyright.copyright_id %]" [%-  IF copyright.copyright_id == order_href.copyright_id -%]
- selected="selected" [%-  END -%]
-> [%-   copyright.name -%]
- </option>
-                [%- END %]
-            </select>
-        </div>
-		<hr />
-        <div class="set">
-            <label class="strong">
-                Projekt/ID
-            </label>
-            <ul id="projekt">
-                [%- FOR orderproject IN order_href.orders_projects %]
-                <li>
-                    <input type="hidden" name="orders_projects.[% loop.count - 1 %].ordersprojects_id" value="[% orderproject.ordersprojects_id %]">
-                    <select name="orders_projects.[% loop.count - 1 %].project_id">
-                        <option value="">-- select --</option>
-                        [%- FOR project IN projects %]<option value="[% project.project_id %]" [%-  IF project.project_id == orderproject.project_id -%]  selected="selected" [%-  END -%]> [%-   project.name -%]  </option>
-                        [%- END %]
-                    </select>
-                    [%- SET orderproject_count = (loop.count - 1) -%] 
-                    [%- FOR projectoption IN orderproject.projectoptions %]<input type="hidden" name="orders_projects.[% orderproject_count %].projectoptions.[% loop.count - 1 %].projectkey_id" value="[% projectoption.projectkey_id %]">
-                    <label>
-                        [% projectoption.pkey %]
-                    </label>
-                    <input name="orders_projects.[% orderproject_count %].projectoptions.[% loop.count - 1 %].value" value="[% projectoption.value %]" type="text" />[%- END %]
-                    [%- IF orderproject.ordersprojects_id -%]
-                    <label>
-                        Löschen
-                    </label>
-                    <input name="orders_projects.[% loop.count - 1 %].DELETED" type="checkbox" value="1"/>[%- END -%]
-                    [%- END -%]
-                </li>
-            </ul>
-        </div>
-		<hr />
-        <div class="set">
-            <label class="strong">
-                Publikation
-            </label>
-            <ul id="publikation">
-                [%- FOR publication IN order_href.publications %]
-                <li>
-                    <input type="hidden" name="publications.[% loop.count - 1 %].publication_id" value="[% publication.publication_id %]">
-                    <select name="publications.[% loop.count - 1 %].platform_id">
-                        <option value="">-- select --</option>
-                        [%- FOR platform IN platforms %]<option value="[% platform.platform_id %]" [%-  IF platform.platform_id == publication.platform_id -%]  selected="selected" [%-  END -%]> [%-   platform.name -%]  </option>
-                        [%- END -%]
-                    </select>
-                    [%- SET publication_count = loop.count - 1 -%]
-                    [%- FOR publicationoption IN publication.publicationoptions %]<input type="hidden" name="publications.[% publication_count %].publicationoptions.[% loop.count - 1 %].platformoptionkey_id" value="[% publicationoption.platformoptionkey_id %]">
-                    <label>
-                        [% publicationoption.pkey %]
-                    </label>
-                    <input name="publications.[% publication_count %].publicationoptions.[% loop.count - 1 %].value" value="[% publicationoption.value %]" type="text" />[%- IF publicationoption.pkey == "PID" %]<a href=http://bvbm1.bib-bvb.de/webclient/DeliveryManager?pid=[% publicationoption.value %]&custom_att_2=simple_viewer  target='_blank'>Online</a>
-                    [%- END -%]
-                    [%- END -%]
-                    [%- IF publication.publication_id -%]
-                    <label>
-                        Löschen 
-                    </label>
-                    <input name="publications.[% loop.count - 1 %].DELETED" type="checkbox" value="1"/>[%- END -%]
-                </li>[%- END -%]
-            </ul>
-        </div><input class="send" name="save" type="submit" value=" Absenden ">
-        </form>
-    </div>
+<div class="set"><label class="strong"> Publikation </label>
+<ul id="publikation">
+	[%- FOR publication IN order_href.publications %]
+	<li><input type="hidden"
+		name="publications.[% loop.count - 1 %].publication_id"
+		value="[% publication.publication_id %]"> <select
+		name="publications.[% loop.count - 1 %].platform_id">
+		<option value="">-- select --</option>
+		[%- FOR platform IN platforms %]
+		<option value="[% platform.platform_id %]" [%-  IF
+			platform.platform_id==
+			publication.platform_id -%]  selected="selected"[%-  END -%]>
+		[%- platform.name -%]</option>
+		[%- END -%]
+	</select> [%- SET publication_count = loop.count - 1 -%] [%- FOR
+	publicationoption IN publication.publicationoptions %]<input
+		type="hidden"
+		name="publications.[% publication_count %].publicationoptions.[% loop.count - 1 %].platformoptionkey_id"
+		value="[% publicationoption.platformoptionkey_id %]"> <label>
+	[% publicationoption.pkey %] </label> <input
+		name="publications.[% publication_count %].publicationoptions.[% loop.count - 1 %].value"
+		value="[% publicationoption.value %]" type="text" />[%- IF
+	publicationoption.pkey == "PID" %]<a
+		href=http://bvbm1.bib-bvb.de/webclient/DeliveryManager?pid=[%
+		publicationoption.value %]&custom_att_2=simple_viewer target='_blank'>Online</a>
+	[%- END -%] [%- END -%] [%- IF publication.publication_id -%] <label>
+	Löschen </label> <input name="publications.[% loop.count - 1 %].DELETED"
+		type="checkbox" value="1" />[%- END -%]</li>
+	[%- END -%]
+</ul>
+</div>
+<input class="send" name="save" type="submit" value=" Absenden ">
+</form>
+</div>
 </div>

@@ -1,1 +1,3 @@
-atacama_local.conf  # local configuration with e.g. database connection infos
+atacama_local.conf
+*.swp
+
