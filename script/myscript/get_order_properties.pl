@@ -28,7 +28,7 @@ my $order_rs = $schema_atacama->resultset('Order')->search(
     {
         join => 'orders_projects',
         page => 100,                          # page to return (defaults to 1)
-        rows => 10,                         # number of results per page
+        rows => 5,                         # number of results per page
     }
 );
                                                       

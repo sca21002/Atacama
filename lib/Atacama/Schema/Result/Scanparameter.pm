@@ -122,7 +122,10 @@ use Data::Dumper;
 
 sub scanoptions {
     my $self = shift;
+    my $args = shift;
     
+    my $with_options =
+        !( $args && exists $args->{options} && !$args->{options} );  
     return unless $self->scanner;
     my @scanoptions;
     my @scanoptionkeys = $self->scanner->scanoptionkeys;
@@ -131,16 +134,17 @@ sub scanoptions {
         $scanoption{scanoptionkey_id} = $scanoptionkey->scanoptionkey_id;
         $scanoption{skey} = $scanoptionkey->skey;
         
-        my @scanoptionnames = $scanoptionkey->search_related('scanoptionnames');
-        my @options;
-        foreach my $scanoptionname (@scanoptionnames) {
-            push @options, {
-                value_id => $scanoptionname->value_id,
-                name     => $scanoptionname->name,
-            };  
+        if ($with_options) {
+            my @scanoptionnames = $scanoptionkey->search_related('scanoptionnames');
+            my @options;
+            foreach my $scanoptionname (@scanoptionnames) {
+                push @options, {
+                    value_id => $scanoptionname->value_id,
+                    name     => $scanoptionname->name,
+                };  
+            }
+            $scanoption{options} = \@options;
         }
-        $scanoption{options} = \@options;
-        
         my $scanoptionvalue = $self->search_related(
             'scanoptionvalues',
             { scanoptionkey_id => $scanoptionkey->scanoptionkey_id }
@@ -151,31 +155,8 @@ sub scanoptions {
     return \@scanoptions;
 }
 
-sub scanoptions_without_options {
-    my $self = shift;
-    
-    return unless $self->scanner;
-    my @scanoptions;
-    my @scanoptionkeys = $self->scanner->scanoptionkeys;
-    foreach my $scanoptionkey (@scanoptionkeys) {
-        my %scanoption;
-        $scanoption{scanoptionkey_id} = $scanoptionkey->scanoptionkey_id;
-        $scanoption{skey} = $scanoptionkey->skey;
-        
-        my $scanoptionvalue = $self->search_related(
-            'scanoptionvalues',
-            { scanoptionkey_id => $scanoptionkey->scanoptionkey_id }
-        )->single;
-        $scanoption{value_id} = $scanoptionvalue->value_id if $scanoptionvalue;
-        push @scanoptions, \%scanoption;
-    }
-    return \@scanoptions;
-}
-
-
-
-
-
+sub scanoptions_without_options { (shift)->scanoptions({options => 0}) }
+  
 sub save_scanoptions {
     my $self = shift;
     my $params = shift;

@@ -1,7 +1,7 @@
 package Atacama::Controller::Scanparameter;
 use Moose;
 use namespace::autoclean;
-
+use Data::Dumper;
 BEGIN {extends 'Catalyst::Controller'; }
 
 =head1 NAME
@@ -34,34 +34,20 @@ sub scanparameters : Chained('/') PathPart('scanparameter') CaptureArgs(0) {
 }
 
 
-sub scanparameter : Chained('scanparameters') PathPart('') CaptureArgs(1) {
-    my ($self, $c, $scanparameter_id) = @_;
-
-    my $scanparameter = $c->stash->{scanparameter} = $c->stash->{scanparameters}->find($scanparameter_id)
-        || $c->detach('not_found');
-}
-
-sub json : Chained('scanparameter') {
+sub json : Chained('scanparameters') {
     my ($self, $c) = @_;
     
     my $json_data;
-    my $scanparameter = $c->stash->{scanparameter};
+    my $scanparameters = $c->stash->{scanparameters};
     
-    $json_data = {$scanparameter->get_inflated_columns};
-    $json_data->{scanoptions} = $scanparameter->scanoptions;
-     
+    $c->log->debug(Dumper($c->req->query_params));
+    $json_data = $scanparameters->get_new_result_as_href({
+        scanner_id => $c->req->query_params->{scanner_id},                                            
+    });
     $c->stash(
         json_data => $json_data,
         current_view => 'JSON'
     );
-}
-
-
-sub not_found : Local {
-    my ($self, $c) = @_;
-    $c->response->status(404);
-    $c->stash->{error_msg} = "Scanparameter nicht gefunden!";
-    $c->detach('list');
 }
 
 =head1 AUTHOR

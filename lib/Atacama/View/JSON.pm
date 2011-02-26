@@ -26,6 +26,6 @@ it under the same terms as Perl itself.
 
 =cut
 
-__PACKAGE__->config({ expose_stash => [ qw( page total records rows )] });
+__PACKAGE__->config({ expose_stash => [ qw( page total records rows json_data)] });
 
 1;
