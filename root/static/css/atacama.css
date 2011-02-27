@@ -2,8 +2,9 @@ body {
 	font-family: Tahoma, Helvetica, sans-serif;
 	color: #333333;
 	font-size: 97%;
-	background: url("images/bg-grad_braun.jpg") repeat scroll 0 0 #EFEFEE; 
-	margin: 0;
+	## background: url("images/bg-grad_braun.png") repeat scroll 0 0 #EFEFEE; 
+	background: repeat scroll 0 0 #EFEFEE;
+        margin: 0;
 	padding: 0;
 }
 

@@ -5,3 +5,13 @@
 <tr><td> Autor:     </td><td> [% order.titel.autor_avs %]   </td></tr>
 <tr><td> Titel:     </td><td> [% order.titel.titel_isbd %]  </td></tr>
 </table>
+
+<form name="[% form.name %]"
+    action="[% c.req.uri %]"
+    method="post">
+[% form.field('copy_files').render %]
+[% form.field('digifooter').render %]
+[% form.field('mets').render %]
+[% form.field('csv').render %]
+[% form.field('submit').render %]
+</form>
