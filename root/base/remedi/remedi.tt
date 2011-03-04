@@ -9,6 +9,9 @@
 <form name="[% form.name %]"
     action="[% c.req.uri %]"
     method="post">
+[% form.field('configfile').render %]
+[% form.field('source_pdf_name').render %]
+[% form.field('source_format').render %]
 [% form.field('copy_files').render %]
 [% form.field('digifooter').render %]
 [% form.field('mets').render %]

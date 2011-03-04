@@ -33,11 +33,11 @@ sub remedi : Chained('/order/order') PathPart('remedi') Args(0) {
     my ( $self, $c ) = @_;
     
     my $order = $c->stash->{order};
-
-    $c->log->debug($c->config->{'Controller::Remedi'}{remedi_configdir});    
-    my $dir = Path::Class::Dir->new($c->config->{'Controller::Remedi'}{remedi_configdir});
-    
-    my $form = Atacama::Form::Remedi->new();
+    my $remedi_configdir = $c->config->{'Controller::Remedi'}{remedi_configdir};
+    my $form = Atacama::Form::Remedi->new(
+        order => $order,                                  
+        remedi_configdir => $remedi_configdir,
+    );
     $form->process( params => $c->req->params );
     if( $form->validated ) {
         # perform validated form actions

@@ -31,6 +31,7 @@ requires 'File::MMagic';
 requires 'HTML::FormHandler';
 requires 'Image::Math::Constrain';
 requires 'Imager';
+requires 'List::Util';
 requires 'Moose';
 requires 'Number::Format';
 requires 'Text::Textile';
