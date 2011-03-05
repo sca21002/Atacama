@@ -1,0 +1,144 @@
+package Atacama::Worker::Remedi;
+
+use Moose;
+use base 'TheSchwartz::Moosified::Worker';
+use Atacama::Schema;
+use Remedi::DigiFooter;
+use Remedi::Mets;
+use Remedi::CSV;
+use Log::Log4perl;
+use Path::Class;
+use Data::Dumper;
+use File::Spec;
+use File::Copy;
+use Carp;
+use Config::ZOMG;
+
+
+my $log_file_name;
+
+sub work {
+    my $class = shift;
+    my $job = shift;
+
+    croak("Falscher Aufruf von Atacama::Worker::Remedi::work()"
+            . " mit Klasse: $class"
+         ) unless $class eq 'Atacama::Worker::Remedi';
+    croak("Falscher Aufruf von Atacama::Worker::Remedi::work():"
+            . " kein Objekt vom Typ TheSchwartz::Moosified::Job"       
+         ) unless blessed($job) && $job->isa( 'TheSchwartz::Moosified::Job' );
+    my $arg = $job->arg or croak ("Keine Job-Parameter gefunden");
+    my $atacama_config = get_atacama_config()
+        or croak ("Lesen der Atacama-Konfigurationsdatei fehlgeschlagen");   
+    my $order_id = $arg->{order_id} or croak ("Keine Auftragsnummer");
+    my $work_dir = $atacama_config->{'Atacama::Worker::Remedi'}{work_dir}
+        or croak("Kein Arbeitsverzeichnis"); 
+    my $workdir = Path::Class::Dir->new($work_dir, $order_id);
+    $workdir->mkpath() or croak("Konnte Arbeitsverzeichnis $workdir nicht anlegen")
+	unless -e $workdir;
+    $log_file_name = File::Spec->catfile($workdir, 'remedi.log');
+    unlink $log_file_name if -e $log_file_name;
+    my $remedi_configfile = $arg->{configfile}
+        or croak("Keine Remedi-Konfigurationsdatei"); 
+    my $log_configfile = File::Spec->catfile(
+        $FindBin::Bin, '..', 'log4perl.conf'
+    );
+    Log::Log4perl->init($log_configfile);
+    my $log = Log::Log4perl->get_logger('Atacama::Worker::Remedi');
+    $log->info('Programm gestartet');
+    while (my($key, $val) = each %$arg) { $log->info("$key => $val") } 
+    
+    my @dbic_connect_info
+        = @{ $atacama_config->{'Model::AtacamaDB'}{connect_info} };
+    my $atacama_schema = Atacama::Schema->connect(@dbic_connect_info)
+        or $log->logcroak("Datenbankverbindung gescheitert");
+    my $remedi_config = get_remedi_config($remedi_configfile)
+        or $log->logcroak("Lesen der Remedi-Konfiguration fehlgeschlagen"); 
+    my @scanfiles = $atacama_schema->resultset('Scanfiles')->search(
+        { order_id => $order_id },
+        { order_by => 'filename' },
+    )->all;
+    $log->logcroak("Keine Scandateien in der Datenbank") unless (@scanfiles);
+    if ($arg->{copy_files}) {
+        foreach my $scanfile (@scanfiles) {
+            $log->debug("Scandatei: " . $scanfile->filename);
+            my $sourcedir = $scanfile->filepath;
+            my $source = File::Spec->catfile($sourcedir, $scanfile->filename);
+            my $dest   = File::Spec->catfile($workdir,   $scanfile->filename);
+            copy($source, $dest) 
+                or $log->logdie("Konnte $source nicht nach $dest kopieren: $!");
+            $log->info("$source --> $dest");
+        }
+        if ($arg->{source_format} eq 'PDF') {
+            my $source = $arg->{source_pdf_name};
+            my $dest   = File::Spec->catfile($workdir, $order_id . '.pdf');  
+            copy($source, $dest) 
+                or $log->logdie("Konnte $source nicht nach $dest kopieren: $!");
+            $log->info("$source --> $dest");
+        }
+    }
+    my $order = $atacama_schema->resultset('Orders')->find($order_id);
+        # or
+        # $log->croak("Kein Auftrag in der Datenbank zu $order_id"); 
+    my $titel = $order->titel;
+    my %init_arg;
+    if ($arg->{digifooter}) {
+        %init_arg = (
+            image_path => $order_id,
+            title      => $titel->titel_isbd,
+            author     => $titel->autor_avs,
+            configfile => $remedi_configfile,
+        );
+        foreach my $key (qw/resolution_correction source_format source_pdf_name/) {
+            $init_arg{$key} = $arg->{$key} if $arg->{$key};
+        }
+        while (my($key, $val) = each %init_arg) { $log->info("$key => $val") } 
+        Remedi::DigiFooter->new_with_config(%init_arg)->make_footer;
+    }
+    if ($arg->{mets}) {    
+        %init_arg = ( 
+            image_path   => $order_id,
+            bv_nr        => $titel->bvnr,
+            shelf_number => $titel->signatur,
+            title        => $titel->titel_isbd,
+            author       => $titel->autor_avs,
+            configfile   => $remedi_configfile,
+        );
+        Remedi::Mets->new_with_config(%init_arg)->make_mets;
+    }
+    if ($arg->{csv}) {        
+        %init_arg = (
+            image_path => $order_id,
+            configfile => $remedi_configfile,
+        );
+        Remedi::CSV->new_with_config(%init_arg)->make_csv; 
+    }
+    $job->completed();
+}
+
+sub get_logfile_name { $log_file_name }
+
+
+sub get_atacama_config {
+   
+    my $config = Config::ZOMG->new(
+        name => 'Atacama',
+        path => File::Spec->catfile($FindBin::Bin, '..'),
+    );
+    return $config->load;    
+}
+
+sub get_remedi_config {
+    my $remedi_configfile = shift;
+    
+    my $conf = Config::Any->load_files({
+        files => [ $remedi_configfile ],
+        use_ext => 1,
+    });
+    my ($filename, $remedi_config) = %{shift @$conf};
+    return $remedi_config;
+}
+
+
+
+1;

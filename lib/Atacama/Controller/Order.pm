@@ -128,7 +128,7 @@ sub save : Private {
         # $c->log->debug(Dumper($order_params));
         $order->save($order_params);
     }
-    $c->log->debug(Dumper($order->properties));
+    # $c->log->debug(Dumper($order->properties));
     $c->stash(
         %{$order->properties},      
         template => 'order/edit.tt',   

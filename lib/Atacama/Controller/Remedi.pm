@@ -41,7 +41,19 @@ sub remedi : Chained('/order/order') PathPart('remedi') Args(0) {
     $form->process( params => $c->req->params );
     if( $form->validated ) {
         # perform validated form actions
-        $c->res->redirect($c->uri_for_action('/order/edit', $c->req->captures));
+        
+        # funcname => 'Atacama::Worker::Remedi',
+        my %query_values = (
+                configfile =>  $form->params->{configfile},    
+                source_format => $form->params->{source_format},
+                order_id => $order->order_id,
+                source_pdf_name => $form->params->{source_pdf_name},
+                copy_files => $form->params->{copy_files},
+                digifooter => $form->params->{digifooter},
+                mets => $form->params->{mets},
+                csv => $form->params->{csv},
+                           );
+        $c->res->redirect($c->uri_for_action('/job/add', ['remedi'], \%query_values));
     }
     else {
         # perform non-validated actions
