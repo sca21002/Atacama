@@ -1,0 +1,8 @@
+<form name="[% form.name %]"
+    action="[% c.req.uri %]"
+    method="post">
+[% form.field('name').render %]
+[% form.field('description').render %]
+[% form.field('projectkeys').render %]
+[% form.field('submit').render %]
+</form>

@@ -107,8 +107,6 @@ sub order : Chained('orders') PathPart('') CaptureArgs(1) {
 
 sub edit : Chained('order') {
     my ($self, $c) = @_;
-    $c->log->debug('User: ' . $c->user->get('name')  . '('
-                            . $c->user->get('login') . ')');
     $c->forward('save');
 }
 

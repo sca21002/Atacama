@@ -1,6 +1,7 @@
 package Atacama::Controller::Project;
 use Moose;
 use namespace::autoclean;
+use Atacama::Form::Project;
 use Data::Dumper;
 
 
@@ -33,6 +34,13 @@ sub projects : Chained('/login/required') PathPart('project') CaptureArgs(0) {
     my ($self, $c) = @_;
     
     $c->stash->{projects} = $c->model('AtacamaDB::Project');
+}
+
+sub project : Chained('projects') PathPart('') CaptureArgs(1) {
+    my ($self, $c, $project_id) = @_;
+
+    my $project = $c->stash->{project}
+        = $c->stash->{projects}->find($project_id) || $c->detach('not_found');
 }
 
 sub list : Chained('projects') PathPart('list') Args(0) {
@@ -95,6 +103,31 @@ sub json : Chained('projects') PathPart('json') Args(0) {
     );
 }
 
+sub edit : Chained('project') {
+    my ($self, $c) = @_;
+    $c->forward('save');
+}
+
+sub add : Chained('projects') {
+    my ($self, $c) = @_;
+    $c->forward('save');
+}
+
+# both adding and editing happens here
+# no need to duplicate functionality
+sub save : Private {
+    my ($self, $c) = @_;
+
+    my $project = $c->stash->{project}
+        || $c->model('AtacamaDB::Project')->new_result({});
+    my $form = Atacama::Form::Project->new;
+    $c->stash( template => 'project/edit.tt', form => $form );
+    $form->process(item => $project, params => $c->req->params );
+    return unless $form->validated;
+    #$c->flash( message => 'Book created' );
+    # Redirect the user back to the list page
+    $c->response->redirect($c->uri_for_action('list'));
+}
 
 
 =head1 AUTHOR
