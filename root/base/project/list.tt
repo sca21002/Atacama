@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" media="screen" href="[% c.uri_for_static('css/ui-lightness/jquery-ui-1.8.9.custom.css') %]" />
+    <link rel="stylesheet" type="text/css" media="screen" href="[% c.uri_for_static('css/jqGrid/ui.jqgrid.css') %]" />
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    font-size: 50%;
+}
+</style>
+    <script type="text/javascript" src="[% c.uri_for_static('js/ext/jquery/jquery-1.5.min.js') %]"></script> 
+    <script type="text/javascript" src="[% c.uri_for_static('js/ext/plugins/jquery/jqGrid/i18n/grid.locale-de.js') %]"></script> 
+    <script type="text/javascript" src="[% c.uri_for_static('js/ext/plugins/jquery/jqGrid/jquery.jqGrid.min.js') %]"></script> 
+    
+<script type="text/javascript">    
+function showCatlink (cellvalue, options, rowObject)
+{
+    var idUrl = "/project/" +  options.rowId  +   "/edit";
+    return "<a href=\"" + idUrl + "\">" + cellvalue + "</a>";
+
+}
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function() {
+jQuery("#orders").jqGrid({
+    url:"[% json_url %]",
+    datatype: "json",
+    colNames:['Projektnr.', 'Projekt'],
+    colModel:[
+        {name:'project_id', formatter:showCatlink, index:'order_id', width:100},
+        {name:'name', sortable: false, width:300},
+    ],
+    rowNum:15,
+    height: "100%",
+    rowList:[10,20,30,40,50,60,70,80,90,100],
+    pager: '#pager_orders',
+    sortname: 'project_id',
+    viewrecords: true,
+    sortorder: "asc",
+    caption:"Projekte"
+});
+jQuery("#projects").jqGrid('navGrid','#pager_orders',{edit:false,add:false,del:false});
+});
+</script>
+    <title>Aufträge</title>
+</head>
+<body>
+ <div>       
+ <div><table id="orders"></table></div><div id="pager_orders"></div></div> 
+</body>
+</html>

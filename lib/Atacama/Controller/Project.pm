@@ -1,6 +1,8 @@
 package Atacama::Controller::Project;
 use Moose;
 use namespace::autoclean;
+use Data::Dumper;
+
 
 BEGIN {extends 'Catalyst::Controller'; }
 
@@ -26,6 +28,73 @@ sub index :Path :Args(0) {
 
     $c->response->body('Matched Atacama::Controller::Project in Project.');
 }
+
+sub projects : Chained('/login/required') PathPart('project') CaptureArgs(0) {
+    my ($self, $c) = @_;
+    
+    $c->stash->{projects} = $c->model('AtacamaDB::Project');
+}
+
+sub list : Chained('projects') PathPart('list') Args(0) {
+    my ( $self, $c ) = @_;
+
+    $c->stash(
+        json_url => $c->uri_for_action('project/json'),
+        template => 'project/list.tt'
+    ); 
+}
+
+
+sub json : Chained('projects') PathPart('json') Args(0) {
+    my ($self, $c) = @_;
+
+    my $data = $c->req->params;
+    $c->log->debug(Dumper($data));
+    
+    my $page = $data->{page} || 1;
+    my $entries_per_page = $data->{rows} || 10;
+    my $sidx = $data->{sidx} || 'project_id';
+    my $sord = $data->{sord} || 'asc';
+    
+    my $search = $data->{searchField} && $data->{searchString} 
+        ? { $data->{searchField} => $data->{searchString} }
+        : {}
+        ; 
+   
+    my $projects_rs = $c->stash->{projects};
+ 
+    $projects_rs = $projects_rs->search(
+        $search,
+        {
+            page => $page,
+            rows => $entries_per_page,
+            order_by => "$sidx $sord",
+        }
+    );
+   
+    my $response;
+    $response->{page} = $page;
+    $response->{total} = $projects_rs->pager->last_page;
+    $response->{records} = $projects_rs->pager->total_entries;
+    my @rows; 
+    my $i = $projects_rs->pager->first;
+    while (my $project = $projects_rs->next) {
+        my $row->{id} = $project->project_id;
+        $row->{cell} = [
+            $project->project_id,
+            $project->name,
+        ];
+        push @rows, $row;
+        $i++
+    }
+    $response->{rows} = \@rows;    
+
+    $c->stash(
+        %$response,
+        current_view => 'JSON'
+    );
+}
+
 
 
 =head1 AUTHOR
