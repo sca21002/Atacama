@@ -35,6 +35,7 @@ requires 'List::Util';
 requires 'Moose';
 requires 'Number::Format';
 requires 'Text::Textile';
+requires 'Template::Plugin::Latex';
 requires 'namespace::autoclean';
 requires 'TheSchwartz',
 requires 'Config::General'; # This should reflect the config file format you've chosen

@@ -135,6 +135,22 @@ sub save : Private {
     );
 }
 
+sub print : Chained('order') {
+    my ($self, $c)  = @_;
+    
+    my $order = $c->stash->{order};
+    
+    $c->stash->{template} = 'order/print.tt'; 
+    if ($c->forward( 'Atacama::View::PDF')) {
+         $c->response->content_type('application/pdf');
+         $c->response->header('Content-Disposition', 'attachment; filename='
+            . $order->order_id . 'pdf');
+    }
+}
+
+
+
+
 sub not_found : Local {
     my ($self, $c) = @_;
     $c->response->status(404);
