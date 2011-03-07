@@ -39,7 +39,8 @@ sub work {
     $log_file_name = File::Spec->catfile($workdir, 'remedi.log');
     unlink $log_file_name if -e $log_file_name;
     my $remedi_configfile = $arg->{configfile}
-        or croak("Keine Remedi-Konfigurationsdatei"); 
+        or croak("Keine Remedi-Konfigurationsdatei");
+    my $source_pdf_name = $arg->{source_pdf_name};
     my $log_configfile = File::Spec->catfile(
         $FindBin::Bin, '..', 'log4perl.conf'
     );
@@ -69,11 +70,22 @@ sub work {
                 or $log->logdie("Konnte $source nicht nach $dest kopieren: $!");
             $log->info("$source --> $dest");
         }
-        if ($arg->{source_format} eq 'PDF') {
-            my $source = $arg->{source_pdf_name};
-            my $dest   = File::Spec->catfile($workdir, $order_id . '.pdf');  
-            copy($source, $dest) 
+        if ( $arg->{source_format} eq 'PDF' ) {
+            my $source = Path::Class::File->new( $arg->{source_pdf_name} );
+            my $dest   = Path::Class::File->new($workdir, $order_id . '.pdf');  
+            if ($source->basename =~ /^UBR\d{2}A\d{6}\.pdf/) {
+		my $doc = CAM::PDF->new($source) || $log->logdie "$CAM::PDF::errstr\n";
+                my $pagenums = '1-4,' . $doc->numPages;
+                if (!$doc->deletePages($pagenums)) {
+		    die "Failed to delete a page\n";
+		}
+		$doc->cleanoutput($dest);
+	    }
+	    else {
+		copy($source, $dest) 
                 or $log->logdie("Konnte $source nicht nach $dest kopieren: $!");
+	    }
+	    $source_pdf_name = $dest;		
             $log->info("$source --> $dest");
         }
     }
@@ -88,8 +100,9 @@ sub work {
             title      => $titel->titel_isbd,
             author     => $titel->autor_avs,
             configfile => $remedi_configfile,
+	    source_pdf_name => $source_pdf_name,
         );
-        foreach my $key (qw/resolution_correction source_format source_pdf_name/) {
+        foreach my $key (qw/resolution_correction source_format/) {
             $init_arg{$key} = $arg->{$key} if $arg->{$key};
         }
         while (my($key, $val) = each %init_arg) { $log->info("$key => $val") } 

@@ -15,6 +15,7 @@ requires 'Catalyst::Plugin::ConfigLoader';
 requires 'Session Session::Store::FastMmap';
 requires 'Algorithm::Merge';
 requires 'Archive::Zip';
+requires 'CAM::PDF';
 requires 'Catalyst::View::JSON';
 requires 'Catalyst::Plugin::Authentication';
 requires 'Catalyst::Authentication::Store::DBIx::Class';
