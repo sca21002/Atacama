@@ -2,6 +2,7 @@ package Atacama::Controller::Job;
 use Moose;
 use namespace::autoclean;
 use Data::Dumper;
+use JSON;
 
 BEGIN {extends 'Catalyst::Controller'; }
 
@@ -34,6 +35,29 @@ sub jobs : Chained('/login/required') PathPart('job') CaptureArgs(0) {
     $c->stash->{jobs} = $c->model('TheSchwartzDB');
 }
 
+sub list : Chained('jobs')  PathPart('list') Args(0) {
+    my ($self, $c) = @_;
+
+    $c->stash(
+        json_url => $c->uri_for_action('job/json'),
+        template => 'job/list.tt'
+    ); 
+}
+
+
+sub json : Chained('jobs') PathPart('json') Args(0) {
+    my ($self, $c) = @_;
+
+    my $data = $c->req->params;
+    $c->log->debug(Dumper($data));
+    my $score_dir = $c->config->{'Atacama::Controller::Job'}{score_dir}; 
+    unless ($score_dir) {$c->error('score_dir nicht gefunden'); $c->detach}
+    $c->log->debug('score_dir: ' . $score_dir);   
+ 
+
+    
+}
+
 sub worker : Chained('jobs') PathPart('') CaptureArgs(1) {
     my ($self, $c, $worker) = @_;
     
@@ -51,7 +75,9 @@ sub add : Chained('worker') PathPart('add') Args(0) {
         arg => $c->req->params,
     );
     $jobs->insert($job);    
-    $c->res->redirect($c->uri_for_action('/order/edit',[$c->req->params->{order_id}]));
+    $c->res->redirect(
+        $c->uri_for_action('/order/edit', [$c->req->params->{order_id}] )
+    );
 }
 
 

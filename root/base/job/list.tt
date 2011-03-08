@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" media="screen" href="[% c.uri_for_static('css/ui-lightness/jquery-ui-1.8.9.custom.css') %]" />
+    <link rel="stylesheet" type="text/css" media="screen" href="[% c.uri_for_static('css/jqGrid/ui.jqgrid.css') %]" />
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    font-size: 50%;
+}
+</style>
+    <script type="text/javascript" src="[% c.uri_for_static('js/ext/jquery/jquery-1.5.min.js') %]"></script> 
+    <script type="text/javascript" src="[% c.uri_for_static('js/ext/plugins/jquery/jqGrid/i18n/grid.locale-de.js') %]"></script> 
+    <script type="text/javascript" src="[% c.uri_for_static('js/ext/plugins/jquery/jqGrid/jquery.jqGrid.min.js') %]"></script> 
+
+<script type="text/javascript">
+$(document).ready(function() {
+jQuery("#jobs").jqGrid({
+    url:"[% json_url %]",
+    datatype: "json",
+    colNames:['pid', 'funcname', 'started', 'arg', 'done'],
+    colModel:[
+        {name:'pid',index:'filename', width:150},
+        {name:'funcname',index:'format', width:80},
+        {name:'started',index:'colortype', width:80},
+        {name:''arg',index:'resolution', width:80},
+        {name:'done',index:'imagesize', width:150},
+    ],
+    rowNum:15,
+    rownumbers: true,
+    height: 350,
+    rowList:[10,20,30,40,50,60,70,80,90,100],
+    pager: '#pager_jobs',
+    sortname: 'id',
+    viewrecords: true,
+    sortorder: "asc",
+    caption:"Jobs"
+});
+jQuery("#jobs").jqGrid('navGrid','#pager_jobs',{edit:false,add:false,del:false});
+});
+</script>
+    <title>Testbeispiel für jqGrid</title>
+</head>
+<body>
+ <div>       
+ <div><table id="jobs"></table></div><div id="pager_jobs"></div></div> 
+</body>
+</html>

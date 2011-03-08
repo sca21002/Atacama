@@ -29,13 +29,13 @@ sub scanfiles : Chained('/order/order') PathPart('scanfiles') CaptureArgs(0) {
 }
 
 
-sub index : Chained('scanfiles')  PathPart('index') Args(0) {
+sub list : Chained('scanfiles')  PathPart('list') Args(0) {
     my ($self, $c) = @_;
 
     my $order = $c->stash->{order};
     $c->stash(
         json_url => $c->uri_for_action('scanfile/json', [$order->order_id]),
-        template => 'scanfile/index.tt'
+        template => 'scanfile/list.tt'
     ); 
 }
 
