@@ -8,7 +8,7 @@ use File::Spec;
 use Config::ZOMG;
 use DBI;
 use Data::Dumper;
-use TheSchwartz::Moosified;
+use TheSchwartz;
 use Atacama::Worker::Remedi;
 
 ### Logdatei initialisieren
@@ -44,8 +44,10 @@ LOGFATAL("Verbindungsparamter(connect_info) für die Datenbank nicht gefunden")
     unless $dbic_connect_info;
 
 my $dbh = DBI->connect(@$dbic_connect_info);
-
-my $client = TheSchwartz::Moosified->new( databases => [$dbh],
+my $driver = Data::ObjectDriver::Driver::DBI->new( dbh => $dbh);
+my $client = TheSchwartz->new( databases => [{ driver => $driver }],
                                verbose => 1, );
+$client->set_scoreboard('/tmp');
+INFO("Scoreboard: " . $client->set_scoreboard()); 
 $client->can_do('Atacama::Worker::Remedi');
 $client->work();

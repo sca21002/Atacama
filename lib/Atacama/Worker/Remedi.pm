@@ -1,7 +1,8 @@
 package Atacama::Worker::Remedi;
 
-use Moose;
-use base 'TheSchwartz::Moosified::Worker';
+#use Moose;
+use base 'TheSchwartz::Worker';
+use Scalar::Util qw(blessed);
 use Atacama::Schema;
 use Remedi::DigiFooter;
 use Remedi::Mets;
@@ -13,7 +14,7 @@ use File::Spec;
 use File::Copy;
 use Carp;
 use Config::ZOMG;
-
+use CAM::PDF;
 
 my $log_file_name;
 
@@ -25,8 +26,8 @@ sub work {
             . " mit Klasse: $class"
          ) unless $class eq 'Atacama::Worker::Remedi';
     croak("Falscher Aufruf von Atacama::Worker::Remedi::work():"
-            . " kein Objekt vom Typ TheSchwartz::Moosified::Job"       
-         ) unless blessed($job) && $job->isa( 'TheSchwartz::Moosified::Job' );
+            . " kein Objekt vom Typ TheSchwartz::Job"       
+         ) unless blessed($job) && $job->isa( 'TheSchwartz::Job' );
     my $arg = $job->arg or croak ("Keine Job-Parameter gefunden");
     my $atacama_config = get_atacama_config()
         or croak ("Lesen der Atacama-Konfigurationsdatei fehlgeschlagen");   
@@ -55,7 +56,7 @@ sub work {
         or $log->logcroak("Datenbankverbindung gescheitert");
     my $remedi_config = get_remedi_config($remedi_configfile)
         or $log->logcroak("Lesen der Remedi-Konfiguration fehlgeschlagen"); 
-    my @scanfiles = $atacama_schema->resultset('Scanfiles')->search(
+    my @scanfiles = $atacama_schema->resultset('Scanfile')->search(
         { order_id => $order_id },
         { order_by => 'filename' },
     )->all;
@@ -74,10 +75,11 @@ sub work {
             my $source = Path::Class::File->new( $arg->{source_pdf_name} );
             my $dest   = Path::Class::File->new($workdir, $order_id . '.pdf');  
             if ($source->basename =~ /^UBR\d{2}A\d{6}\.pdf/) {
-		my $doc = CAM::PDF->new($source) || $log->logdie "$CAM::PDF::errstr\n";
+                $log->info("EOD-PDF: " . $source);
+		my $doc = CAM::PDF->new($source) || $log->logdie("$CAM::PDF::errstr\n");
                 my $pagenums = '1-4,' . $doc->numPages;
                 if (!$doc->deletePages($pagenums)) {
-		    die "Failed to delete a page\n";
+		    $log->logdiei("Failed to delete a page\n");
 		}
 		$doc->cleanoutput($dest);
 	    }
@@ -85,11 +87,11 @@ sub work {
 		copy($source, $dest) 
                 or $log->logdie("Konnte $source nicht nach $dest kopieren: $!");
 	    }
-	    $source_pdf_name = $dest;		
+	    $source_pdf_name = $dest->stringify;  # spaeter API aendern Path::Class		
             $log->info("$source --> $dest");
         }
     }
-    my $order = $atacama_schema->resultset('Orders')->find($order_id);
+    my $order = $atacama_schema->resultset('Order')->find($order_id);
         # or
         # $log->croak("Kein Auftrag in der Datenbank zu $order_id"); 
     my $titel = $order->titel;
