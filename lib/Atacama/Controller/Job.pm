@@ -3,6 +3,8 @@ use Moose;
 use namespace::autoclean;
 use Data::Dumper;
 use JSON;
+use Try::Tiny;
+use Atacama::Helper::TheSchwartz::Scoreboard; 
 
 BEGIN {extends 'Catalyst::Controller'; }
 
@@ -50,12 +52,16 @@ sub json : Chained('jobs') PathPart('json') Args(0) {
 
     my $data = $c->req->params;
     $c->log->debug(Dumper($data));
-    my $score_dir = $c->config->{'Atacama::Controller::Job'}{score_dir}; 
-    unless ($score_dir) {$c->error('score_dir nicht gefunden'); $c->detach}
-    $c->log->debug('score_dir: ' . $score_dir);   
- 
-
-    
+    my $scoreboard;
+    try {
+        $scoreboard = Atacama::Helper::TheSchwartz::Scoreboard->new(
+            dir => $c->config->{'Atacama::Controller::Job'}{score_dir},
+        );
+    }
+    catch {
+        $c->error('scoreboard nicht gefunden');
+        $c->detach;       
+    }
 }
 
 sub worker : Chained('jobs') PathPart('') CaptureArgs(1) {

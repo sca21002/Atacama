@@ -10,6 +10,7 @@ use Module::Install::Catalyst; # Complain loudly if you don't have
 name 'Atacama';
 all_from 'lib/Atacama.pm';
 
+requires 'aliased';
 requires 'Catalyst::Runtime' => '5.80029';
 requires 'Catalyst::Plugin::ConfigLoader';
 requires 'Session Session::Store::FastMmap';
@@ -34,6 +35,7 @@ requires 'Image::Math::Constrain';
 requires 'Imager';
 requires 'List::Util';
 requires 'Moose';
+requires 'MooseX::Types::Path::Class';
 requires 'Number::Format';
 requires 'Text::Textile';
 requires 'Template::Plugin::Latex';
