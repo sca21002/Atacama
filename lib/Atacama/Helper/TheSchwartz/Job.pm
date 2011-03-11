@@ -1,4 +1,4 @@
-package Atacama::Helper::TheSchwartz::Scoredata;
+package Atacama::Helper::TheSchwartz::Job;
 
 use Moose;
 

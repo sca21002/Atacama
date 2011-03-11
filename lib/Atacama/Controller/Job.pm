@@ -52,6 +52,12 @@ sub json : Chained('jobs') PathPart('json') Args(0) {
 
     my $data = $c->req->params;
     $c->log->debug(Dumper($data));
+    
+    my $page = $data->{page} || 1;
+    my $entries_per_page = $data->{rows} || 10;
+    my $sidx = $data->{sidx} || 'pid';
+    my $sord = $data->{sord} || 'asc';
+    
     my $scoreboard;
     try {
         $scoreboard = Atacama::Helper::TheSchwartz::Scoreboard->new(
@@ -62,6 +68,32 @@ sub json : Chained('jobs') PathPart('json') Args(0) {
         $c->error('scoreboard nicht gefunden');
         $c->detach;       
     }
+    my $response;
+    $response->{page} = $page;
+    $response->{total} = scalar @{$scoreboard->jobs};
+    $response->{records} = scalar @{$scoreboard->jobs};
+    my @rows;
+    my $i = 1;
+    foreach my $job (@{$scoreboard->jobs}) {
+        my $row->{id} = $job->pid;
+        $row->{cell} = [
+            $job->pid,
+            $job->funcname,
+            $job->started,
+            $job->arg_hashref,
+            $job->started,
+        ];
+        
+        push @rows, $row;
+        $i++
+    }
+    $response->{rows} = \@rows;    
+
+    $c->stash(
+        %$response,
+        current_view => 'JSON'
+    );    
+    
 }
 
 sub worker : Chained('jobs') PathPart('') CaptureArgs(1) {

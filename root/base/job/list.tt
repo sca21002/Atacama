@@ -20,12 +20,12 @@ $(document).ready(function() {
 jQuery("#jobs").jqGrid({
     url:"[% json_url %]",
     datatype: "json",
-    colNames:['pid', 'funcname', 'started', 'arg', 'done'],
+    colNames:['pid', 'funcname', 'started', 'arg_hashref', 'done'],
     colModel:[
         {name:'pid',index:'filename', width:150},
         {name:'funcname',index:'format', width:80},
         {name:'started',index:'colortype', width:80},
-        {name:''arg',index:'resolution', width:80},
+        {name:'arg_hashref',index:'resolution', width:80},
         {name:'done',index:'imagesize', width:150},
     ],
     rowNum:15,
