@@ -26,6 +26,7 @@ requires 'Catalyst::Plugin::Unicode::Encoding';
 requires 'Catalyst::Action::RenderView';
 requires 'CatalystX::SimpleLogin';
 requires 'Config::ZOMG';
+requires 'Data::Page';
 requires 'DateTime::Format::Mail';
 requires 'DBIx::Class::DateTime::Epoch';
 requires 'DBIx::Class::EncodedColumn';

@@ -42,7 +42,6 @@ sub _build_jobs {
         open(SF, '<', $file) or die "Can't open score file '$file': $!\n";
         my %dat = map { chomp; split('=', $_, 2) } <SF>;
         close(SF);
-        $dat{arg_hashref} = { map { split('=') } split(',', $dat{arg}||'') };
         my $job =  Atacama::Helper::TheSchwartz::Job->new(%dat); 
         push @jobs, $job;
     }    

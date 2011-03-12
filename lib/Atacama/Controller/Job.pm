@@ -4,7 +4,8 @@ use namespace::autoclean;
 use Data::Dumper;
 use JSON;
 use Try::Tiny;
-use Atacama::Helper::TheSchwartz::Scoreboard; 
+use Atacama::Helper::TheSchwartz::Scoreboard;
+use Data::Page;
 
 BEGIN {extends 'Catalyst::Controller'; }
 
@@ -51,10 +52,9 @@ sub json : Chained('jobs') PathPart('json') Args(0) {
     my ($self, $c) = @_;
 
     my $data = $c->req->params;
-    $c->log->debug(Dumper($data));
-    
-    my $page = $data->{page} || 1;
-    my $entries_per_page = $data->{rows} || 10;
+    my $page = Data::Page->new();
+    $page->current_page( $data->{page} || 1 );
+    $page->entries_per_page( $data->{rows} || 10 );
     my $sidx = $data->{sidx} || 'pid';
     my $sord = $data->{sord} || 'asc';
     
@@ -67,25 +67,33 @@ sub json : Chained('jobs') PathPart('json') Args(0) {
     catch {
         $c->error('scoreboard nicht gefunden');
         $c->detach;       
-    }
+    };
+
+    $page->total_entries( scalar @{$scoreboard->jobs} );
     my $response;
-    $response->{page} = $page;
-    $response->{total} = scalar @{$scoreboard->jobs};
-    $response->{records} = scalar @{$scoreboard->jobs};
+    $response->{page} = $page->current_page;
+    $response->{total} = $page->last_page;
+    $response->{records} = $page->total_entries;
     my @rows;
-    my $i = 1;
-    foreach my $job (@{$scoreboard->jobs}) {
+    foreach my $job (
+        @{ $scoreboard->jobs }[ $page->first-1 .. $page->last -1 ] # array-slice
+    ) {
         my $row->{id} = $job->pid;
         $row->{cell} = [
             $job->pid,
+            $job->order_id,
             $job->funcname,
-            $job->started,
-            $job->arg_hashref,
-            $job->started,
+            $job->started->strftime('%d.%m.%Y %T'),
+            $job->done->strftime('%d.%m.%Y %T'),
+            $job->runtime,
+            $job->copy_files,
+            $job->digifooter,
+            $job->mets,
+            $job->csv,
+            $job->source_format,
+            $job->source_pdf_name,
         ];
-        
         push @rows, $row;
-        $i++
     }
     $response->{rows} = \@rows;    
 

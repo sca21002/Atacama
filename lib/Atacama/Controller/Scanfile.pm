@@ -75,7 +75,6 @@ sub json : Chained('scanfiles') PathPart('json') Args(0) {
     $response->{total} = $scanfile_rs->pager->last_page;
     $response->{records} = $scanfile_rs->pager->total_entries;
     my @rows; 
-    my $i = $scanfile_rs->pager->first;
     while (my $scanfile = $scanfile_rs->next) {
         my $row->{id} = $scanfile->filepath . $scanfile->filename;
         $row->{cell} = [
@@ -96,7 +95,6 @@ sub json : Chained('scanfiles') PathPart('json') Args(0) {
             sprintf("%.1f", $scanfile->filesize / 1024 / 1024),
         ];
         push @rows, $row;
-        $i++
     }
     $response->{rows} = \@rows;
     

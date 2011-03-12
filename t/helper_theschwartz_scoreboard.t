@@ -20,8 +20,9 @@ my $expected = [
 ];
 is_deeply($scoreboard->files,$expected,'score_files');
 ok(my $jobs = $scoreboard->jobs);
-is($jobs->[0]->pid,'15796','pid');
-is($jobs->[0]->started,'2011-03-07T17:04:17','started');
+ok(my $job = $jobs->[0]);
+is($job->pid,'15796','pid');
+is($job->started->strftime('%d.%m.%Y %T'),'07.03.2011 17:04:17','started');
 $expected = {
     configfile
         => '/home/atacama/Remedi-0.04/lib/Remedi/config/remedi_de-155-355.yml',
@@ -32,9 +33,26 @@ $expected = {
     order_id => 'ubr07296',
     mets => 1,
     source_pdf_name
-        => '/rzblx8_DATA3/digitalisierung/auftraege/ubr07296/ubr07296.pdf',             
+        => '/rzblx8_DATA3/digitalisierung/auftraege/ubr07296/ubr07296.pdf',
+    add_param => 'Zusatz',    
 };
 is_deeply($jobs->[0]->arg_hashref,$expected,'arg_hashref');
-is($jobs->[0]->done,'2011-03-07T17:05:15','done');
-is($jobs->[0]->runtime,'0:00:58','runtime');
+is($job->done,'2011-03-07T17:05:15','done');
+is($job->runtime,'0:00:58','runtime');
+is($job->configfile,
+   '/home/atacama/Remedi-0.04/lib/Remedi/config/remedi_de-155-355.yml',
+   'configfile'
+);
+is($job->digifooter,1,'digifooter');
+is($job->copy_files,1,'copy_files');
+is($job->csv,1,'csv');
+is($job->source_format,'PDF','source_format');
+is($job->order_id,'ubr07296','order_id');
+is($job->mets,1,'mets');
+is($job->digifooter,1,'digifooter');
+is($job->source_pdf_name,
+    '/rzblx8_DATA3/digitalisierung/auftraege/ubr07296/ubr07296.pdf',
+    'source_pdf_name'
+);
+is($job->additional_args,'add_param=Zusatz','additional_args');
 done_testing();
