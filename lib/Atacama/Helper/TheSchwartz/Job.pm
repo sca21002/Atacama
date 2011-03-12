@@ -1,6 +1,7 @@
 package Atacama::Helper::TheSchwartz::Job;
 
 use Moose;
+use MooseX::Types::DateTime;
 
 has pid => (
     is => 'ro',
@@ -16,8 +17,9 @@ has funcname => (
 
 has started => (
     is => 'ro',
-    isa => 'Int',
+    isa => 'DateTime',
     required => 1,
+    coerce => 1,
 );           
 
 has arg_hashref => (
@@ -28,7 +30,8 @@ has arg_hashref => (
 
 has done => (
     is => 'ro',
-    isa => 'Int',
+    isa => 'DateTime',
+    coerce => 1,
 );
 
 
@@ -42,19 +45,23 @@ has runtime => (
 sub _build_runtime {
     my $self = shift;
 
-    my $secs = ( $self->done || time() ) - $self->started;
-    if ($secs < 60) {
-        return sprintf("%02d:%02d", 0, $secs);
-    } elsif ($secs < 3600) {
-        my $min = int($secs/60);
-        $secs = $secs%60;
-        return sprintf("%02d:%02d", $min, $secs);
-    } else {
-        my $hr  = int($secs/60/60);
-        my $min = int($secs/60%60);
-        $secs = $secs%60;
-        return sprintf("%d:%02d:%02d", $hr, $min, $secs);
-    }   
+    #my $secs = ( $self->done || time() ) - $self->started;
+    #if ($secs < 60) {
+    #    return sprintf("%02d:%02d", 0, $secs);
+    #} elsif ($secs < 3600) {
+    #    my $min = int($secs/60);
+    #    $secs = $secs%60;
+    #    return sprintf("%02d:%02d", $min, $secs);
+    #} else {
+    #    my $hr  = int($secs/60/60);
+    #    my $min = int($secs/60%60);
+    #    $secs = $secs%60;
+    #    return sprintf("%d:%02d:%02d", $hr, $min, $secs);
+    #}
+    my $runtime = ( $self->done || DateTime->now ) - $self->started;
+    return sprintf(
+        "%d:%02d:%02d", $runtime->in_units('hours', 'minutes', 'seconds')
+    );
 }
 
 __PACKAGE__->meta->make_immutable;

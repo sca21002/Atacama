@@ -36,6 +36,7 @@ requires 'Imager';
 requires 'List::Util';
 requires 'Moose';
 requires 'MooseX::Types::Path::Class';
+requires 'MooseX::Types::DateTime';
 requires 'Number::Format';
 requires 'Text::Textile';
 requires 'Template::Plugin::Latex';

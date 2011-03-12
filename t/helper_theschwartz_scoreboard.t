@@ -21,7 +21,7 @@ my $expected = [
 is_deeply($scoreboard->files,$expected,'score_files');
 ok(my $jobs = $scoreboard->jobs);
 is($jobs->[0]->pid,'15796','pid');
-is($jobs->[0]->started,'1299517457','started');
+is($jobs->[0]->started,'2011-03-07T17:04:17','started');
 $expected = {
     configfile
         => '/home/atacama/Remedi-0.04/lib/Remedi/config/remedi_de-155-355.yml',
@@ -35,6 +35,6 @@ $expected = {
         => '/rzblx8_DATA3/digitalisierung/auftraege/ubr07296/ubr07296.pdf',             
 };
 is_deeply($jobs->[0]->arg_hashref,$expected,'arg_hashref');
-is($jobs->[0]->done,'1299517515','done');
-is($jobs->[0]->runtime,'00:58','runtime');
+is($jobs->[0]->done,'2011-03-07T17:05:15','done');
+is($jobs->[0]->runtime,'0:00:58','runtime');
 done_testing();
