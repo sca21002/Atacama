@@ -9,7 +9,7 @@
     <link title="EuropeanaTravel-Scanauftrag via Signatur erstellen"     href="[%c.uri_for_static('EuropeanaTravel-Scanauftrag_via_Signatur.xml')%]" rel="search" type="application/opensearchdescription+xml" />
     <link title="EuropeanaTravel-Scanauftrag via Mediennummer erstellen"     href="[%c.uri_for_static('EuropeanaTravel-Scanauftrag_via_Mediennummer.xml')%]" rel="search" type="application/opensearchdescription+xml" />
 	
-<script type="text/javascript" src="[%c.uri_for_static('js/ext/jquery/jquery-1.5.min.js')%]"></script>
+<script type="text/javascript" src="[%c.uri_for_static('js/ext/jquery/jquery-1.5.1.min.js')%]"></script>
 <script type="text/javascript" src="[%c.uri_for_static('js/ext/plugins/jquery/ScrollTo/jquery.scrollTo-1.4.2-min.js')%]"></script>
 <script type="text/javascript" src="[%c.uri_for_static('js/main.js')%]"></script>
 </head>

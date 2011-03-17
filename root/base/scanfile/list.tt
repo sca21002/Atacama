@@ -12,9 +12,9 @@ html, body {
 }
 </style>
     <script type="text/javascript" src="[% c.uri_for_static('js/ext/jquery/jquery-1.5.min.js') %]"></script> 
-    <script type="text/javascript" src="[% c.uri_for_static('js/ext/plugins/jqGrid/i18n/grid.locale-de.js') %]"></script> 
-    <script type="text/javascript" src="[% c.uri_for_static('js/ext/plugins/jqGrid/jquery.jqGrid.min.js') %]"></script> 
-
+    <script type="text/javascript" src="[% c.uri_for_static('js/ext/plugins/jquery/jqGrid/i18n/grid.locale-de.js') %]"></script> 
+    <script type="text/javascript" src="[% c.uri_for_static('js/ext/plugins/jquery/jqGrid/jquery.jqGrid.min.js') %]"></script> 
+   
 <script type="text/javascript">
 $(document).ready(function() {
 jQuery("#scanfiles").jqGrid({

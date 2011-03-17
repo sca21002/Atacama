@@ -120,7 +120,7 @@ sub save_projectoptions {
     foreach my $projectoption (@$params) {
         die "no projectkey_id" unless  exists $projectoption->{projectkey_id};
         my $projectkey_id = $projectoption->{projectkey_id};
-        die "projectkey_id . $projectkey_id . don't belong to this project"
+        die "projectkey_id" . Dumper($projectkey_id) . "don't belong to this project " . Dumper($params)        
             unless exists $projectkeys_info->{$projectkey_id};
         die "no value" unless  exists $projectoption->{value};
         my $rs = $self->search_related(

@@ -92,6 +92,7 @@ sub json : Chained('jobs') PathPart('json') Args(0) {
             $job->csv,
             $job->source_format,
             $job->source_pdf_name,
+            $job->additional_args,
         ];
         push @rows, $row;
     }

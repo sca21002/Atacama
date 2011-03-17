@@ -37,8 +37,6 @@ sub orders : Chained('/login/required') PathPart('order') CaptureArgs(0) {
 sub list : Chained('orders') PathPart('list') Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->log->debug('JSON ****' . Dumper($c->uri_for_action('order/json')));    
-    
     $c->stash(
         json_url => $c->uri_for_action('order/json'),
         template => 'order/list.tt'
@@ -49,7 +47,6 @@ sub json : Chained('orders') PathPart('json') Args(0) {
     my ($self, $c) = @_;
 
     my $data = $c->req->params;
-    $c->log->debug(Dumper($data));
     
     my $page = $data->{page} || 1;
     my $entries_per_page = $data->{rows} || 10;
@@ -122,11 +119,12 @@ sub save : Private {
 
     my $order = $c->stash->{order} || $c->model('AtacamaDB::Order')->new_result({});
     if ($c->req->method eq 'POST') {
-        my $order_params = $self->list_to_hash($c->req->params);
+        $c->log->debug(Dumper($c->req->params));
+        my $order_params = $self->list_to_hash($c, $c->req->params);
         # $c->log->debug(Dumper($order_params));
         $order->save($order_params);
     }
-    # $c->log->debug(Dumper($order->properties));
+    #$c->log->debug(Dumper($order->properties));
     $c->stash(
         %{$order->properties},      
         template => 'order/edit.tt',   
@@ -157,10 +155,13 @@ sub not_found : Local {
 }
 
 sub list_to_hash {
-    my ($self, $params) = @_;
+    my ($self, $c, $params) = @_;
   
     my %order_params;
     while (my($key,$value) = each %$params) {
+        $c->log->debug("key: " . $key . " value: " . Dumper($value));
+        $value =~ s/^\s+//;
+        $value =~ s/\s+$//;
         # $c->log->debug("key/value:" . $key . ": " . $value);
         next unless ($key);
         next if $key =~ /save/i;
