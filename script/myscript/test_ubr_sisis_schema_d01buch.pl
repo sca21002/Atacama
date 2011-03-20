@@ -10,6 +10,8 @@ use Atacama::Schema;
 use Data::Dumper;
 use Carp;
 
+binmode(STDOUT, ":utf8");
+
 my $config = Config::ZOMG->new(
     name => 'Atacama',
     path => File::Spec->catfile($FindBin::Bin,'..','..'),
@@ -61,7 +63,8 @@ unless ($buch) {
 }
 say $buch->d01gsi;
 
-my @titel = $buch->titel;
+my @titel = $buch->get_titel;
+
 say Dumper(@titel);
 
 #my @titel_katalog = $buch->get_titel;

@@ -19,6 +19,6 @@ my $schema_atacama = Atacama::Schema->connect(
     @{$config_hash->{'Model::AtacamaDB'}{connect_info}}  
 );
 
-my $order = $schema_atacama->resultset('MyOrder')->find('ubr07296')
+my $order = $schema_atacama->resultset('Order')->find('ubr07296')
     or die "order not found";
 say "Order-id: " . $order->order_id;

@@ -169,19 +169,33 @@ __PACKAGE__->add_columns(
     {data_type  => 'DATETIME', default_value => undef, is_nullable => 1, },
 );
 
-__PACKAGE__->has_many(
-    "titel",
-    "UBR::Sisis::Schema::Result::TitelBuchKey",
-    { "foreign.mcopyno" => "self.d01mcopyno" }
-);
-
-
-sub get_titel {
+sub get_titel_buch_key {
     my $self = shift;
 
     my $schema = $self->result_source->schema;
     my $where = '= ' . $self->d01mcopyno;
-    return $schema->resultset('TitelBuchKey')->search({mcopyno => \$where});    
+    return $schema->resultset('TitelBuchKey')->search(
+        { mcopyno => \$where },
+    );    
+}
+
+sub get_titel {
+    my $self = shift;
+
+    my %buch = $self->get_columns;
+    $buch{mediennr} = $buch{d01gsi};
+    delete $buch{d01gsi};
+    $buch{signatur} = $buch{d01ort};
+    delete $buch{d01ort};    
+
+    my @titel;
+    my @titel_buch_key = $self->get_titel_buch_key();
+    foreach my $titel (@titel_buch_key) {
+        my $titel_href = $titel->get_titel_dup_daten();
+        $titel_href->{bvnr} = $titel->get_bvnr;
+        push @titel, { %buch, %$titel_href };  
+    }
+    return \@titel;
 }
 
 1;

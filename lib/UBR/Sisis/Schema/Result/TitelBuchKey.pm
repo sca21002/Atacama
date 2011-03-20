@@ -24,7 +24,10 @@ sub get_titel_dup_daten {
     
     my $schema = $self->result_source->schema;
     my $where = '= ' . $self->katkey;
-    return $schema->resultset('TitelDupdaten')->search({katkey => \$where})->first;
+    return $schema->resultset('TitelDupdaten')->search(
+        { katkey => \$where },
+        { result_class => 'DBIx::Class::ResultClass::HashRefInflator' }
+    )->first;
 }    
 
 sub get_bvnr {
@@ -36,6 +39,5 @@ sub get_bvnr {
         $schema->resultset('TitelVerbund')->search({katkey => \$where})->first;
     return $titel_buch_key->verbundid if $titel_buch_key;    
 }
-
 
 1;
