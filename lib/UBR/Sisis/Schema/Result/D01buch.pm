@@ -169,6 +169,12 @@ __PACKAGE__->add_columns(
     {data_type  => 'DATETIME', default_value => undef, is_nullable => 1, },
 );
 
+__PACKAGE__->has_many(
+    "titel",
+    "UBR::Sisis::Schema::Result::TitelBuchKey",
+    { "foreign.mcopyno" => "self.d01mcopyno" }
+);
+
 
 sub get_titel {
     my $self = shift;

@@ -12,6 +12,18 @@ sub get_new_result_as_href {
     my $row = $self->new_result($args);
     my $href = { map {$_, $row->$_ || ''} $row->columns };
     $href->{scanoptions} = $row->scanoptions;
+    my %rel = (
+        scanners => {resultset => 'Scanner', columns => ['scanner_id', 'name']},
+        formats => {resultset => 'Format', columns => ['format_id', 'name']},
+        resolutions => {resultset => 'Resolution', columns => ['resolution_id', 'value']},
+    );           
+    while ( my($rel, $val) = each %rel ) {
+        $href->{$rel} = [$row->result_source->schema->resultset($val->{resultset})
+            ->search({},{
+                result_class => 'DBIx::Class::ResultClass::HashRefInflator',
+                columns => $val->{columns},
+            })->all];    
+    }    
     return $href;
 }
 

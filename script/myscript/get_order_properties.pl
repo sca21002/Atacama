@@ -21,9 +21,10 @@ my $schema_atacama = Atacama::Schema->connect(
 
 my $order_rs = $schema_atacama->resultset('Order')->search(
     {
-        #status_id => [ 1, 3 ], #[ 8, 9, 10 ],         	 # 1 = angelegt; 8 = fertig z.Veröff, 9 = veröfftl.
+        status_id => [ 11 ], #[ 8, 9, 10 ],         	 # 1 = angelegt; 8 = fertig z.Veröff, 9 = veröfftl.
                                             # 10 = aus Excel
-        'orders_projects.project_id' => 30,  # MD2
+        #'orders_projects.project_id' => 30,  # MD2
+        'orders_projects.project_id' => 11
     },
     {
         join => 'orders_projects',
