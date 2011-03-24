@@ -1,12 +1,12 @@
-package Atacama::Controller::Scanparameter;
+package Atacama::Controller::OrderProject;
 use Moose;
 use namespace::autoclean;
-use Data::Dumper;
+
 BEGIN {extends 'Catalyst::Controller'; }
 
 =head1 NAME
 
-Atacama::Controller::Scanparameter - Catalyst Controller
+Atacama::Controller::OrderProject - Catalyst Controller
 
 =head1 DESCRIPTION
 
@@ -24,24 +24,24 @@ Catalyst Controller.
 sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->response->body('Matched Atacama::Controller::Scanparameter in Scanparameter.');
+    $c->response->body('Matched Atacama::Controller::OrderProject in OrderProject.');
 }
 
-sub scanparameters : Chained('/') PathPart('scanparameter') CaptureArgs(0) {
+sub ordersprojects : Chained('/') PathPart('orderproject') CaptureArgs(0) {
     my ($self, $c) = @_;
     
-    $c->stash->{scanparameters} = $c->model('AtacamaDB::Scanparameter');
+    $c->stash->{ordersprojects} = $c->model('AtacamaDB::OrderProject');
 }
 
-sub json : Chained('scanparameters') {
+sub json : Chained('ordersprojects') {
     my ($self, $c) = @_;
     
     my $json_data;
-    my $scanparameters = $c->stash->{scanparameters};
+    my $ordersprojects = $c->stash->{ordersprojects};
     
     $c->log->debug(Dumper($c->req->query_params));
-    $json_data = $scanparameters->get_new_result_as_href({
-        scanner_id => $c->req->query_params->{scanner_id},                                            
+    $json_data = $ordersprojects->get_new_result_as_href({
+        ordersprojects_id => $c->req->query_params->{ordersprojects_id},                                            
     });
     $c->stash(
         json_data => $json_data,
@@ -49,9 +49,10 @@ sub json : Chained('scanparameters') {
     );
 }
 
+
 =head1 AUTHOR
 
-Atacama Developer,,,
+A clever guy
 
 =head1 LICENSE
 
