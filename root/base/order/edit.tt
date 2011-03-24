@@ -12,8 +12,6 @@
             }
         });
 
-
-
       
          $('a#add_scanner').live("click", function(){
             var count = $("ul#scanner li").size();
@@ -63,7 +61,7 @@
 	                 				  active_li.append($("<option value='" + val.format_id +"'>" + val.name + "</option>"));                 				   
 	                 				  });  
            				  
-	                    active_select.nextAll().wrapAll("<select class='json' name='scanparameters." + count + ".format_id' size='1'>");
+	                    active_select.nextAll().wrapAll("<select class='json' name='scanparameters." + scanner_id + ".formats' size='1'>");
         				}
 
 						<!--Resolution-->               
@@ -72,7 +70,7 @@
                  				 active_li.append($("<option value='" + val.resolution_id +">" + val.value + "</option>"));                 				   
                  				  });  
                  		var zahlr = ($("option.resolution")).length;
-                 		active_select.next().nextAll().wrapAll("<select class='json' name='scanparameters." + count + ".resolution_id' size='1'>");
+                 		active_select.next().nextAll().wrapAll("<select class='json' name='scanparameters." + scanner_id + ".resolutions' size='1'>");
 			       	    }
 
 
@@ -83,17 +81,15 @@
                  			active_li.append($("<option value=" + val.value_id + " >" + val.name + "</option>"));                 				   
                  				  });  
 						var zahlo = ($("option.options")).length;
-						active_select.next().next().nextAll().wrapAll("<select class='json' id='scanner_options' name='scanparameters." + count + ".scanoptions." + zahlo + ".value_id'  size='1'>");        
+						active_select.next().next().nextAll().wrapAll("<select class='json' id='scanner_options' name='scanparameters." + scanner_id + ".scanoptions." + zahlo + ".value_id'  size='1'>");        
 
                    	    }   		
 
 
             			<!--Range-->
 						if (option_val != ''){
-                    	active_li.append('<label class="json" for="range"> Bereich&nbsp;</label><input class="json" id="range" name="scanparameters.'+ count + '.range" value="" type="text" />');
+                    	active_li.append('<label class="json" for="range"> Bereich&nbsp;</label><input class="json" id="range" name="scanparameters.'+ scanner_id + '.range" value="" type="text" />');
 
-                    	active_li.append('<input name="scanparameters.'+count+'.scanoptions.0.scanoptionkey_id" value="1" type="hidden">');
-                    	
 						}  		
 					}
                 });
@@ -214,9 +210,9 @@ Bemerkung </label> <textarea class="breit" id="remark" name="remark" cols="80"
 <div class="set"><label id="scan_label" class="strong"> Scanner </label>
 <ul id="scanner">
 	[% FOR scanparameter IN order_href.scanparameters %]
-	<li name="[% loop.count - 1 %]"><input type="hidden"
+	<li><input type="hidden"
 		name="scanparameters.[% loop.count - 1 %].scanparameter_id"
-		value="[% scanparameter.scanparameter_id %]"> <select class="select_scanner"
+		value="[% scanparameter.scanparameter_id %]"> <select
 		name="scanparameters.[% loop.count - 1  %].scanner_id">
 		<option value="">-- select --</option>
 		[%- FOR scanner IN scanners %]
@@ -224,14 +220,14 @@ Bemerkung </label> <textarea class="breit" id="remark" name="remark" cols="80"
 			scanparameter.scanner_id -%] selected="selected"[%-  END -%]>
 		[%- scanner.name -%]</option>
 		[%- END %]
-	</select> <span id="scanner[% loop.count - 1  %]"> <select class="json"
+	</select> <span id="scanner[% loop.count - 1  %]"> <select
 		name="scanparameters.[% loop.count - 1 %].format_id">
 		<option value="">-- select --</option>
 		[%- FOR format IN formats %]
 		<option value="[% format.format_id %]" [%-  IF format.format_id==scanparameter.format_id -%] selected="selected"[%-  END -%]>
 		[%- format.name -%]</option>
 		[%- END %]
-	</select> <select class="json" name="scanparameters.[% loop.count - 1 %].resolution_id">
+	</select> <select name="scanparameters.[% loop.count - 1 %].resolution_id">
 		<option value="">-- select --</option>
 		[%- FOR resolution IN resolutions %]
 		<option value="[% resolution.resolution_id %]" [%-  IF
@@ -241,18 +237,13 @@ Bemerkung </label> <textarea class="breit" id="remark" name="remark" cols="80"
 >
 		[%- resolution.value -%]</option>
 		[%- END %]
-	</select> 
-	
-	<label class="json" for="range"> Bereich </label> <input class="json" id="range"
+	</select> <label for="range"> Bereich </label> <input id="range"
 		name="scanparameters.[% loop.count - 1 %].range"
 		value="[% scanparameter.range %]" type="text" />[%- SET
 	scanparameter_count = loop.count - 1 -%] [%- FOR scanoption IN
 	scanparameter.scanoptions %]<input type="hidden"
 		name="scanparameters.[% scanparameter_count %].scanoptions.[% loop.count - 1 %].scanoptionkey_id"
-		value="[% scanoption.scanoptionkey_id %]">
-		
-		
-		 <select class="json"
+		value="[% scanoption.scanoptionkey_id %]"> <select
 		id="scanner_options"
 		name="scanparameters.[% scanparameter_count %].scanoptions.[% loop.count - 1 %].value_id">
 		[%- FOR option IN scanoption.options %]
@@ -260,10 +251,8 @@ Bemerkung </label> <textarea class="breit" id="remark" name="remark" cols="80"
 			scanoption.value_id -%]  selected="selected"[%-  END -%] >
 		[%- option.name -%]</option>
 		[%- END %]
-	</select> [%- END %] [%- IF scanparameter.scanparameter_id -%] 
-	
-	<label>	Löschen </label> 
-	<input name="scanparameters.[% loop.count - 1 %].DELETED"
+	</select> [%- END %] [%- IF scanparameter.scanparameter_id -%] <label>
+	Löschen </label> <input name="scanparameters.[% loop.count - 1 %].DELETED"
 		type="checkbox" value="1" /></li>
 	[%- END -%] [%- END -%]
 </ul>
