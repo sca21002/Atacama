@@ -41,7 +41,7 @@ sub json : Chained('publications') {
     
     $c->log->debug(Dumper($c->req->query_params));
     $json_data = $publications->get_new_result_as_href({
-        publication_id => $c->req->query_params->{publication_id},                                            
+        platform_id => $c->req->query_params->{platform_id},                                            
     });
     $c->stash(
         json_data => $json_data,
