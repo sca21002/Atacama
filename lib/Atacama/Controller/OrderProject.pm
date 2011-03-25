@@ -1,6 +1,7 @@
 package Atacama::Controller::OrderProject;
 use Moose;
 use namespace::autoclean;
+use Data::Dumper;
 
 BEGIN {extends 'Catalyst::Controller'; }
 
