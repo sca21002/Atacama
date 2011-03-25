@@ -31,7 +31,7 @@ sub index :Path :Args(0) {
 sub publications : Chained('/') PathPart('publication') CaptureArgs(0) {
     my ($self, $c) = @_;
     
-    $c->stash->{publications} = $c->model('AtacamaDB::publication');
+    $c->stash->{publications} = $c->model('AtacamaDB::Publication');
 }
 
 sub json : Chained('publications') {

@@ -4,6 +4,26 @@ use warnings;
 
 use base qw/DBIx::Class::ResultSet/;
 
+sub get_new_result_as_href {
+    my $self = shift;
+    my $args = shift;
+
+    my $row = $self->new_result($args);
+    my $href = { map {$_, $row->$_ || ''} $row->columns };
+    $href->{publicationoptions} = $row->publicationoptions;
+    my %rel = (
+        platforms => {resultset => 'Platform', columns => ['platform_id', 'name']},
+    );           
+    while ( my($rel, $val) = each %rel ) {
+        $href->{$rel} = [$row->result_source->schema->resultset($val->{resultset})
+            ->search({},{
+                result_class => 'DBIx::Class::ResultClass::HashRefInflator',
+                columns => $val->{columns},
+            })->all];    
+    }    
+    return $href;
+}
+
 
 sub save {
     my $self = shift;
