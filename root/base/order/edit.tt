@@ -19,12 +19,17 @@
            	$.scrollTo( 'label#scan_label', 500, {axis:'y'} );
                   	
             $('select.select_scanner').change(function(){
-                alert ("Hole Felder");
+
+                var option_val = $(this).val();  //Scanner-ID
+                //alert ("Scanner ID" + option_val + count );
+                      
+              
+                
+
                 $.ajax({
                     type: "GET",
                     url: "http://rzbvm006.uni-regensburg.de:3000/scanparameter/json?scanner_id=" + option_val,
                     dataType: "json",
-                    data: "ScannerID",
                     cache: false,
                     error: function(){
                     alert ("Fehler");
@@ -40,6 +45,7 @@
                         $("ul#scanner li").append($pq);
                         $pq.fadeIn();
                     }
+                 		 },                                    
                 
                 });
             	    
@@ -47,39 +53,22 @@
             
         });
 
+
+         $(function(){
+        	  $("select#ctlJob").change(function(){
+        	    $.getJSON("/select.php",{id: $(this).val(), ajax: 'true'}, function(j){
+        	      var options = '';
+        	      for (var i = 0; i < j.length; i++) {
+        	        options += '<option value="' + j[i].optionValue + '">' + j[i].optionDisplay + '</option>';
+        	      }
+        	      $("select#ctlPerson").html(options);
+        	    })
+        	  })
+        	})
+        	         
+
         
 
-
-
-        
-     
-        $('label.strong').click(function(){
-            $.ajax({
-                type: "GET",
-                url: "[% c.uri_for('edit') %]",
-                dataType: "json",
-                cache: false,
-                success: function(json){
-                    var $pq = $("<span>" + json.quote + "</span>");
-                    $pq.hide();
-                    if ($(".set").children().size() > 0) 
-                        $(".set").append(" &middot; ");
-                    $(".set").append($pq);
-                    $pq.fadeIn();
-                }
-            });
-        });
-        
-      
-        
-//        $("select option:selected").each(function(){
-//            if ($("this").text() == "-- selected --") {
-//                $("this").css("color", "red");
-//            }
-//            console.log($("select option:selected").text());
-//        });
-        
-        
         
         
         
