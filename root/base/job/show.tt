@@ -1,3 +1,4 @@
+<a href=[% c.uri_for_action('/job/list') %]>Liste</a>
 <table>
 <tr>
 <td>pid</td><td>[% job.pid %]</td>

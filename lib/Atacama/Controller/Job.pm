@@ -73,7 +73,7 @@ sub json : Chained('scoreboard') PathPart('json') Args(0) {
     my $sidx = $data->{sidx} || 'pid';
     my $sord = $data->{sord} || 'asc';
     
-    my $scoreboard = $c->stash->{$scoreboard};
+    my $scoreboard = $c->stash->{scoreboard};
 
     $page->total_entries( scalar @{$scoreboard->jobs} );
     my $response;
@@ -112,14 +112,13 @@ sub json : Chained('scoreboard') PathPart('json') Args(0) {
 }
 
 
-sub job : Chained('jobs') PathPart('') CaptureArgs(1) {
+sub job : Chained('scoreboard') PathPart('') CaptureArgs(1) {
     my ($self, $c, $pid) = @_;
 
-    my $scoreboard = $c->stash->{$scoreboard};
-    
-    my $job = $c->stash->{job}
-        = grep { $_->pid == $pid } @{$scoreboard->jobs}
-            || $c->detach('not_found');
+    my $scoreboard = $c->stash->{scoreboard};
+    my ($job) = grep { $_->pid eq $pid } @{$scoreboard->jobs}
+    	or $c->detach('not_found');
+    $c->stash(job => $job);
 }
 
 sub show : Chained('job') PathPart('show') Args(0) {
@@ -148,6 +147,13 @@ sub add : Chained('worker') PathPart('add') Args(0) {
     $c->res->redirect(
         $c->uri_for_action('/order/edit', [$c->req->params->{order_id}] )
     );
+}
+
+sub not_found : Local {
+    my ($self, $c) = @_;
+    $c->response->status(404);
+    $c->stash->{error_msg} = "Job nicht gefunden!";
+    $c->detach('list');
 }
 
 
