@@ -2,10 +2,6 @@ package Atacama::Controller::Job;
 use Moose;
 use namespace::autoclean;
 use Data::Dumper;
-use JSON;
-use Try::Tiny;
-use Atacama::Helper::TheSchwartz::Scoreboard;
-use Data::Page;
 
 BEGIN {extends 'Catalyst::Controller'; }
 
@@ -35,127 +31,7 @@ sub index :Path :Args(0) {
 sub jobs : Chained('/login/required') PathPart('job') CaptureArgs(0) {
     my ($self, $c) = @_;
     
-    $c->stash->{jobs} = $c->model('TheSchwartzDB');
 }
-
-sub list : Chained('jobs')  PathPart('list') Args(0) {
-    my ($self, $c) = @_;
-
-    $c->stash(
-        json_url => $c->uri_for_action('job/json'),
-        template => 'job/list.tt'
-    ); 
-}
-
-sub scoreboard : Chained('jobs') PathPart('') CaptureArgs(0) {
-    my ($self, $c) = @_;    
-
-    my $scoreboard;
-    try {
-        $scoreboard = Atacama::Helper::TheSchwartz::Scoreboard->new(
-            dir => $c->config->{'Atacama::Controller::Job'}{score_dir},
-        );
-    }
-    catch {
-        $c->error('scoreboard nicht gefunden');
-        $c->detach;       
-    };    
-    $c->stash(scoreboard => $scoreboard);        
-}
-
-sub json : Chained('scoreboard') PathPart('json') Args(0) {
-    my ($self, $c) = @_;
-
-    my $data = $c->req->params;
-    my $page = Data::Page->new();
-    $page->current_page( $data->{page} || 1 );
-    $page->entries_per_page( $data->{rows} || 10 );
-    my $sidx = $data->{sidx} || 'pid';
-    my $sord = $data->{sord} || 'asc';
-    
-    my $scoreboard = $c->stash->{scoreboard};
-
-    $page->total_entries( scalar @{$scoreboard->jobs} );
-    my $response;
-    $response->{page} = $page->current_page;
-    $response->{total} = $page->last_page;
-    $response->{records} = $page->total_entries;
-    my @rows;
-    foreach my $job (
-        @{ $scoreboard->jobs }[ $page->first-1 .. $page->last -1 ] # array-slice
-    ) {
-        my $row->{id} = $job->pid;
-        $row->{cell} = [
-            $job->pid,
-            $job->order_id,
-            $job->funcname,
-            $job->started->strftime('%d.%m.%Y %T'),
-            $job->done->strftime('%d.%m.%Y %T'),
-            $job->runtime,
-            # $job->copy_files,
-            # $job->digifooter,
-            # $job->mets,
-            # $job->csv,
-            # $job->source_format,
-            # $job->source_pdf_name,
-            # $job->additional_args,
-        ];
-        push @rows, $row;
-    }
-    $response->{rows} = \@rows;    
-
-    $c->stash(
-        %$response,
-        current_view => 'JSON'
-    );    
-    
-}
-
-
-sub job : Chained('scoreboard') PathPart('') CaptureArgs(1) {
-    my ($self, $c, $pid) = @_;
-
-    my $scoreboard = $c->stash->{scoreboard};
-    my ($job) = grep { $_->pid eq $pid } @{$scoreboard->jobs}
-    	or $c->detach('not_found');
-    $c->stash(job => $job);
-}
-
-sub show : Chained('job') PathPart('show') Args(0) {
-    my ($self, $c) = @_;
-
-    $c->stash(template => 'job/show.tt');     
-}
-
-sub worker : Chained('jobs') PathPart('worker') CaptureArgs(1) {
-    my ($self, $c, $worker) = @_;
-    
-    my $class = 'Atacama::Worker::' . ucfirst $worker;
-    Class::MOP::load_class($class);
-}
-
-sub add : Chained('worker') PathPart('add') Args(0) {
-    my ($self, $c) = @_;
-    
-    my $jobs = $c->stash->{jobs};
-    $c->log->debug($c->log->debug(Dumper($c->req->params)));
-    my $job = TheSchwartz::Job->new (
-        funcname => 'Atacama::Worker::Remedi',
-        arg => $c->req->params,
-    );
-    $jobs->insert($job);    
-    $c->res->redirect(
-        $c->uri_for_action('/order/edit', [$c->req->params->{order_id}] )
-    );
-}
-
-sub not_found : Local {
-    my ($self, $c) = @_;
-    $c->response->status(404);
-    $c->stash->{error_msg} = "Job nicht gefunden!";
-    $c->detach('list');
-}
-
 
 =head1 AUTHOR
 

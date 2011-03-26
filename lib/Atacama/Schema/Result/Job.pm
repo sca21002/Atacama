@@ -11,6 +11,7 @@ use MooseX::NonMoose;
 use namespace::autoclean;
 extends 'DBIx::Class::Core';
 
+__PACKAGE__->load_components( qw( DateTime::Epoch TimeStamp) );
 
 =head1 NAME
 
@@ -93,11 +94,17 @@ __PACKAGE__->add_columns(
   "uniqkey",
   { data_type => "varchar", is_nullable => 1, size => 255 },
   "insert_time",
-  { data_type => "integer", extra => { unsigned => 1 }, is_nullable => 1 },
+  { data_type => "integer", extra => { unsigned => 1 }, is_nullable => 1,
+    inflate_datetime => 1,
+  },
   "run_after",
-  { data_type => "integer", extra => { unsigned => 1 }, is_nullable => 0 },
+  { data_type => "integer", extra => { unsigned => 1 }, is_nullable => 0,
+    inflate_datetime => 1,
+  },
   "grabbed_until",
-  { data_type => "integer", extra => { unsigned => 1 }, is_nullable => 0 },
+  { data_type => "integer", extra => { unsigned => 1 }, is_nullable => 0,
+    inflate_datetime => 1,
+  },
   "priority",
   { data_type => "smallint", extra => { unsigned => 1 }, is_nullable => 1 },
   "coalesce",

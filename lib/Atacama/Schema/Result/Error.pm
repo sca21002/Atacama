@@ -11,6 +11,8 @@ use MooseX::NonMoose;
 use namespace::autoclean;
 extends 'DBIx::Class::Core';
 
+__PACKAGE__->load_components( qw( DateTime::Epoch TimeStamp) );
+
 
 =head1 NAME
 
@@ -51,7 +53,9 @@ __PACKAGE__->table("error");
 
 __PACKAGE__->add_columns(
   "error_time",
-  { data_type => "integer", extra => { unsigned => 1 }, is_nullable => 0 },
+  { data_type => "integer", extra => { unsigned => 1 }, is_nullable => 0,
+    inflate_datetime => 1,
+  },
   "jobid",
   { data_type => "bigint", extra => { unsigned => 1 }, is_nullable => 0 },
   "message",
