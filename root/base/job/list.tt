@@ -15,30 +15,39 @@ html, body {
     <script type="text/javascript" src="[% c.uri_for_static('js/ext/plugins/jquery/jqGrid/i18n/grid.locale-de.js') %]"></script> 
     <script type="text/javascript" src="[% c.uri_for_static('js/ext/plugins/jquery/jqGrid/jquery.jqGrid.min.js') %]"></script> 
 
+<script type="text/javascript">    
+function showCatlink (cellvalue, options, rowObject)
+{
+    var idUrl = "/job/" +  options.rowId  +   "/show";
+    return "<a href=\"" + idUrl + "\">" + cellvalue + "</a>";
+
+}
+</script>
+
 <script type="text/javascript">
 $(document).ready(function() {
 jQuery("#jobs").jqGrid({
     url:"[% json_url %]",
     datatype: "json",
     colNames:['pid', 'order_id', 'funcname', 'started', 'done', 'runtime',
-              'copy_files', 'digifooter', 'mets', 'csv',
-              'source_format', 'source_pdf_name', 'additional_args'
+//            'copy_files', 'digifooter', 'mets', 'csv',
+//            'source_format', 'source_pdf_name', 'additional_args'
                 
     ],
     colModel:[
-        {name:'pid',index:'filename', width:40},
+        {name:'pid', formatter:showCatlink, index:'filename', width:40},
         {name:'order_id',index:'order_id', width:55},
-        {name:'funcname',index:'funcname', width:100},
+        {name:'funcname',index:'funcname', width:180},
         {name:'started',index:'started', width:110},
         {name:'done',index:'done', width:110},
         {name:'runtime',index:'runtime', width:50},     
-        {name:'copy_files',index:'copy_files', width:25},
-        {name:'digifooter',index:'digifooter', width:25},
-        {name:'mets',index:'mets', width:25},
-        {name:'csv',index:'csv', width:25},
-        {name:'source_format',index:'source_format', width:50},
-        {name:'source_pdf_name',index:'source_pdf_name', width:250},
-        {name:'additional_args',index:'additional_args', width:250},        
+//        {name:'copy_files',index:'copy_files', width:25},
+//        {name:'digifooter',index:'digifooter', width:25},
+//        {name:'mets',index:'mets', width:25},
+//        {name:'csv',index:'csv', width:25},
+//        {name:'source_format',index:'source_format', width:50},
+//        {name:'source_pdf_name',index:'source_pdf_name', width:250},
+//        {name:'additional_args',index:'additional_args', width:250},        
     ],
     rowNum:15,
     rownumbers: true,

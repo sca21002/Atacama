@@ -1,0 +1,41 @@
+<table>
+<tr>
+<td>pid</td><td>[% job.pid %]</td>
+</tr>
+<tr>
+<td>order_id</td><td>[% job.order_id %]</td>
+</tr>
+<tr>
+<td>funcname</td><td>[% job.funcname %]</td>
+</tr>
+<tr>
+<td>started</td><td>[% job.started %]</td>
+</tr>
+<tr>
+<td>done</td><td>[% job.done %]</td>
+</tr>
+<tr>
+<td>runtime</td><td>[% job.runtime %]</td>
+</tr>
+<tr>
+<td>copy_files</td><td>[% job.copy_files %]</td>
+</tr>
+<tr>
+<td>digifooter</td><td>[% job.digifooter %]</td>
+</tr>
+<tr>
+<td>mets</td><td>[% job.mets %]</td>
+</tr>
+<tr>
+<td>csv</td><td>[% job.csv %]</td>
+</tr>
+<tr>
+<td>source_format</td><td>[% job.source_format %]</td>
+</tr>
+<tr>
+<td>source_pdf_name</td><td>[% job.source_pdf_name %]</td>
+</tr>
+<tr>
+<td>additional_args</td><td>[% job.additional_args %]</td>
+</tr>
+</table>

@@ -47,17 +47,9 @@ sub list : Chained('jobs')  PathPart('list') Args(0) {
     ); 
 }
 
+sub scoreboard : Chained('jobs') PathPart('') CaptureArgs(0) {
+    my ($self, $c) = @_;    
 
-sub json : Chained('jobs') PathPart('json') Args(0) {
-    my ($self, $c) = @_;
-
-    my $data = $c->req->params;
-    my $page = Data::Page->new();
-    $page->current_page( $data->{page} || 1 );
-    $page->entries_per_page( $data->{rows} || 10 );
-    my $sidx = $data->{sidx} || 'pid';
-    my $sord = $data->{sord} || 'asc';
-    
     my $scoreboard;
     try {
         $scoreboard = Atacama::Helper::TheSchwartz::Scoreboard->new(
@@ -67,7 +59,21 @@ sub json : Chained('jobs') PathPart('json') Args(0) {
     catch {
         $c->error('scoreboard nicht gefunden');
         $c->detach;       
-    };
+    };    
+    $c->stash(scoreboard => $scoreboard);        
+}
+
+sub json : Chained('scoreboard') PathPart('json') Args(0) {
+    my ($self, $c) = @_;
+
+    my $data = $c->req->params;
+    my $page = Data::Page->new();
+    $page->current_page( $data->{page} || 1 );
+    $page->entries_per_page( $data->{rows} || 10 );
+    my $sidx = $data->{sidx} || 'pid';
+    my $sord = $data->{sord} || 'asc';
+    
+    my $scoreboard = $c->stash->{$scoreboard};
 
     $page->total_entries( scalar @{$scoreboard->jobs} );
     my $response;
@@ -86,13 +92,13 @@ sub json : Chained('jobs') PathPart('json') Args(0) {
             $job->started->strftime('%d.%m.%Y %T'),
             $job->done->strftime('%d.%m.%Y %T'),
             $job->runtime,
-            $job->copy_files,
-            $job->digifooter,
-            $job->mets,
-            $job->csv,
-            $job->source_format,
-            $job->source_pdf_name,
-            $job->additional_args,
+            # $job->copy_files,
+            # $job->digifooter,
+            # $job->mets,
+            # $job->csv,
+            # $job->source_format,
+            # $job->source_pdf_name,
+            # $job->additional_args,
         ];
         push @rows, $row;
     }
@@ -105,7 +111,24 @@ sub json : Chained('jobs') PathPart('json') Args(0) {
     
 }
 
-sub worker : Chained('jobs') PathPart('') CaptureArgs(1) {
+
+sub job : Chained('jobs') PathPart('') CaptureArgs(1) {
+    my ($self, $c, $pid) = @_;
+
+    my $scoreboard = $c->stash->{$scoreboard};
+    
+    my $job = $c->stash->{job}
+        = grep { $_->pid == $pid } @{$scoreboard->jobs}
+            || $c->detach('not_found');
+}
+
+sub show : Chained('job') PathPart('show') Args(0) {
+    my ($self, $c) = @_;
+
+    $c->stash(template => 'job/show.tt');     
+}
+
+sub worker : Chained('jobs') PathPart('worker') CaptureArgs(1) {
     my ($self, $c, $worker) = @_;
     
     my $class = 'Atacama::Worker::' . ucfirst $worker;
