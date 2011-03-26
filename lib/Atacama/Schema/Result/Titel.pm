@@ -1,7 +1,6 @@
 package Atacama::Schema::Result::Titel;
 
 # Created by DBIx::Class::Schema::Loader
-# DO NOT MODIFY THE FIRST PART OF THIS FILE
 
 use strict;
 use warnings;
@@ -138,15 +137,17 @@ __PACKAGE__->add_columns(
   "order_id",
   { data_type => "varchar", default_value => "", is_nullable => 0, size => 25 },
   "library_id",
-  { data_type => "smallint", extra => { unsigned => 1 }, is_nullable => 1 },
+  { data_type => "smallint", extra => { unsigned => 1 }, is_nullable => 1,
+    sisis => 'd01zweig',
+  },
   "bvnr",
   { data_type => "varchar", is_nullable => 1, size => 25 },
   "katkey",
   { data_type => "integer", extra => { unsigned => 1 }, is_nullable => 1 },
   "mediennr",
-  { data_type => "char", is_nullable => 1, size => 27 },
+  { data_type => "char", is_nullable => 1, size => 27, sisis => 'd01gsi' },
   "signatur",
-  { data_type => "varchar", is_nullable => 1, size => 30 },
+  { data_type => "varchar", is_nullable => 1, size => 30, sisis => 'd01ort' },
   "autor_avs",
   { data_type => "varchar", is_nullable => 1, size => 255 },
   "titel_avs",
@@ -173,13 +174,6 @@ __PACKAGE__->add_columns(
   { data_type => "varchar", is_nullable => 1, size => 255 },
 );
 __PACKAGE__->set_primary_key("order_id");
-
-
-# Created by DBIx::Class::Schema::Loader v0.07002 @ 2010-12-26 23:49:59
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:nEuw9r5bVLjT63iGs/GwnQ
-
-
-# You can replace this text with custom content, and it will be preserved on regeneration
 
 __PACKAGE__->belongs_to(
     "ord",
@@ -251,6 +245,7 @@ sub save {
     }
     $self->update(\%column);
 }
+
 
 __PACKAGE__->meta->make_immutable;
 1;

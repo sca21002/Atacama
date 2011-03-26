@@ -183,10 +183,10 @@ sub get_titel {
     my $self = shift;
 
     my %buch = $self->get_columns;
-    $buch{mediennr} = $buch{d01gsi};
-    delete $buch{d01gsi};
-    $buch{signatur} = $buch{d01ort};
-    delete $buch{d01ort};    
+    #$buch{mediennr} = $buch{d01gsi};
+    #delete $buch{d01gsi};
+    #$buch{signatur} = $buch{d01ort};
+    #delete $buch{d01ort};    
 
     my @titel;
     my @titel_buch_key = $self->get_titel_buch_key();
