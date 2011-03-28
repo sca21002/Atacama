@@ -53,7 +53,7 @@ sub remedi : Chained('/order/order') PathPart('remedi') Args(0) {
                 mets => $form->params->{mets},
                 csv => $form->params->{csv},
                            );
-        $c->res->redirect($c->uri_for_action('/job/add', ['remedi'], \%query_values));
+        $c->res->redirect($c->uri_for_action('/job/worker/add', ['remedi'], \%query_values));
     }
     else {
         # perform non-validated actions

@@ -1,0 +1,8 @@
+<table>
+<tr><td> Auftrag:   </td><td> [% order.order_id %]          </td></tr>
+
+<form name="[% form.name %]"
+    action="[% c.req.uri %]"
+    method="post">
+[% form.field('submit').render %]
+</form>

@@ -50,4 +50,5 @@ my $client = TheSchwartz->new( databases => [{ driver => $driver }],
 $client->set_scoreboard('/tmp');
 INFO("Scoreboard: " . $client->set_scoreboard()); 
 $client->can_do('Atacama::Worker::Remedi');
+$client->can_do('Atacama::Worker::Sourcefile');
 $client->work();

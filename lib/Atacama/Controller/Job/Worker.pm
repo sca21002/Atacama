@@ -35,16 +35,15 @@ sub worker : Chained('/job/jobs') PathPart('worker') CaptureArgs(1) {
     Class::MOP::load_class($class);
 }
 
-sub add_worker : Chained('worker') PathPart('add') Args(0) {
+sub add : Chained('worker') PathPart('add') Args(0) {
     my ($self, $c) = @_;
     
-    my $jobs = $c->stash->{jobs};
     $c->log->debug($c->log->debug(Dumper($c->req->params)));
     my $job = TheSchwartz::Job->new (
         funcname => 'Atacama::Worker::Remedi',
         arg => $c->req->params,
     );
-    $jobs->insert($job);    
+    $c->model('TheSchwartzDB')->insert($job);    
     $c->res->redirect(
         $c->uri_for_action('/order/edit', [$c->req->params->{order_id}] )
     );
