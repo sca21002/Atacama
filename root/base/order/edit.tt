@@ -12,7 +12,8 @@
             }
         });
 
-      
+
+        //Scanner      
          $('a#add_scanner').live("click", function(){
             var count = $("ul#scanner li").size();
             $('<li  name="' + count +'"><input type="hidden" name="scanparameters.' + count +'.scanparameter_id"	value="[% scanparameter.scanparameter_id %]"> <select class="select_scanner" name="scanparameters.' + count +'.scanner_id">	<option value="">-- select --</option>	[%- FOR scanner IN scanners %]	<option value="[% scanner.scanner_id %]" [%-  IF scanner.scanner_id==scanparameter.scanner_id -%] selected="selected"[%-  END -%]>	[%- scanner.name -%]</option>[%- END %]	</select>').appendTo('ul#scanner'); 
@@ -57,6 +58,7 @@
           	      	  	
                    		<!--Format--> 
                    		if (result.json_data.formats[0].format_id != '' && option_val != '' ) {          
+                   			active_li.append($("<option value=''>-- select --</option>"));  
                    		$.each(result.json_data.formats, function(key, val) {       
 	                 				  active_li.append($("<option value='" + val.format_id +"'>" + val.name + "</option>"));                 				   
 	                 				  });  
@@ -65,7 +67,8 @@
         				}
 
 						<!--Resolution-->               
-			       	    if (result.json_data.resolutions != '' && option_val != ''){    		
+			       	    if (result.json_data.resolutions != '' && option_val != ''){    	
+			       			active_li.append($("<option value=''>-- select --</option>"));  	
                  		$.each(result.json_data.resolutions, function(key, val) {       
                  				 active_li.append($("<option value='" + val.resolution_id +">" + val.value + "</option>"));                 				   
                  				  });  
@@ -77,6 +80,7 @@
 			
                    	    <!--Scanoptions/Glasplatte-->
                    	    if (result.json_data.scanoptions != '' && option_val != ''){
+                   			active_li.append($("<option value=''>-- select --</option>"));  
 						$.each(result.json_data.scanoptions[0].options, function(key, val) {       
                  			active_li.append($("<option value=" + val.value_id + " >" + val.name + "</option>"));                 				   
                  				  });  
@@ -96,8 +100,54 @@
             });       
         });
 
+         //Projekt         
+         $('a#add_project').live("click", function(){
+             
+            var count = $("ul#project li").size();
+            $('<li  name="' + count +'"><input type="hidden" name="orders_projects.' + count +'.ordersprojects_id"	value=""> <select class="select_project" name="orders_projects.' + count +'.project_id">	<option value="">-- select --</option> [%- FOR project IN projects %]	<option value="[% project.project_id %]" [%-  IF project.project_id==orderproject.project_id -%]  selected="selected"[%-  END -%]>[%- project.name -%]</option>[%- END %]</select>').appendTo('ul#project'); 
+            $.scrollTo( 'label#project_label', 500, {axis:'y'} );
+          
+      	                   	
+            $('select.select_project').change(function(){
+                var active_li = $(this).parent();     
+                var active_select = $(this);
+                var option_val = $(this).val();  //Scanner-ID
+                                    
+                //console.debug(active_li);
+                
 
+                $.ajax({
+                    type: "GET",
+                    url: "http://rzbvm006:3000/orderproject/json?project_id=" + option_val,
+                    dataType: "json",
+                    cache: false,
+                    error: function(){
+                    alert ("Fehler");
+                 		 },                                    
+                    success: function(result){            
+             			
+                	    console.debug(result);
+
+               	 		var scanner_id = result.json_data.scanner_id;
+          	      	  	active_li.children('.json').remove();
+
+          	      	  	
+                   		//Options 
+                   		if (result.json_data.projectoptions[0].pkey != '' && option_val != '' ) {          
+                   			
+                   		$.each(result.json_data.projectoptions, function(key, val) {       
+	                 				  active_li.append($("<label>"+val.pkey+"</label> <input name='orders_projects."+count+".projectoptions."+count+".value' value='' type='text' />"));                 				   
+	                 				  });  
+           	          
+        				}
         
+					}
+                });
+            });        
+        });
+        
+
+
     });
 --></script>
 <h1 class="main">Auftrag [% order_href.order_id %] bearbeiten</h1>
@@ -273,12 +323,12 @@ Bemerkung </label> <textarea class="breit" id="remark" name="remark" cols="80"
 	[%- END %]
 </select></div>
 <hr />
-<div class="set"><label class="strong"> Projekt/ID </label>
-<ul id="projekt">
+<div class="set"><label id="project_label" class="strong"> Projekt/ID </label>
+<ul id="project">
 	[%- FOR orderproject IN order_href.orders_projects %]
 	<li><input type="hidden"
 		name="orders_projects.[% loop.count - 1 %].ordersprojects_id"
-		value="[% orderproject.ordersprojects_id %]"> <select
+		value="[% orderproject.ordersprojects_id %]"> <select id='select_project'
 		name="orders_projects.[% loop.count - 1 %].project_id">
 		<option value="">-- select --</option>
 		[%- FOR project IN projects %]
@@ -297,6 +347,8 @@ Bemerkung </label> <textarea class="breit" id="remark" name="remark" cols="80"
 		name="orders_projects.[% loop.count - 1 %].DELETED" type="checkbox"
 		value="1" />[%- END -%] [%- END -%]</li>
 </ul>
+<a href='#' id='add_project'><img src='[% c.uri_for_static('
+	images/add.png') %]' alt='neues Projektfeld einfuegen' /></a>
 </div>
 <hr />
 <div class="set"><label class="strong"> Publikation </label>
