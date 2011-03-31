@@ -1,14 +1,20 @@
-<script type="text/javascript"><!--<!--
+<script type="text/javascript">
     $(document).ready(function(){
-        $("#pages").hide();
+
+        if ($('#documenttype').val() != '2') {
+			$("#article_only").hide();
+		}
+        else {
+        	$("#article_only").show();
+	}
         
         
         $('#documenttype').click(function(){
-            if ($('#documenttype').val() == '1') {
-                $("#pages").fadeIn(500);
+            if ($('#documenttype').val() == '2') {
+                $("#article_only").fadeIn(500);
             }
             else {
-                $("#pages").hide();
+                $("#article_only").hide();
             }
         });
 
@@ -23,10 +29,7 @@
                 var active_li = $(this).parent();     
                 var active_select = $(this);
                 var option_val = $(this).val();  //Scanner-ID
-                                    
-                //console.debug(active_li);
-                
-
+    
                 $.ajax({
                     type: "GET",
                     url: "http://rzbvm006.uni-regensburg.de:3000/scanparameter/json?scanner_id=" + option_val,
@@ -48,37 +51,28 @@
                     }
                  		 },                                    
                     success: function(result){            
-             			
-                /* 	    console.debug(result);
-                 	    console.debug("count" + count + "scanner_id" + option_val);
-                 	    console.debug(this);
-                 */	    
-                 	    var scanner_id = result.json_data.scanner_id;
+                   	    var scanner_id = result.json_data.scanner_id;
           	      	  	active_li.children('.json').remove();
           	      	  	
-                   		<!--Format--> 
+                   		//Format
                    		if (result.json_data.formats[0].format_id != '' && option_val != '' ) {          
                    			active_li.append($("<option value=''>-- select --</option>"));  
                    		$.each(result.json_data.formats, function(key, val) {       
 	                 				  active_li.append($("<option value='" + val.format_id +"'>" + val.name + "</option>"));                 				   
 	                 				  });  
-           				  
-	                    active_select.nextAll().wrapAll("<select class='json' name='scanparameters." + scanner_id + ".formats' size='1'>");
+  	                    active_select.nextAll().wrapAll("<select class='json' name='scanparameters." + scanner_id + ".formats' size='1'>");
         				}
 
-						<!--Resolution-->               
+						//Resolution     
 			       	    if (result.json_data.resolutions != '' && option_val != ''){    	
 			       			active_li.append($("<option value=''>-- select --</option>"));  	
                  		$.each(result.json_data.resolutions, function(key, val) {       
                  				 active_li.append($("<option value='" + val.resolution_id +">" + val.value + "</option>"));                 				   
                  				  });  
-                 		var zahlr = ($("option.resolution")).length;
                  		active_select.next().nextAll().wrapAll("<select class='json' name='scanparameters." + scanner_id + ".resolutions' size='1'>");
 			       	    }
-
-
-			
-                   	    <!--Scanoptions/Glasplatte-->
+	
+                   	    //Scanoptions/Glasplatte
                    	    if (result.json_data.scanoptions != '' && option_val != ''){
                    			active_li.append($("<option value=''>-- select --</option>"));  
 						$.each(result.json_data.scanoptions[0].options, function(key, val) {       
@@ -86,14 +80,11 @@
                  				  });  
 						var zahlo = ($("option.options")).length;
 						active_select.next().next().nextAll().wrapAll("<select class='json' id='scanner_options' name='scanparameters." + scanner_id + ".scanoptions." + zahlo + ".value_id'  size='1'>");        
-
                    	    }   		
 
-
-            			<!--Range-->
+            			//Range
 						if (option_val != ''){
                     	active_li.append('<label class="json" for="range"> Bereich&nbsp;</label><input class="json" id="range" name="scanparameters.'+ scanner_id + '.range" value="" type="text" />');
-
 						}  		
 					}
                 });
@@ -106,41 +97,67 @@
             var count = $("ul#project li").size();
             $('<li  name="' + count +'"><input type="hidden" name="orders_projects.' + count +'.ordersprojects_id"	value=""> <select class="select_project" name="orders_projects.' + count +'.project_id">	<option value="">-- select --</option> [%- FOR project IN projects %]	<option value="[% project.project_id %]" [%-  IF project.project_id==orderproject.project_id -%]  selected="selected"[%-  END -%]>[%- project.name -%]</option>[%- END %]</select>').appendTo('ul#project'); 
             $.scrollTo( 'label#project_label', 500, {axis:'y'} );
-          
       	                   	
             $('select.select_project').change(function(){
                 var active_li = $(this).parent();     
                 var active_select = $(this);
-                var option_val = $(this).val();  //Scanner-ID
-                                    
-                //console.debug(active_li);
-                
+                var option_val = $(this).val();                                      
+                //console.debug(active_li);               
 
                 $.ajax({
                     type: "GET",
-                    url: "[% c.uri_for_action('/orderproject/json') %]?project_id=" + option_val,
+                    url: "[% c.uri_for_action('/orderproject/json') %]",
                     dataType: "json",
+                    data: "project_id="+option_val,
                     cache: false,
-                    error: function(){
-                    alert ("Fehler");
-                 		 },                                    
-                    success: function(result){            
-             			
-                	    console.debug(result);
-
-               	 		var scanner_id = result.json_data.scanner_id;
-          	      	  	active_li.children('.json').remove();
-
+                    error: function(){ alert ("Fehler"); },                                    
+                    success: function(result){    
+                                                 			
+                	    //console.debug(result);
+           	      	  	active_li.children('.json').remove();
           	      	  	
                    		//Options 
-                   		if (result.json_data.projectoptions[0].pkey != '' && option_val != '' ) {          
-                   			
-                   		$.each(result.json_data.projectoptions, function(key, val) {       
-	                 				  active_li.append($("<label>"+val.pkey+"</label> <input name='orders_projects."+count+".projectoptions."+count+".value' value='' type='text' />"));                 				   
+                   		if (result.json_data.projectoptions != '' && option_val != '' ) {          
+                     		$.each(result.json_data.projectoptions, function(key, val) {       
+	                 				  active_li.append($(" <label class='json'> "+val.pkey+" </label> <input class='json' name='orders_projects."+count+".projectoptions."+count+".value' value='' type='text' />"));                 				   
+	                 				  });             	          
+        				}        
+					}
+                });
+            });        
+        });
+
+         //Publikation      
+         $('a#add_publication').live("click", function(){
+             
+            var count = $("ul#publication li").size();
+            $('<li  name="' + count +'"><input type="hidden" name="publications.' + count +'.publication_id"	value=""> <select class="select_publication" name="publications.' + count +'.platform_id">	<option value="">-- select --</option> 	[%- FOR platform IN platforms %] <option value="[% platform.platform_id %]" [%-  IF platform.platform_id==publication.platform_id -%]  selected="selected"[%-  END -%]> [%- platform.name -%]</option> [%- END -%]</select>').appendTo('ul#publication'); 
+            $.scrollTo( 'label#publication_label', 500, {axis:'y'} );          
+      	                   	
+            $('select.select_publication').change(function(){
+                var active_li = $(this).parent();     
+                var active_select = $(this);
+                var option_val = $(this).val();                                      
+                //console.debug(active_li);               
+
+                $.ajax({
+                    type: "GET",
+                    url: "[% c.uri_for_action('/publication/json') %]?platform_id=" + option_val,
+                    dataType: "json",
+                    cache: false,
+                    error: function(){  alert ("Fehler");},                                    
+                    success: function(result){    
+                                                 			
+                	    console.debug(result);
+               	 		var publication_id = result.json_data.publication_id;
+          	      	  	active_li.children('.json').remove();
+          	      	  	
+                   		//Options 
+                   		if (result.json_data.publicationoptions != '' && option_val != '' ) {          
+                     		$.each(result.json_data.publicationoptions, function(key, val) {       
+	                 				  active_li.append($("<label class='json'> "+val.pkey+" </label> <input class='json' name='orders_projects."+count+".projectoptions."+count+".value' value='' type='text' />"));                 				   
 	                 				  });  
-           	          
         				}
-        
 					}
                 });
             });        
@@ -149,7 +166,7 @@
 
 
     });
---></script>
+</script>
 <h1 class="main">Auftrag [% order_href.order_id %] bearbeiten</h1>
 <div class="row">
 <div class="left">Auftragsnummer:</div>
@@ -166,12 +183,14 @@ order_href.pdffiles_count %] ( PDF-Dateien:<a href="[% c.uri_for("/pdffile/${ord
 <div class="left">ge&auml;ndert:</div>
 [% order_href.modification_date.dmy('.') %] [%
 order_href.modification_date.hms %]</div>
+
 <div class="row">
 <div class="left">Titel:</div>
 <div id="titel">[% order_href.titel.titel_isbd %]
 <form action="" method="post">
 </div>
 </div>
+
 <div class="row"><label for="status"> Status </label> <select
 	id="status" name="status_id">
 	<option value="">-- select --</option>
@@ -184,33 +203,39 @@ order_href.modification_date.hms %]</div>
 	[%- status_value.name -%]</option>
 	[%- END %]
 </select></div>
-<div class="row"><label for="documenttype"> Medientyp </label> <select
-	id="documenttype" name="documenttype_id">
+
+
+<div class="row"><label for="documenttype"> Medientyp </label> 
+<select	id="documenttype" name="documenttype_id">
 	<option value="">-- select --</option>
 	[%- FOR documenttype IN documenttypes %]
-	<option value="[% documenttype.documenttype_id %]" [%-  IF
-		documenttype.documenttype_id==
-		order_href.documenttype_id -%]
- selected="selected"[%-  END -%]
->
-	[%- documenttype.name -%]</option>
+	<option value="[% documenttype.documenttype_id %]" [%-  IF	documenttype.documenttype_id==order_href.documenttype_id -%] selected="selected"[%-  END -%]> 	[%- documenttype.name -%]</option>
 	[%- END %]
 </select></div>
-[% IF order_href.titel.autor_uw -%]
+
+<div id="article_only">
+
 <div class="row"><label for="autor_uw"> Aufsatzautor </label> <input
 	class="breit" id="autor_uw" name="titel.autor_uw"
 	value="[% order_href.titel.autor_uw %]" type="text" size="80" /></div>
 <div class="row"><label for="titel_uw"> Aufsatztitel </label> <input
 	class="breit" id="titel_uw" name="titel.titel_uw"
 	value="[% order_href.titel.titel_uw %]" type="text" size="80" /></div>
-[%- END %]
-<div id="pages" class="row"><label for="pages"> Seiten </label> <input
-	id="pages" name="titel.pages" value="[% order_href.titel.pages %]"
+
+<div class="row"><label for="pages"> Seiten </label> <input
+	 name="titel.pages" value="[% order_href.titel.pages %]"
 	type="text" size="40" /></div>
-<hr />
-<div class="set"><label for="library" class="block">
-Bibliothek </label>
-<div class="innen"><select id="library" name="titel.library_id">
+</div>	
+	
+	<hr />
+<div class="set"><label class="block" for="signatur"> Signatur </label>
+<div class="innen">
+<input id="signatur"
+	name="titel.signatur" type="text"
+	value="[% order_href.titel.signatur %]" size="25" />
+
+ <label for="library" >Bibliothek </label> 
+<select id="library" name="titel.library_id">
 	<option value="">-- select --</option>
 	[%- FOR library IN libraries %]
 	<option value="[% library.library_id %]" [%-  IF library.library_id==
@@ -219,9 +244,7 @@ Bibliothek </label>
 >
 	[%- library.name -%]</option>
 	[%- END %]
-</select> <label for="signatur"> Signatur </label> <input id="signatur"
-	name="titel.signatur" type="text"
-	value="[% order_href.titel.signatur %]" size="25" /> <br />
+</select> <br />
 <label for="bvnr"> BV-Nr. </label> <input id="bvnr" name="titel.bvnr"
 	type="text" value="[% order_href.titel.bvnr %]" size="13" /> <label
 	for="katkey"> Katkey </label> <input id="katkey" name="titel.katkey"
@@ -351,12 +374,12 @@ Bemerkung </label> <textarea class="breit" id="remark" name="remark" cols="80"
 	images/add.png') %]' alt='neues Projektfeld einfuegen' /></a>
 </div>
 <hr />
-<div class="set"><label class="strong"> Publikation </label>
-<ul id="publikation">
+<div class="set"><label id="publication_label" class="strong"> Publikation </label>
+<ul id="publication">
 	[%- FOR publication IN order_href.publications %]
 	<li><input type="hidden"
 		name="publications.[% loop.count - 1 %].publication_id"
-		value="[% publication.publication_id %]"> <select
+		value="[% publication.publication_id %]"> <select class = "select_publication"
 		name="publications.[% loop.count - 1 %].platform_id">
 		<option value="">-- select --</option>
 		[%- FOR platform IN platforms %]
@@ -381,8 +404,14 @@ Bemerkung </label> <textarea class="breit" id="remark" name="remark" cols="80"
 		type="checkbox" value="1" />[%- END -%]</li>
 	[%- END -%]
 </ul>
-</div>
+<a href='#' id='add_publication'><img src='[% c.uri_for_static('
+	images/add.png') %]' alt='neues Publikationsfeld einfuegen' /></a>
+	
+	</div>
+
+<hr />
 <input class="send" name="save" type="submit" value=" Absenden ">
 </form>
+</div>
 </div>
 </div>
