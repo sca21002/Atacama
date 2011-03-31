@@ -118,7 +118,7 @@
 
                 $.ajax({
                     type: "GET",
-                    url: "http://rzbvm006:3000/orderproject/json?project_id=" + option_val,
+                    url: "[% c.uri_for_action('/orderproject/json') %]?project_id=" + option_val,
                     dataType: "json",
                     cache: false,
                     error: function(){

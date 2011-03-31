@@ -4,7 +4,7 @@
 </div>
 <p id="name">
 	<img src="[% c.uri_for_static('images/Alpaca_klein_gruen.png') %]" alt="" title=""  />
-	Atacama (アタカマ) v. 0.10.alpha, letzte &Auml;nderung 02.01.2010, &copy; Universit&auml;tsbibliothek Regensburg</p>                         
+	Atacama (アタカマ) v. 0.10.alpha, letzte &Auml;nderung 31.03.2011, &copy; Universit&auml;tsbibliothek Regensburg</p>                         
 </div>
 </div>
 </body>
