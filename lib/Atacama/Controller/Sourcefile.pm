@@ -1,6 +1,8 @@
 package Atacama::Controller::Sourcefile;
 use Moose;
 use namespace::autoclean;
+use Atacama::Form::Sourcefile;
+use Data::Dumper;
 
 BEGIN {extends 'Catalyst::Controller'; }
 
@@ -40,7 +42,8 @@ sub sourcefile : Chained('/order/order') PathPart('sourcefile') Args(0) {
         $c->log->debug($c->log->debug(Dumper($c->req->params)));
         my $job = TheSchwartz::Job->new (
             funcname => 'Atacama::Worker::Sourcefile',
-            arg => $c->req->params,
+            # arg => $c->req->params,
+            arg => { order_id => $order->order_id },
         );
         $c->model('TheSchwartzDB')->insert($job);    
         $c->res->redirect(

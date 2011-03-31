@@ -84,8 +84,10 @@ sub json : Chained('scoreboard') PathPart('json') Args(0) {
             $job->pid,
             $job->order_id,
             $job->funcname,
-            $job->started->strftime('%d.%m.%Y %T'),
-            $job->done->strftime('%d.%m.%Y %T'),
+            $job->started->set_time_zone('Europe/Berlin')
+                ->strftime('%d.%m.%Y %T'),
+            $job->done ? $job->done->set_time_zone('Europe/Berlin')
+                ->strftime('%d.%m.%Y %T') : '(running)',
             $job->runtime,
         ];
         push @rows, $row;

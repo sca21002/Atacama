@@ -35,9 +35,9 @@ jQuery("#queue").jqGrid({
         {name:'jobid', index:'job_id', width:60},
         {name:'funcid', sortable: false, width:60},
         {name:'uniqkey', sortable: false, width:60},
-        {name:'insert_time', sortable: false, width:80},
-        {name:'run_after', sortable: false, width:80},
-        {name:'grabbed_until', sortable: false, width:80},
+        {name:'insert_time', sortable: false, width:120},
+        {name:'run_after', sortable: false, width:120},
+        {name:'grabbed_until', sortable: false, width:120},
         {name:'priority', sortable: false, width:60},
         {name:'coalesce', sortable: false, width:60},
     ],
@@ -57,6 +57,6 @@ jQuery("#queue").jqGrid('navGrid','#pager_queue',{edit:false,add:false,del:false
 </head>
 <body>
  <div>       
- <div><table id="errors"></table></div><div id="pager_errors"></div></div> 
+ <div><table id="queue"></table></div><div id="pager_queue"></div></div> 
 </body>
 </html>

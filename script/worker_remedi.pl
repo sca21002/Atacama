@@ -10,6 +10,7 @@ use DBI;
 use Data::Dumper;
 use TheSchwartz;
 use Atacama::Worker::Remedi;
+use Atacama::Worker::Sourcefile;
 
 ### Logdatei initialisieren
 Log::Log4perl->easy_init(
@@ -45,10 +46,14 @@ LOGFATAL("Verbindungsparamter(connect_info) für die Datenbank nicht gefunden")
 
 my $dbh = DBI->connect(@$dbic_connect_info);
 my $driver = Data::ObjectDriver::Driver::DBI->new( dbh => $dbh);
+LOGFATAL("Datenbank-Verbindung nicht gefunden!") unless $driver; 
 my $client = TheSchwartz->new( databases => [{ driver => $driver }],
                                verbose => 1, );
+my $current_time = $client->get_server_time($driver);
+my $dt = DateTime->from_epoch(epoch => $current_time);
+TRACE("Zeit: " . $dt->set_time_zone('Europe/Berlin')->strftime('%d.%m.%Y %T'));
 $client->set_scoreboard('/tmp');
-INFO("Scoreboard: " . $client->set_scoreboard()); 
+INFO("Scoreboard: " . $client->scoreboard); 
 $client->can_do('Atacama::Worker::Remedi');
 $client->can_do('Atacama::Worker::Sourcefile');
 $client->work();

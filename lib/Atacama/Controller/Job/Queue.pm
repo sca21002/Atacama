@@ -80,9 +80,12 @@ sub json : Chained('queue') PathPart('json') Args(0) {
             $job->jobid,
             $job->funcid,
             $job->uniqkey,
-            $job->insert_time->strftime('%d.%m.%Y %T'),
-            $job->run_after->strftime('%d.%m.%Y %T'),
-            $job->grabbed_until->strftime('%d.%m.%Y %T'),
+            $job->insert_time->set_time_zone('Europe/Berlin')
+                ->strftime('%d.%m.%Y %T'),
+            $job->run_after->set_time_zone('Europe/Berlin')
+                ->strftime('%d.%m.%Y %T'),
+            $job->grabbed_until->set_time_zone('Europe/Berlin')
+                ->strftime('%d.%m.%Y %T'),
             $job->priority,
             $job->coalesce
         ];

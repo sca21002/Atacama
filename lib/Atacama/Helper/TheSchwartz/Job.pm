@@ -39,7 +39,6 @@ has done => (
     is => 'ro',
     isa => 'DateTime',
     coerce => 1,
-    default => '',
 );
 
 

@@ -80,7 +80,8 @@ sub json : Chained('errors') PathPart('json') Args(0) {
         $row->{cell} = [
             $error->jobid,
             $error->funcid,
-            $error->error_time->strftime('%d.%m.%Y %T'),
+            $error->error_time->set_time_zone('Europe/Berlin')
+                ->strftime('%d.%m.%Y %T'),
             $error->message,
         ];
         push @rows, $row;

@@ -102,6 +102,7 @@ __PACKAGE__->add_columns(
     data_type     => "timestamp",
     default_value => "0000-00-00 00:00:00",
     is_nullable   => 0,
+    datetime_undef_if_invalid => 1,
   },
   "modification_date",
   {
