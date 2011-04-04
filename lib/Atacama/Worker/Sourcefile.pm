@@ -53,13 +53,14 @@ sub work {
     $atacama_schema = Atacama::Schema->connect(@dbic_connect_info)
         or $log->logcroak("Datenbankverbindung gescheitert");    
     
-    $format = 'TIFF';
-    $sourcedir->recurse(
-        callback => \&get_sourcefile,
-        depthfirst => 1,
-        preorder => 1
-    ); 
-
+    foreach  $format ('TIFF', 'PDF') {
+        $sourcedir->recurse(
+            callback => \&get_sourcefile,
+            depthfirst => 1,
+            preorder => 1
+        );
+    }
+    
     $job->completed();
 }
 
