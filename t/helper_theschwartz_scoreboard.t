@@ -26,7 +26,7 @@ is($job->started->strftime('%d.%m.%Y %T'),'07.03.2011 17:04:17','started');
 $expected = {
     configfile
         => '/home/atacama/Remedi-0.04/lib/Remedi/config/remedi_de-155-355.yml',
-    digifooter => 1,
+    digifooter => '',
     copy_files =>1,
     csv => 1,
     source_format => 'PDF',
@@ -40,16 +40,15 @@ is_deeply($jobs->[0]->arg_hashref,$expected,'arg_hashref');
 is($job->done,'2011-03-07T17:05:15','done');
 is($job->runtime,'0:00:58','runtime');
 is($job->configfile,
-   '/home/atacama/Remedi-0.04/lib/Remedi/config/remedi_de-155-355.yml',
+   File::Spec->catfile(qw(/ home atacama Remedi-0.04 lib Remedi config remedi_de-155-355.yml)),
    'configfile'
 );
-is($job->digifooter,1,'digifooter');
+is($job->digifooter ? 1 : 0 ,0,'digifooter');
 is($job->copy_files,1,'copy_files');
 is($job->csv,1,'csv');
 is($job->source_format,'PDF','source_format');
 is($job->order_id,'ubr07296','order_id');
 is($job->mets,1,'mets');
-is($job->digifooter,1,'digifooter');
 is($job->source_pdf_name,
     '/rzblx8_DATA3/digitalisierung/auftraege/ubr07296/ubr07296.pdf',
     'source_pdf_name'

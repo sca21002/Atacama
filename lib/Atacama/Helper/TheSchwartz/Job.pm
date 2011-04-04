@@ -117,7 +117,7 @@ sub _build_arg_hashref {
     my $self = shift;
     
     return unless $self->has_arg;
-    my $arg_hashref = { map { split('=') } split(',', $self->arg ||'') };
+    my $arg_hashref = { map { split('=',$_,2) } split(',', $self->arg ||'') };
     return $arg_hashref;
 }
 
