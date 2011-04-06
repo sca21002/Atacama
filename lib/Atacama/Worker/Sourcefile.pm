@@ -53,7 +53,9 @@ sub work {
     $atacama_schema = Atacama::Schema->connect(@dbic_connect_info)
         or $log->logcroak("Datenbankverbindung gescheitert");    
     
-    foreach  $format ('TIFF', 'PDF') {
+    foreach  ('TIFF', 'PDF') {
+        $format = $_;
+        $log->trace("Start-Format: " . $format);
         $sourcedir->recurse(
             callback => \&get_sourcefile,
             depthfirst => 1,
@@ -68,7 +70,7 @@ sub get_logfile_name { $log_file_name }
 
 sub get_sourcefile {
     my $entry = shift;
-    
+    $log->trace("Format: " . $format);    
     $log->trace($entry . " gefunden");
     return if $entry->is_dir;
     # return if $entry->basename lt 'ubr03390'; 
