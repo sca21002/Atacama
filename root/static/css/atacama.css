@@ -37,6 +37,19 @@ body {
 	color: DarkKhaki;
 }
 
+ul#navigation {
+	list-style-type: none;
+}
+
+ul#navigation li {
+	float: left;
+}
+
+ul#navigation li a {
+	text-decoration: none;
+	padding: 3px;
+}
+
 hr {
 	border: none;
 	background-image: url("images/hr.png");
@@ -181,6 +194,12 @@ h1,h1.main {
 	color: DarkKhaki;
 	font-weight: normal;
 }
+
+h1.main {
+	clear:both;
+}
+
+
 
 #header {
 	background-image: url("images/atacamaLama3.png");
