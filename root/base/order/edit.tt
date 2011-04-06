@@ -167,6 +167,17 @@
 
     });
 </script>
+
+<ul id="icons" class="ui-widget ui-helper-clearfix" >
+<li class="ui-state-default ui-corner-all"><a class="ui-icon ui-icon-home" href="[% c.uri_for('/') %]"> Startseite</a></li>
+<li class="ui-state-default ui-corner-all"><a class="ui-icon ui-icon-contact" href="[% c.uri_for('list',page=>page) %]"> Liste der Auftr&auml;ge </a> </li>
+<li class="ui-state-default"><a class="ui-icon ui-icon-trash" href="[% c.uri_for('delete', order.order_id) %]"> Auftr&auml;g l&ouml;schen </a></li>
+<li><a class="ui-icon ui-icon-plus" href="[% c.uri_for('add') %]"> Auftrag anlegen</a></li>
+<li><a class="ui-icon ui-icon-print" href="[% c.uri_for('print', order.order_id) %]"> Laufzettel drucken </a></li>
+<li><a class="ui-icon ui-icon-extlink" href="[% c.uri_for('remedi', order.order_id) %]"> mit Remedi bearbeiten </a></li>
+</ul>
+
+
 <h1 class="main">Auftrag [% order_href.order_id %] bearbeiten</h1>
 <div class="row">
 <div class="left">Auftragsnummer:</div>
