@@ -162,45 +162,91 @@
                 });
             });        
         });
+
+
+		//Signaturen abrufen
+         $('a#signatur_link').click( function(){
+                 var signatur = $("input#signatur").val();
+             
+                  $.ajax({
+                     type: "GET",
+                      url: "[% c.uri_for_action('/titel/json') %]?signatur=" + signatur,
+                     dataType: "json",
+                     cache: false,
+                     error: function(){  alert ("Fehler");},                                    
+                     success: function(result){    
+                                                  			
+                 	    console.debug(result);
+                	 	
+           	      	  	active_li.children('.json').remove();
+           	      	  	
+                    
+ 					}
+                 });
+             });        
         
 
 
     });
 </script>
 
-<ul id="icons" class="ui-widget ui-helper-clearfix" >
-<li class="ui-state-default ui-corner-all"><a class="ui-icon ui-icon-home" href="[% c.uri_for('/') %]"> Startseite</a></li>
-<li class="ui-state-default ui-corner-all"><a class="ui-icon ui-icon-contact" href="[% c.uri_for('list',page=>page) %]"> Liste der Auftr&auml;ge </a> </li>
-<li class="ui-state-default"><a class="ui-icon ui-icon-trash" href="[% c.uri_for('delete', order.order_id) %]"> Auftr&auml;g l&ouml;schen </a></li>
-<li><a class="ui-icon ui-icon-plus" href="[% c.uri_for('add') %]"> Auftrag anlegen</a></li>
-<li><a class="ui-icon ui-icon-print" href="[% c.uri_for('print', order.order_id) %]"> Laufzettel drucken </a></li>
-<li><a class="ui-icon ui-icon-extlink" href="[% c.uri_for('remedi', order.order_id) %]"> mit Remedi bearbeiten </a></li>
+
+
+<div id="nav_area">
+<ul id="navigation" class="ui-widget" >
+<li class="ui-state-default"><span class="ui-icon ui-icon-home"></span><a href="[% c.uri_for('/') %]"> Startseite</a></li>
+<li class="ui-state-default"><span class="ui-icon ui-icon-contact"></span><a href="[% c.uri_for('list',page=>page) %]"> Liste der Auftr&auml;ge </a> </li>
+<li class="ui-state-default"><span class="ui-icon ui-icon-trash"></span><a href="[% c.uri_for('delete', order.order_id) %]"> Auftr&auml;g l&ouml;schen </a></li>
+<li class="ui-state-default"><span class="ui-icon ui-icon-plus"></span><a href="[% c.uri_for('add') %]" onClick = "document.order_form.submit();"> Auftrag anlegen</a></li>
+<li class="ui-state-default"><span class="ui-icon ui-icon-print"></span><a href="[% c.uri_for('print', order.order_id) %]"> Laufzettel drucken </a></li>
+<li class="ui-state-default"><span class="ui-icon ui-icon-extlink"></span><a href="[% c.uri_for('remedi', order.order_id) %]"> mit Remedi bearbeiten </a></li>
 </ul>
+</div>
 
-
+<div id="content" class="ui-widget-content">
 <h1 class="main">Auftrag [% order_href.order_id %] bearbeiten</h1>
-<div class="row">
-<div class="left">Auftragsnummer:</div>
-[% order_href.order_id %] [% IF order_href.scanfiles_count %] (
-Scandateien:<a href="[% c.uri_for("/order/${order_href.order_id}/scanfiles/list") %]">
-[% order_href.scanfiles_count %] </a> ) [% END %][% IF
-order_href.pdffiles_count %] ( PDF-Dateien:<a href="[% c.uri_for("/pdffile/${order_href.order_id}") %]">
-[% order_href.pdffiles_count %] </a> ) [% END %]</div>
-<div class="row">
-<div class="left">angelegt:</div>
-[% order_href.creation_date.dmy('.') %] [% order_href.creation_date.hms
-%]</div>
-<div class="row">
-<div class="left">ge&auml;ndert:</div>
-[% order_href.modification_date.dmy('.') %] [%
-order_href.modification_date.hms %]</div>
 
-<div class="row">
+<fieldset>
+<div class="left">Auftragsnummer:</div>
+[% order_href.order_id %] 
+[% IF order_href.scanfiles_count %] 
+(Scandateien: 
+<a href="[% c.uri_for("/order/${order_href.order_id}/scanfiles/list") %]">
+[% order_href.scanfiles_count %] </a> ) [% END %]
+
+[% IF order_href.pdffiles_count %] 
+( PDF-Dateien:
+<a href="[% c.uri_for("/pdffile/${order_href.order_id}") %]">
+[% order_href.pdffiles_count %] </a> ) 
+[% END %]
+</fieldset>
+
+[% IF order_href.creation_date.hms %]
+<fieldset>
+<div class="left">angelegt:</div>
+[% order_href.creation_date.dmy('.') %] [% order_href.creation_date.hms %]
+<br />
+<div class="left">ge&auml;ndert:</div>
+[% order_href.modification_date.dmy('.') %]
+ [% order_href.modification_date.hms %]
+</fieldset>
+[% END %]
+
+
+<fieldset>
 <div class="left">Titel:</div>
 <div id="titel">[% order_href.titel.titel_isbd %]
-<form action="" method="post">
+[% IF !order.titel.katkey %] 
+<a  href="[% c.uri_for("/titel/edit/${order_href.order_id}") %]" id="edit_link" 
+class="ui-state-default ui-corner-all">
+<span class="ui-icon ui-icon-pencil"></span>von Hand bearbeiten </a>
+[% END %]
 </div>
-</div>
+</fieldset>
+
+
+<form id="order_form" action="" method="post">
+
 
 <div class="row"><label for="status"> Status </label> <select
 	id="status" name="status_id">
@@ -243,8 +289,11 @@ order_href.modification_date.hms %]</div>
 <div class="innen">
 <input id="signatur"
 	name="titel.signatur" type="text"
-	value="[% order_href.titel.signatur %]" size="25" />
+	value="[% order_href.titel.signatur %]" size="25" />	
+<a href="#" id="signatur_link" class="ui-state-default ui-corner-all">
+<span class="ui-icon ui-icon-search"></span>Suchen</a>
 
+<fieldset>
  <label for="library" >Bibliothek </label> 
 <select id="library" name="titel.library_id">
 	<option value="">-- select --</option>
@@ -264,6 +313,11 @@ order_href.modification_date.hms %]</div>
 	name="titel.mediennr" type="text"
 	value="[% order_href.titel.mediennr %]" size="15" /></div>
 </div>
+</fieldset>
+
+
+
+
 <div class="row"><label for="ocr"> Mit OCR </label> <input
 	id="ocr" name="ocr" type="checkbox" value="1" [%-  IF order.ocr==
 	1 -%]
@@ -423,6 +477,5 @@ Bemerkung </label> <textarea class="breit" id="remark" name="remark" cols="80"
 <hr />
 <input class="send" name="save" type="submit" value=" Absenden ">
 </form>
-</div>
 </div>
 </div>

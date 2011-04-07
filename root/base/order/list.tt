@@ -61,7 +61,7 @@
 													}, ],
 											rowNum : 20,
 											height : "100%",
-											width : '791',
+											width : '785',
 											rowList : [ 10, 20, 30, 40, 50, 60,
 													70, 80, 90, 100 ],
 											pager : '#pager_orders',
@@ -81,17 +81,21 @@
 <title>Aufträge</title>
 </head>
 <body>
-<ul id="navigation">
-<li><a href="[% c.uri_for('/') %]"> Startseite</a></li>
-<li><a href="[% c.uri_for('add') %]"> Auftrag anlegen</a></li>
 
+<div id="nav_area">
+<ul id="navigation" class="ui-widget" >
+<li class="ui-state-default"><span class="ui-icon ui-icon-home"></span><a href="[% c.uri_for('/') %]"> Startseite</a></li>
+<li class="ui-state-default"><span class="ui-icon ui-icon-plus"></span><a href="[% c.uri_for('add') %]"> Auftrag anlegen</a></li>
 </ul>
+</div>
+
+<div id="content">
 
 <h1 class="main">Alle Auftr&auml;ge</h1>
 
 
 <table id="orders"></table>
 <div id="pager_orders"></div>
-
+</div>
 </body>
 </html>

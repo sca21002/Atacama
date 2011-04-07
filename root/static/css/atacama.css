@@ -2,10 +2,52 @@ body {
 	font-family: Tahoma, Helvetica, sans-serif;
 	color: #333333;
 	font-size: 97%;
-	## background: url("images/bg-grad_braun.png") repeat scroll 0 0 #EFEFEE; 
-	background: repeat scroll 0 0 #EFEFEE;
-        margin: 0;
+	background-color: #EFEFEE;
+	margin: 0;
 	padding: 0;
+}
+
+#header {
+	background-image: url("images/atacamaLama3.png");
+	background-repeat: no-repeat;
+	height: 82px;
+	margin: 12px auto -23px;
+	padding: 10px;
+	position: relative;
+	right: -300px;
+	top: 6px;
+	width: 262px;
+}
+
+#content_container {
+	width: 956px;
+	background-color: white;
+	margin: 4px auto 0;
+	overflow: auto;
+}
+
+#nav_area {
+	display: block;
+	height: 100%;
+	width: 150px;
+	float: left;
+	width: 150px;
+	padding: 20px 0 0 10px;
+}
+
+#content {
+	width: 775px;
+	float: right;
+	border-left: 1px dotted #BDB76B;
+	padding: 0 0 12px 10px;
+}
+
+#footer {
+	clear: both;
+	width: 800px;
+	padding: 20px;
+	margin: 0 auto;
+	width: 800px;
 }
 
 .row {
@@ -16,7 +58,19 @@ body {
 	display: inline;
 	float: left;
 	width: 9em;
-	
+}
+
+#signatur_link span.ui-icon, #edit_link span.ui-icon {
+	left: 0.2em;
+	margin: -8px 5px 0 0;
+	position: absolute;
+	top: 50%;
+}
+
+#signatur_link, #edit_link {
+	font-size: 0.8em;
+	padding: 3px 10px 2px 22px;
+	position: relative;
 }
 
 .set {
@@ -39,15 +93,42 @@ body {
 
 ul#navigation {
 	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	font-size: 0.9em;
+}
+
+ul#navigation .ui-icon {
+	float: left;
 }
 
 ul#navigation li {
 	float: left;
+	margin-bottom: 3px;
+	border: 0;
+	background-image: url("images/hr.png");
+	background-repeat: repeat-x;
+	height: 20px;
+	background-position: left bottom;
+	display: block;
+	margin: 0 0 3px -10px;
+	padding: 5px 0 5px 3px;
+	width: 168px;
+	background-color: white;
 }
 
 ul#navigation li a {
 	text-decoration: none;
-	padding: 3px;
+	padding: 0 0 0 2px;
+	color: black !important;
+}
+
+ul#navigation li a:visited {
+	color: black !important;
+}
+
+ul#navigation li:hover {
+	background-color: #ffffe0;
 }
 
 hr {
@@ -55,41 +136,9 @@ hr {
 	background-image: url("images/hr.png");
 	background-repeat: repeat-x;
 	margin-top: 13px;
-	margin-bottom: -5px; width : 840px;
-	margin-left: -20px;
-	width: 840px
-}
-
-a,a:link {
-	color: darkkhaki !important;
-	text-decoration: none;
-	padding: 0 2px;
-}
-
-a:visited {
-	color: silver !important;
-	text-decoration: underline;
-}
-
-a:focus {
-	font-weight: bold;
-}
-
-a:hover {
-	color: darkkhaki;
-	text-decoration: underline;
-}
-
-a:active {
-	font-weight: bold;
-	text-decoration: underline;
-}
-
-#container { /*
-	background: url("images/h1_bg.png") repeat-x scroll center 204px
-		transparent;
-		*/
-	
+	margin-bottom: -5px;
+	width: 783px;
+	margin-left: -9px;
 }
 
 input[type='text'],input[type='submit'],input[type='password'],select,textarea
@@ -106,20 +155,21 @@ input[type='text'],input[type='submit'],input[type='password'],select,textarea
 
 fieldset {
 	border: none;
+	margin: 0;
+	padding: 0;
+	line-height: 1.3em;
 }
 
 .breit {
-	width: 642px;
+	width: 618px;
 }
 
 input[type='submit'] {
 	font-size: 110%;
 	padding: 4px;
 	font-weight: bold;
-	margin-top:13px;
+	margin-top: 13px;
 }
-
-
 
 textarea {
 	margin-left: 9.3em;
@@ -175,12 +225,6 @@ img {
 	vertical-align: middle;
 }
 
-#footer {
-	width: 800px;
-	padding: 20px;
-	margin: 0 auto;
-}
-
 #footer p {
 	margin: 0;
 }
@@ -196,26 +240,5 @@ h1,h1.main {
 }
 
 h1.main {
-	clear:both;
-}
-
-
-
-#header {
-	background-image: url("images/atacamaLama3.png");
-	background-repeat: no-repeat;
-	height: 82px;
-	margin: 12px auto -23px;
-	padding: 10px;
-	position: relative;
-	right: -300px;
-	top: 6px;
-	width: 262px;
-}
-
-#content {
-	width: 800px;
-	margin: 4px auto 0;
-	background-color: white;
-	padding: 30px 20px 34px;
+	clear: both;
 }

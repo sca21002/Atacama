@@ -18,11 +18,21 @@
 	border-left: 0px none;
 	border-right: 0px none;
 	border-top: 0px none;
+	display: none;
 }
 
 .ui-jqgrid .ui-jqgrid-title {
 	float: left;
 	margin: .1em 0 .2em;
+}
+
+.ui-jqgrid-labels th {
+	font-weight: bold !important;
+	border-top: 1px solid #D3D3D3 !important;
+}
+
+#gbox_orders {
+	margin-left: -10px;
 }
 
 .ui-jqgrid .ui-jqgrid-titlebar-close {
@@ -169,12 +179,12 @@ tr.ui-search-toolbar select {
 .ui-jqgrid tr.jqgrow td {
 	font-weight: normal;
 	overflow: hidden;
-	white-space: pre;
+	/*white-space: pre;*/
 	height: 22px;
 	padding: 0 2px 0 2px;
 	border-bottom-width: 1px;
 	border-bottom-color: inherit;
-	border-bottom-style: solid;
+	border-bottom-style: dotted;
 }
 
 .ui-jqgrid tr.jqgfirstrow td {
@@ -209,14 +219,14 @@ tr.ui-search-toolbar select {
 	text-align: left;
 	border-right-width: 1px;
 	border-right-color: inherit;
-	border-right-style: solid;
+	border-right-style: dotted;
 }
 
 .ui-jqgrid tr.ui-row-rtl td {
 	text-align: right;
 	border-left-width: 1px;
 	border-left-color: inherit;
-	border-left-style: solid;
+	border-left-style: dotted;
 }
 
 .ui-jqgrid td.jqgrid-rownum {

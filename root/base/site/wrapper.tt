@@ -11,7 +11,7 @@
 [% IF message %]
     <p><span class="message">[% message | html %]</span></p>
 [% END %]
-<div id="content" class=[% class %]>
+<div id="content_container">
 [% content %]
 </div>
 [% PROCESS site/footer.tt %]
