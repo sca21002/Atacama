@@ -170,36 +170,89 @@
              
                   $.ajax({
                      type: "GET",
-                      url: "[% c.uri_for_action('/titel/json') %]?signatur=" + signatur,
+                     url: "[% c.uri_for_action('/titel/json') %]?signatur=" + signatur,
                      dataType: "json",
                      cache: false,
-                     error: function(){  alert ("Fehler");},                                    
+                     error: function(){  alert ("Diese Signatur existiert nicht.");    },                                    
                      success: function(result){    
-                                                  			
-                 	    console.debug(result);
-                	 	
-           	      	  	active_li.children('.json').remove();
-           	      	  	
-                    
+                    	 console.debug(result); 
+
+                  
+                    	 if (typeof result.json_data[1] != 'undefined') {
+                    		  // Bindeeinheit
+                    		  $("#bindeeinheit").append('<p>Bitte wählen Sie den passenden Treffer aus:</p>'); 
+                    		  var i = 0;
+
+                    	  	  $.each(result.json_data, function(key, val) {    
+                        	  	  i ++;                    		  	
+              		   			$("#bindeeinheit").append('<li id="'+i+'"><strong>Titel: </strong> '+val.titel_avs+'<br/><strong>Autor: </strong> '+ val.autor_avs+'<br/><strong>Verlag:</strong> '+val.verlag+'<br/><strong>BV-Nr.: </strong>' + val.bvnr+'<br/><strong>Erschienen:</strong> '+val.erschjahr+'<br/><strong>Bibliothek:</strong> '+val.library_id+'<br/><br/> <a href="#" id="book_selected" class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-search"></span>Auswählen</a></li>');
+							});
+
+
+                    	  	$("a#book_selected").click( function () {
+								
+								var array_key = ($(this).parent().attr("id"))-1;
+								$("input#bvnr").val(result.json_data[array_key].bvnr);
+								$("input#katkey").val(result.json_data[array_key].katkey);
+								$("input#mediennr").val(result.json_data[array_key].mediennr);
+								$("select#library").val(result.json_data[array_key].library_id);
+								$("#titel").text(result.json_data[array_key].titel_avs);
+							
+
+								$("#bindeeinheit").dialog("close");
+							});
+	                    	
+                    		  $("#bindeeinheit li").wrapAll('<ul id="bindeeinheit">');
+                    		     
+	               			                  
+                    		 $("#bindeeinheit").dialog({ 
+                        		 modal: true, 
+                        		 title: "Mehrere Treffer: Bindeeinheit", 
+                        		 width: 700,                       		 
+                        		 close: function() { $('#bindeeinheit li, #bindeeinheit p').remove();	}
+	                 			         
+				                });
+                            
+             		     }
+                    	 else {
+                        	 //Zellen füllen
+                    		 $("input#bvnr").val(result.json_data[0].bvnr);
+							 $("input#katkey").val(result.json_data[0].katkey);
+							 $("input#mediennr").val(result.json_data[0].mediennr);
+							 $("select#library").val(result.json_data[0].library_id);
+							 $("#titel").text(result.json_data[0].titel_avs);
+							 
+                    	 }
+                    	 
  					}
                  });
              });        
-        
-
-
+    
     });
 </script>
 
 
+<div id="bindeeinheit" style="display: none;" ></div>
 
 <div id="nav_area">
-<ul id="navigation" class="ui-widget" >
-<li class="ui-state-default"><span class="ui-icon ui-icon-home"></span><a href="[% c.uri_for('/') %]"> Startseite</a></li>
-<li class="ui-state-default"><span class="ui-icon ui-icon-contact"></span><a href="[% c.uri_for('list',page=>page) %]"> Liste der Auftr&auml;ge </a> </li>
-<li class="ui-state-default"><span class="ui-icon ui-icon-trash"></span><a href="[% c.uri_for('delete', order.order_id) %]"> Auftr&auml;g l&ouml;schen </a></li>
-<li class="ui-state-default"><span class="ui-icon ui-icon-plus"></span><a href="[% c.uri_for('add') %]" onClick = "document.order_form.submit();"> Auftrag anlegen</a></li>
-<li class="ui-state-default"><span class="ui-icon ui-icon-print"></span><a href="[% c.uri_for('print', order.order_id) %]"> Laufzettel drucken </a></li>
-<li class="ui-state-default"><span class="ui-icon ui-icon-extlink"></span><a href="[% c.uri_for('remedi', order.order_id) %]"> mit Remedi bearbeiten </a></li>
+<ul id="navigation" class="ui-widget">
+	<li class="ui-state-default"><span class="ui-icon ui-icon-home"></span><a
+		href="[% c.uri_for('/') %]"> Startseite</a></li>
+	<li class="ui-state-default"><span class="ui-icon ui-icon-contact"></span><a
+		href="[% c.uri_for('list',page=>page) %]"> Liste der Auftr&auml;ge
+	</a></li>
+	<li class="ui-state-default"><span class="ui-icon ui-icon-trash"></span><a
+		href="[% c.uri_for('delete', order.order_id) %]"> Auftr&auml;g
+	l&ouml;schen </a></li>
+	<li class="ui-state-default"><span class="ui-icon ui-icon-plus"></span><a
+		href="[% c.uri_for('add') %]" onClick="document.order_form.submit();">
+	Auftrag anlegen</a></li>
+	<li class="ui-state-default"><span class="ui-icon ui-icon-print"></span><a
+		href="[% c.uri_for('print', order.order_id) %]"> Laufzettel
+	drucken </a></li>
+	<li class="ui-state-default"><span class="ui-icon ui-icon-extlink"></span><a
+		href="[% c.uri_for('remedi', order.order_id) %]"> mit Remedi
+	bearbeiten </a></li>
 </ul>
 </div>
 
@@ -208,40 +261,30 @@
 
 <fieldset>
 <div class="left">Auftragsnummer:</div>
-[% order_href.order_id %] 
-[% IF order_href.scanfiles_count %] 
-(Scandateien: 
-<a href="[% c.uri_for("/order/${order_href.order_id}/scanfiles/list") %]">
-[% order_href.scanfiles_count %] </a> ) [% END %]
-
-[% IF order_href.pdffiles_count %] 
-( PDF-Dateien:
-<a href="[% c.uri_for("/pdffile/${order_href.order_id}") %]">
-[% order_href.pdffiles_count %] </a> ) 
-[% END %]
-</fieldset>
+[% order_href.order_id %] [% IF order_href.scanfiles_count %]
+(Scandateien: <a href="[% c.uri_for("/order/${order_href.order_id}/scanfiles/list") %]">
+[% order_href.scanfiles_count %] </a> ) [% END %] [% IF
+order_href.pdffiles_count %] ( PDF-Dateien: <a href="[% c.uri_for("/pdffile/${order_href.order_id}") %]">
+[% order_href.pdffiles_count %] </a> ) [% END %]</fieldset>
 
 [% IF order_href.creation_date.hms %]
 <fieldset>
 <div class="left">angelegt:</div>
-[% order_href.creation_date.dmy('.') %] [% order_href.creation_date.hms %]
-<br />
+[% order_href.creation_date.dmy('.') %] [% order_href.creation_date.hms
+%] <br />
 <div class="left">ge&auml;ndert:</div>
-[% order_href.modification_date.dmy('.') %]
- [% order_href.modification_date.hms %]
-</fieldset>
+[% order_href.modification_date.dmy('.') %] [%
+order_href.modification_date.hms %]</fieldset>
 [% END %]
 
 
 <fieldset>
 <div class="left">Titel:</div>
-<div id="titel">[% order_href.titel.titel_isbd %]
-[% IF !order.titel.katkey %] 
-<a  href="[% c.uri_for("/titel/edit/${order_href.order_id}") %]" id="edit_link" 
-class="ui-state-default ui-corner-all">
-<span class="ui-icon ui-icon-pencil"></span>von Hand bearbeiten </a>
-[% END %]
-</div>
+<div id="titel">[% order_href.titel.titel_isbd %] [% IF
+!order.titel.katkey %] <a href="[% c.uri_for("
+	/titel/edit/${order_href.order_id}") %]" id="edit_link"
+	class="ui-state-default ui-corner-all"> <span
+	class="ui-icon ui-icon-pencil"></span>von Hand bearbeiten </a> [% END %]</div>
 </fieldset>
 
 
@@ -262,11 +305,13 @@ class="ui-state-default ui-corner-all">
 </select></div>
 
 
-<div class="row"><label for="documenttype"> Medientyp </label> 
-<select	id="documenttype" name="documenttype_id">
+<div class="row"><label for="documenttype"> Medientyp </label> <select
+	id="documenttype" name="documenttype_id">
 	<option value="">-- select --</option>
 	[%- FOR documenttype IN documenttypes %]
-	<option value="[% documenttype.documenttype_id %]" [%-  IF	documenttype.documenttype_id==order_href.documenttype_id -%] selected="selected"[%-  END -%]> 	[%- documenttype.name -%]</option>
+	<option value="[% documenttype.documenttype_id %]" [%-  IF
+		documenttype.documenttype_id==order_href.documenttype_id
+		-%] selected="selected"[%-  END -%]>[%- documenttype.name -%]</option>
 	[%- END %]
 </select></div>
 
@@ -280,22 +325,20 @@ class="ui-state-default ui-corner-all">
 	value="[% order_href.titel.titel_uw %]" type="text" size="80" /></div>
 
 <div class="row"><label for="pages"> Seiten </label> <input
-	 name="titel.pages" value="[% order_href.titel.pages %]"
-	type="text" size="40" /></div>
-</div>	
-	
-	<hr />
-<div class="set"><label class="block" for="signatur"> Signatur </label>
-<div class="innen">
-<input id="signatur"
-	name="titel.signatur" type="text"
-	value="[% order_href.titel.signatur %]" size="25" />	
-<a href="#" id="signatur_link" class="ui-state-default ui-corner-all">
+	name="titel.pages" value="[% order_href.titel.pages %]" type="text"
+	size="40" /></div>
+</div>
+
+<hr />
+<div class="set"><label class="block" for="signatur">
+Signatur </label>
+<div class="innen"><input id="signatur" name="titel.signatur"
+	type="text" value="[% order_href.titel.signatur %]" size="25" /> <a
+	href="#" id="signatur_link" class="ui-state-default ui-corner-all">
 <span class="ui-icon ui-icon-search"></span>Suchen</a>
 
-<fieldset>
- <label for="library" >Bibliothek </label> 
-<select id="library" name="titel.library_id">
+<fieldset><label for="library">Bibliothek </label> <select
+	id="library" name="titel.library_id">
 	<option value="">-- select --</option>
 	[%- FOR library IN libraries %]
 	<option value="[% library.library_id %]" [%-  IF library.library_id==
@@ -311,7 +354,8 @@ class="ui-state-default ui-corner-all">
 	type="text" value="[% order_href.titel.katkey %]" size="9" /> <label
 	for="mediennr"> Mediennr. </label> <input id="mediennr"
 	name="titel.mediennr" type="text"
-	value="[% order_href.titel.mediennr %]" size="15" /></div>
+	value="[% order_href.titel.mediennr %]" size="15" />
+</div>
 </div>
 </fieldset>
 
@@ -331,8 +375,8 @@ Bemerkung </label> <textarea class="breit" id="remark" name="remark" cols="80"
 	rows="4">
         [%- order_href.remark -%]
     </textarea></div>
-    
-    <div class="row"><label> Verbreitungsrecht </label> <select
+
+<div class="row"><label> Verbreitungsrecht </label> <select
 	name="copyright_id">
 	<option value="">-- select --</option>
 	[%- FOR copyright IN copyrights %]
@@ -345,7 +389,8 @@ Bemerkung </label> <textarea class="breit" id="remark" name="remark" cols="80"
 </select></div>
 
 <hr />
-<div class="set"><label id="scan_label" class="strong"> Scanner </label>
+<div class="set"><label id="scan_label" class="strong">
+Scanner </label>
 <ul id="scanner">
 	[% FOR scanparameter IN order_href.scanparameters %]
 	<li><input type="hidden"
@@ -362,7 +407,8 @@ Bemerkung </label> <textarea class="breit" id="remark" name="remark" cols="80"
 		name="scanparameters.[% loop.count - 1 %].format_id">
 		<option value="">-- select --</option>
 		[%- FOR format IN formats %]
-		<option value="[% format.format_id %]" [%-  IF format.format_id==scanparameter.format_id -%] selected="selected"[%-  END -%]>
+		<option value="[% format.format_id %]" [%-  IF
+			format.format_id==scanparameter.format_id -%] selected="selected"[%-  END -%]>
 		[%- format.name -%]</option>
 		[%- END %]
 	</select> <select name="scanparameters.[% loop.count - 1 %].resolution_id">
@@ -411,12 +457,14 @@ Bemerkung </label> <textarea class="breit" id="remark" name="remark" cols="80"
 	[%- END %]
 </select></div>
 <hr />
-<div class="set"><label id="project_label" class="strong"> Projekt/ID </label>
+<div class="set"><label id="project_label" class="strong">
+Projekt/ID </label>
 <ul id="project">
 	[%- FOR orderproject IN order_href.orders_projects %]
 	<li><input type="hidden"
 		name="orders_projects.[% loop.count - 1 %].ordersprojects_id"
-		value="[% orderproject.ordersprojects_id %]"> <select id='select_project'
+		value="[% orderproject.ordersprojects_id %]"> <select
+		id='select_project'
 		name="orders_projects.[% loop.count - 1 %].project_id">
 		<option value="">-- select --</option>
 		[%- FOR project IN projects %]
@@ -436,15 +484,16 @@ Bemerkung </label> <textarea class="breit" id="remark" name="remark" cols="80"
 		value="1" />[%- END -%] [%- END -%]</li>
 </ul>
 <a href='#' id='add_project'><img src='[% c.uri_for_static('
-	images/add.png') %]' alt='neues Projektfeld einfuegen' /></a>
-</div>
+	images/add.png') %]' alt='neues Projektfeld einfuegen' /></a></div>
 <hr />
-<div class="set"><label id="publication_label" class="strong"> Publikation </label>
+<div class="set"><label id="publication_label" class="strong">
+Publikation </label>
 <ul id="publication">
 	[%- FOR publication IN order_href.publications %]
 	<li><input type="hidden"
 		name="publications.[% loop.count - 1 %].publication_id"
-		value="[% publication.publication_id %]"> <select class = "select_publication"
+		value="[% publication.publication_id %]"> <select
+		class="select_publication"
 		name="publications.[% loop.count - 1 %].platform_id">
 		<option value="">-- select --</option>
 		[%- FOR platform IN platforms %]
@@ -470,12 +519,10 @@ Bemerkung </label> <textarea class="breit" id="remark" name="remark" cols="80"
 	[%- END -%]
 </ul>
 <a href='#' id='add_publication'><img src='[% c.uri_for_static('
-	images/add.png') %]' alt='neues Publikationsfeld einfuegen' /></a>
-	
-	</div>
+	images/add.png') %]' alt='neues Publikationsfeld einfuegen' /></a></div>
 
 <hr />
-<input class="send" name="save" type="submit" value=" Absenden ">
+<input class="send" name="save" type="submit" value="Speichern">
 </form>
 </div>
 </div>

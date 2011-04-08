@@ -1,0 +1,19 @@
+﻿[% SET title = "Startseite von Atacama" -%]
+[% SET class = "index" -%]
+[% WRAPPER wrapper.tt title=title class=class -%]
+<div id="toplinks">
+</div>
+<p> Atacama verwaltet die Digitalisierungsaufträge der Universitätsbibliothek
+Regensburg</p>
+
+<p>Von hier aus können Sie 
+<ul>
+<li> die <a href="[% c.uri_for('/order/list') %]">Liste der Aufträge</a> 
+ansehen.<p/>
+<li> die <a href="[% c.uri_for('/project/list') %]">Liste der Projekte</a> 
+ansehen.
+</ul></p>
+
+<div id="bottomnav">
+</div>
+[% END %]
