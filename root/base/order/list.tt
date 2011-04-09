@@ -45,10 +45,11 @@
 													},
 													{
 														name : 'projects',
-														sortable : false,
+														index : 'project_id',
+														sortable : true,
 														width : 200,
 														stype:'select', 
-														editoptions:{value:":Alle;EOD:EOD;EuropeanaTravel:EuropeanaTravel;Hoerburger:Hoerburger;VHVO:VHVO;MZ:MZ"},
+														editoptions:{value:":Alle;[% FOR project IN projects %];[% project.project_id %]:[% project.name %][% END %]"},
 														
 													}, {
 														name : 'status',
@@ -56,9 +57,7 @@
 														sortable : true,
 														width : 80,
 														stype:'select', 
-														editoptions:{value:":Alle;angelegt:angelegt;veroeffentlicht:veröffentlicht;aus Excel:aus Excel;ist gescannt:ist gescannt"},
-
-														
+														editoptions:{value:":Alle[% FOR stat IN status %];[% stat.status_id %]:[% stat.name %][% END %]"},
 													}, ],
 											rowNum : 20,
 											height : "100%",

@@ -2,6 +2,7 @@ package Atacama::Controller::Order;
 use Moose;
 use namespace::autoclean;
 use Data::Dumper;
+use JSON;
 
 BEGIN {extends 'Catalyst::Controller'; }
 
@@ -37,7 +38,16 @@ sub orders : Chained('/login/required') PathPart('order') CaptureArgs(0) {
 sub list : Chained('orders') PathPart('list') Args(0) {
     my ( $self, $c ) = @_;
 
+    $c->log->debug('LIST: ');
+
     $c->stash(
+        projects => [
+            $c->model('AtacamaDB::Project')->search(
+                undef,
+                {order_by => 'name'}
+            )->all
+        ],       
+        status => [ $c->model('AtacamaDB::Status')->search({})->all ],
         json_url => $c->uri_for_action('order/json'),
         template => 'order/list.tt'
     ); 
@@ -58,8 +68,11 @@ sub json : Chained('orders') PathPart('json') Args(0) {
         : {}
         ; 
    
+    $c->log->debug('filters: ' . Dumper($data->{filters}));
+    my $filters = decode_json $data->{filters} if $data->{filters};    
+       
     my $orders_rs = $c->stash->{orders};
- 
+    $orders_rs = $orders_rs->filter($filters);
     $orders_rs = $orders_rs->search(
         $search,
         {
