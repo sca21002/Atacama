@@ -163,6 +163,20 @@ sub print : Chained('order') {
     }
 }
 
+sub print_patchcode_t : Chained('order') {
+    my ($self, $c)  = @_;
+    
+    my $order = $c->stash->{order};
+	$c->stash->{orders2print} = [ $order ];
+    
+    $c->stash->{template} = 'order/print_patchcode_t.tt'; 
+    if ($c->forward( 'Atacama::View::PDF')) {
+         $c->response->content_type('application/pdf');
+         $c->response->header('Content-Disposition', 'attachment; filename='
+            . $order->order_id . 'pdf');
+    }
+}
+
 
 
 

@@ -1,0 +1,106 @@
+[%- USE Latex;
+    FILTER latex("pdf") %]
+
+\documentclass[ngerman,10pt,a5paper]{article}
+%\documentclass[ngerman,11pt,a4paper]{article}
+\pagestyle{empty}
+\usepackage[T1]{fontenc}
+%\usepackage{showframe}	% show page frames for development
+
+\usepackage{lastpage}	% support to show number of last page in document
+
+% sansserif font as default
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+% Provide patchcode T pattern as a background image:
+% Page size is set accordingly
+\input{patchcodeT}
+
+% Provide ability for code 128 barcodes:
+\input{code128.tex}
+
+\begin{document}
+
+\setlength{\parindent}{0pt}	% Do not indent paragraphs.
+
+% Define horizontal extent of barcode:
+% barcode width parameter
+\X=.50mm	% default: .33mm
+
+[% FOREACH order IN orders2print %]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Page setup
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{center}
+  \begin{minipage}[t]{70mm}
+	\begin{center}
+	  \bigskip
+	  \fontsize{40}{50}\selectfont ubr123456\\%[% order.order_id %]\\
+	  \bigskip
+	  %{\centering \mbox{\codetext{ubr123456}} }\\ %[% order.order_id %]}\\
+	  {\centering \mbox{\code{ubr123456}} }\\ %[% order.order_id %]}\\
+	\end{center}
+	  \bigskip
+	  \small
+	  \begin{tabular}{ll}
+		%angelegt:    & [% order.creation_date.dmy('.')%] [% order.creation_date.hms() %]\\
+		%ge\"andert:  & [% order.modification_date.dmy('.') %] [%order.modification_date.hms() %]\\
+		%gedruckt:    & [% date.format(date.now, '%d.%m.%Y %H:%M:%S', 'de_DE') %]\\
+		%Status:      & [% order.status.name %]\\
+	  \end{tabular}
+  \end{minipage}
+\end{center}
+
+
+\begin{center}
+  \begin{minipage}[t]{0.8\textwidth}
+
+{\Large [% order.titel.signatur %]}
+
+\smallskip
+
+% Bibliographic information, preferentially ISBD formatted:
+[% IF order.titel.titel_avs -%]
+  [% order.titel.titel_isbd %]
+[% ELSE %]
+  [% order.title %]
+[% END %]
+
+\smallskip
+
+\begin{tabular}{lp{7cm}}
+Medien-Nr.:      & [% order.titel.mediennr %]\\
+BV-Nr.:          & [% order.titel.bvnr %]\\
+Seiten:          & [% order.pages %]\\
+gedruckt:        & [% date.format(date.now, '%d.%m.%Y %H:%M:%S', 'de_DE') %]\\
+Status:          & [% order.status.name %]\\
+Bemerkung:       & [% order.remark %]\\
+                 & \\
+[% FOREACH ordersproject IN order.ordersprojects %]
+Projekt:  & [% ordersproject.project.name %]\\
+[% FOREACH projectparam IN ordersproject.projectparams %]
+[% projectparam.key %]: & [% projectparam.value %]  \\
+[% END %]
+[% END %]
+\end{tabular}
+
+  \end{minipage}
+\end{center}
+
+\vfill
+\begin{center}
+	{\tiny Druckjob: Seite \thepage von \pageref{LastPage}}
+\end{center}
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  End: Page setup
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+[% END %][%- end of loop over orders2print -%]
+
+
+\end{document}
+
+
