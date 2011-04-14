@@ -248,7 +248,7 @@
 		href="[% c.uri_for('add') %]" onClick="document.order_form.submit();">
 	Auftrag anlegen</a></li>
 	<li class="ui-state-default"><span class="ui-icon ui-icon-print"></span><a
-		href="[% c.uri_for('print', order.order_id) %]"> Laufzettel
+		href="[% c.uri_for("/order/${order_href.order_id}/print") %]"> Laufzettel
 	drucken </a></li>
 	<li class="ui-state-default"><span class="ui-icon ui-icon-extlink"></span><a
 		href="[% c.uri_for('remedi', order.order_id) %]"> mit Remedi
