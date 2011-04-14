@@ -37,10 +37,10 @@
   \begin{minipage}[t]{70mm}
 	\begin{center}
 	  \bigskip
-	  \fontsize{40}{50}\selectfont [% order.order_id %]\\
+	  \fontsize{40}{50}\selectfont [% order.order_id | latex_encode %]\\
 	  \bigskip
-	  %{\centering \mbox{\codetext{[% order.order_id %]}}\\
-	  {\centering \mbox{\code{[% order.order_id %]}}}\\
+	  %{\centering \mbox{\codetext{[% order.order_id | latex_encode %]}}\\
+	  {\centering \mbox{\code{[% order.order_id | latex_encode %]}}}\\
 	\end{center}
 	  \bigskip
 	  \small
@@ -48,7 +48,7 @@
 		%angelegt:    & [% order.creation_date.dmy('.')%] [% order.creation_date.hms() %]\\
 		%ge\"andert:  & [% order.modification_date.dmy('.') %] [%order.modification_date.hms() %]\\
 		%gedruckt:    & [% date.format(date.now, '%d.%m.%Y %H:%M:%S', 'de_DE') %]\\
-		%Status:      & [% order.status.name %]\\
+		%Status:      & [% order.status.name | latex_encode %]\\
 	  \end{tabular}
   \end{minipage}
 \end{center}
@@ -57,36 +57,36 @@
 \begin{center}
   \begin{minipage}[t]{0.8\textwidth}
 
-{\Large [% order.titel.signatur %]}
+{\Large [% order.titel.signatur | latex_encode %]}
 
 \smallskip
 
 % Bibliographic information, preferentially ISBD formatted:
 [% IF order.titel.titel_avs -%]
-  [% order.titel.titel_isbd %]
+  [% order.titel.titel_isbd | latex_encode %]
 [% ELSE %]
-  [% order.title %]
+  [% order.title | latex_encode %]
 [% END %]
 
 \bigskip
 
 \begin{tabular}{lp{7cm}}
-Medien-Nr.:      & [% order.titel.mediennr %]\\
-BV-Nr.:          & [% order.titel.bvnr %]\\
-%Seiten:          & [% order.pages %]\\
+Medien-Nr.:      & [% order.titel.mediennr | latex_encode %]\\
+BV-Nr.:          & [% order.titel.bvnr | latex_encode %]\\
+%Seiten:          & [% order.pages | latex_encode %]\\
 gedruckt:        & [% date.format(date.now, '%d.%m.%Y %H:%M:%S', 'de_DE') %]\\
-Status:          & [% order.status.name %]\\
+Status:          & [% order.status.name | latex_encode %]\\
                  & \\
 [% FOREACH ordersproject IN order.ordersprojects %]
-	Projekt:  & [% ordersproject.project.name %]\\
+	Projekt:  & [% ordersproject.project.name | latex_encode %]\\
 	[% FOREACH projectparam IN ordersproject.projectparams %]
-		[% projectparam.key %]: & [% projectparam.value %]  \\
+		[% projectparam.key | latex_encode %]: & [% projectparam.value | latex_encode %]  \\
 	[% END %]
 [% END %]
 \end{tabular}
 
 Bemerkung:\\
-[% order.remark %]
+[% order.remark | latex_encode %]
 
   \end{minipage}
 \end{center}
