@@ -1,0 +1,196 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+% patchcodeT.tex: provide a pachcode T background image with pure LaTeX
+% 
+% Usage: \include this file in the preamble of your document
+% Author: Helge Knüttel, April 2011
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{eso-pic}    % background pictures
+\usepackage{calc}        % Rechnen mit Längen
+\usepackage{picture}
+
+\usepackage[dvips,pdftex,top=32mm,left=32mm]{geometry}
+
+% Define image dimensions
+\newlength{\picturewidth}
+\setlength{\picturewidth}{\paperwidth - 2cm}
+\newlength{\pictureheight}
+\setlength{\pictureheight}{\paperheight - 2cm}
+
+% Define size and position of textarea
+\setlength{\textwidth}{\paperwidth - 2cm - 0.9in - 0.9in}
+\setlength{\textheight}{\paperheight - 2cm - 0.9in - 0.9in}
+%\setlength{\top}{1cm + 0.9in}
+%\setlength{\left}{1cm + 0.9in}
+
+
+% bar dimensions
+\newlength{\narrowbarwidth}
+\newlength{\broadbarwidth}
+\newlength{\spacerbarwidth}
+\newlength{\verticalbarlength}
+\newlength{\horizontalbarlength}
+% Where we start to draw a line
+\newlength{\barxpos}
+\newlength{\barypos}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% patchcode T pattern
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\patchcodeT}{
+  % patchcode T: Order of bars starting from edge of paper: narrow, broad, narrow, broad
+
+\begin{picture}(\picturewidth,\pictureheight)
+
+    % Define bar dimensions
+    \setlength{\narrowbarwidth}{0.08in}
+    \setlength{\broadbarwidth}{0.20in}
+    \setlength{\spacerbarwidth}{0.08in}
+
+    \setlength{\verticalbarlength}{\pictureheight}
+    \setlength{\horizontalbarlength}{\picturewidth - 1.8in}
+
+
+    %%%%%%%%%%%%%%%%%%%%
+    % left vertical bars
+    %%%%%%%%%%%%%%%%%%%%
+    \setlength{\barypos}{0in}
+    % Apparently, lines are centered around the given position. Therefore, add \linethickness\2 to \barxpos
+
+    \linethickness{\narrowbarwidth}
+    \setlength{\barxpos}{%
+      \narrowbarwidth/2
+    }
+    \put(\barxpos,\barypos){\line(0,1){\verticalbarlength}}
+
+    \linethickness{\broadbarwidth}
+    \setlength{\barxpos}{%
+      \narrowbarwidth + \spacerbarwidth + \broadbarwidth/2
+    }
+    \put(\barxpos,\barypos){\line(0,1){\verticalbarlength}}
+
+    \linethickness{\narrowbarwidth}
+    \setlength{\barxpos}{%
+      \narrowbarwidth + \spacerbarwidth + \broadbarwidth + \spacerbarwidth + \narrowbarwidth/2
+    }
+    \put(\barxpos,\barypos){\line(0,1){\verticalbarlength}}
+
+    \linethickness{\broadbarwidth}
+    \setlength{\barxpos}{%
+      \narrowbarwidth + \spacerbarwidth + \broadbarwidth + \spacerbarwidth + \narrowbarwidth + \spacerbarwidth + \broadbarwidth/2
+    }
+    \put(\barxpos,\barypos){\line(0,1){\verticalbarlength}}
+
+
+    %%%%%%%%%%%%%%%%%%%%%
+    % right vertical bars
+    %%%%%%%%%%%%%%%%%%%%%
+    \setlength{\barypos}{0in}
+    % Apparently, lines are centered around the given position. Therefore, add \linethickness\2 to \barxpos
+
+    \linethickness{\narrowbarwidth}
+    \setlength{\barxpos}{%
+      \picturewidth - ( \narrowbarwidth/2 )
+    }
+    \put(\barxpos,\barypos){\line(0,1){\verticalbarlength}}
+
+    \linethickness{\broadbarwidth}
+    \setlength{\barxpos}{%
+      \picturewidth - ( \narrowbarwidth + \spacerbarwidth + \broadbarwidth/2 )
+    }
+    \put(\barxpos,\barypos){\line(0,1){\verticalbarlength}}
+
+    \linethickness{\narrowbarwidth}
+    \setlength{\barxpos}{%
+      \picturewidth - ( \narrowbarwidth + \spacerbarwidth + \broadbarwidth + \spacerbarwidth + \narrowbarwidth/2 )
+    }
+    \put(\barxpos,\barypos){\line(0,1){\verticalbarlength}}
+
+    \linethickness{\broadbarwidth}
+    \setlength{\barxpos}{%
+      \picturewidth - ( \narrowbarwidth + \spacerbarwidth + \broadbarwidth + \spacerbarwidth + \narrowbarwidth + \spacerbarwidth + \broadbarwidth/2 )
+    }
+    \put(\barxpos,\barypos){\line(0,1){\verticalbarlength}}
+
+    %%%%%%%%%%%%%%%%%%%%%%%
+    % upper horizontal bars
+    %%%%%%%%%%%%%%%%%%%%%%%
+    \setlength{\barxpos}{.9in}
+    % Apparently, lines are centered around the given position. Therefore, add \linethickness\2 to \barypos
+
+    \linethickness{\narrowbarwidth}
+    \setlength{\barypos}{%
+      \pictureheight - ( \narrowbarwidth/2 )
+    }
+    \put(\barxpos,\barypos){\line(1,0){\horizontalbarlength}}
+
+    \linethickness{\broadbarwidth}
+    \setlength{\barypos}{%
+      \pictureheight - ( \narrowbarwidth + \spacerbarwidth + \broadbarwidth/2 )
+    }
+    \put(\barxpos,\barypos){\line(1,0){\horizontalbarlength}}
+
+    \linethickness{\narrowbarwidth}
+    \setlength{\barypos}{%
+      \pictureheight - ( \narrowbarwidth + \spacerbarwidth + \broadbarwidth + \spacerbarwidth + \narrowbarwidth/2 )
+    }
+    \put(\barxpos,\barypos){\line(1,0){\horizontalbarlength}}
+
+    \linethickness{\broadbarwidth}
+    \setlength{\barypos}{%
+      \pictureheight - ( \narrowbarwidth + \spacerbarwidth + \broadbarwidth + \spacerbarwidth + \narrowbarwidth + \spacerbarwidth + \broadbarwidth/2 )
+    }
+    \put(\barxpos,\barypos){\line(1,0){\horizontalbarlength}}
+
+    %%%%%%%%%%%%%%%%%%%%%%%
+    % lower horizontal bars
+    %%%%%%%%%%%%%%%%%%%%%%%
+    \setlength{\barxpos}{.9in}
+    % Apparently, lines are centered around the given position. Therefore, add \linethickness\2 to \barypos
+
+    \linethickness{\narrowbarwidth}
+    \setlength{\barypos}{%
+      \narrowbarwidth/2
+    }
+    \put(\barxpos,\barypos){\line(1,0){\horizontalbarlength}}
+
+    \linethickness{\broadbarwidth}
+    \setlength{\barypos}{%
+      \narrowbarwidth + \spacerbarwidth + \broadbarwidth/2
+    }
+    \put(\barxpos,\barypos){\line(1,0){\horizontalbarlength}}
+
+    \linethickness{\narrowbarwidth}
+    \setlength{\barypos}{%
+      \narrowbarwidth + \spacerbarwidth + \broadbarwidth + \spacerbarwidth + \narrowbarwidth/2
+    }
+    \put(\barxpos,\barypos){\line(1,0){\horizontalbarlength}}
+
+    \linethickness{\broadbarwidth}
+    \setlength{\barypos}{%
+      \narrowbarwidth + \spacerbarwidth + \broadbarwidth + \spacerbarwidth + \narrowbarwidth + \spacerbarwidth + \broadbarwidth/2
+    }
+    \put(\barxpos,\barypos){\line(1,0){\horizontalbarlength}}
+
+\end{picture}
+} % end of patchcodeT
+
+
+
+% A picture centered on the page background
+\newcommand\BackgroundPicture{%
+   \put(0,0){%
+     \parbox[b][\paperheight]{\paperwidth}{%
+       \vfill
+       \centering
+       \patchcodeT
+       \vfill
+    }
+  }
+}  
+
+% Add background picture to all pages
+\AddToShipoutPicture{\BackgroundPicture}
+

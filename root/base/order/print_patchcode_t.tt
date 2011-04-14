@@ -1,7 +1,8 @@
 [%- USE Latex;
     FILTER latex("pdf") %]
+[% USE date %]
 
-\documentclass[ngerman,10pt,a5paper]{article}
+\documentclass[ngerman,9pt,a5paper]{article}
 %\documentclass[ngerman,11pt,a4paper]{article}
 \pagestyle{empty}
 \usepackage[T1]{fontenc}
@@ -15,10 +16,10 @@
 
 % Provide patchcode T pattern as a background image:
 % Page size is set accordingly
-\input{patchcodeT}
+\input{[% "${c.path_to('root').volume}${c.path_to('root','base','order').as_foreign('Unix')}/patchcodeT.tex" %]}
 
 % Provide ability for code 128 barcodes:
-\input{code128.tex}
+\input{[% "${c.path_to('root').volume}${c.path_to('root','base','order').as_foreign('Unix')}/code128.tex" %]}
 
 \begin{document}
 
@@ -36,10 +37,10 @@
   \begin{minipage}[t]{70mm}
 	\begin{center}
 	  \bigskip
-	  \fontsize{40}{50}\selectfont ubr123456\\%[% order.order_id %]\\
+	  \fontsize{40}{50}\selectfont [% order.order_id %]\\
 	  \bigskip
-	  %{\centering \mbox{\codetext{ubr123456}} }\\ %[% order.order_id %]}\\
-	  {\centering \mbox{\code{ubr123456}} }\\ %[% order.order_id %]}\\
+	  %{\centering \mbox{\codetext{[% order.order_id %]}}\\
+	  {\centering \mbox{\code{[% order.order_id %]}}}\\
 	\end{center}
 	  \bigskip
 	  \small
@@ -67,23 +68,25 @@
   [% order.title %]
 [% END %]
 
-\smallskip
+\bigskip
 
 \begin{tabular}{lp{7cm}}
 Medien-Nr.:      & [% order.titel.mediennr %]\\
 BV-Nr.:          & [% order.titel.bvnr %]\\
-Seiten:          & [% order.pages %]\\
+%Seiten:          & [% order.pages %]\\
 gedruckt:        & [% date.format(date.now, '%d.%m.%Y %H:%M:%S', 'de_DE') %]\\
 Status:          & [% order.status.name %]\\
-Bemerkung:       & [% order.remark %]\\
                  & \\
 [% FOREACH ordersproject IN order.ordersprojects %]
-Projekt:  & [% ordersproject.project.name %]\\
-[% FOREACH projectparam IN ordersproject.projectparams %]
-[% projectparam.key %]: & [% projectparam.value %]  \\
-[% END %]
+	Projekt:  & [% ordersproject.project.name %]\\
+	[% FOREACH projectparam IN ordersproject.projectparams %]
+		[% projectparam.key %]: & [% projectparam.value %]  \\
+	[% END %]
 [% END %]
 \end{tabular}
+
+Bemerkung:\\
+[% order.remark %]
 
   \end{minipage}
 \end{center}
@@ -98,9 +101,10 @@ Projekt:  & [% ordersproject.project.name %]\\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  End: Page setup
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-[% END %][%- end of loop over orders2print -%]
+[% END -%][%# end of loop over orders2print %]
 
 
 \end{document}
 
+[% END -%]
 
