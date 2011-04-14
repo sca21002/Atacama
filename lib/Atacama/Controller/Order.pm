@@ -39,6 +39,7 @@ sub list : Chained('orders') PathPart('list') Args(0) {
     my ( $self, $c ) = @_;
 
     $c->log->debug('LIST: ');
+    $c->log->debug('Filter stash: ' . $c->session->{order}{list}{filters});
 
     $c->stash(
         projects => [
@@ -49,7 +50,8 @@ sub list : Chained('orders') PathPart('list') Args(0) {
         ],       
         status => [ $c->model('AtacamaDB::Status')->search({})->all ],
         json_url => $c->uri_for_action('order/json'),
-        template => 'order/list.tt'
+        template => 'order/list.tt',
+        filters => $c->session->{order}{list}{filters},
     ); 
 }
 
@@ -69,7 +71,11 @@ sub json : Chained('orders') PathPart('json') Args(0) {
         ; 
    
     $c->log->debug('filters: ' . Dumper($data->{filters}));
-    my $filters = decode_json $data->{filters} if $data->{filters};    
+    my $filters = $data->{filters};
+    $filters = decode_json $filters if $filters;    
+
+    $c->session->{order}{list}{filters} = $data->{filters};
+
        
     my $orders_rs = $c->stash->{orders};
     $orders_rs = $orders_rs->filter($filters);
