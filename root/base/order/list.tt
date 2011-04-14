@@ -14,7 +14,10 @@
 	src="[% c.uri_for_static('js/ext/plugins/jquery/jqGrid/jquery.jqGrid.min.js') %]"></script>
 
 <script type="text/javascript">
-	var prefs = {
+        [% IF filters %] var filters_from_session = [% filters %]; [% END %]
+	function showCatlink(cellvalue, options, rowObject) {
+		var idUrl = "/order/" + options.rowId + "/edit";
+		return "<a href='" + idUrl + "'>" + cellvalue + "</a>";
 
 		data : {},
 
