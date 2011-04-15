@@ -5,11 +5,12 @@
 
 
 \documentclass[ngerman,11pt,a4paper]{article}
+\renewcommand{\familydefault}{\sfdefault}
 \pagestyle{empty}
 \usepackage{fix-cm}
 \usepackage[T1]{fontenc}
 \usepackage{textcomp}
-\voffset-0.5in
+\voffset-0.1in
 \hoffset-0.5in
 \parindent0pt
 \topmargin0pt
@@ -27,9 +28,9 @@
 
 \sf
 \input {[% "${c.path_to('root').volume}${c.path_to('root','base','order').as_foreign('Unix')}/code128.tex" %]}
-\parbox[t]{80mm} {
-    \large UB Regensburg\\
-    Digitalisierungsauftrag: Scanlaufzettel
+\parbox[t]{100mm} {
+    \section* {UB Regensburg \\
+    Digitalisierungsauftrag: Scanlaufzettel}
 } \hfill
 \begin{minipage}[t]{80mm}
 \begin{flushright}
@@ -37,23 +38,16 @@
 \bigskip
 \hfill \code{[% order.order_id %]}\\
 \bigskip
-\small
-\begin{tabular}{ll}
-angelegt: & [% order.creation_date.dmy('.')%] [% order.creation_date.hms() %]\\
-ge\"andert: & [% order.modification_date.dmy('.') %] [%order.modification_date.hms() %]\\
-gedruckt: & [% date.format(date.now, '%d.%m.%Y %H:%M:%S', 'de_DE') %]\\
-Status:   &  [% order.status.name %]\\
-\end{tabular}
 \end{flushright}
 \end{minipage}
 
-{\bf 1. Vorlage}
-
-\smallskip
+\section {Vorlage}
 
 \begin{tabular}{lp{14cm}}
 Medientyp: & [% order.documenttyp.name %]\\
+[% IF order.pages %]
 Seiten: & [% order.pages %]\\
+[% END %]
 BV-Nr.: & [% order.titel.bvnr %]\\
 Signatur: & [% order.titel.signatur %]\\
 [% IF order.titel.titel_avs -%]
@@ -65,33 +59,25 @@ OCR: & [% order.ocr %]\\
 Bemerkung: & [% order.remark %]\\
 Datenkontrolle: & [% order.control %]\\
 \end{tabular}
-\bigskip
 
-{\bf 2. Projekte}
 
-[% FOREACH ordersproject IN order.ordersprojects %]
+\section {Projekte}
+
+
+[%- FOR orderproject IN order_href.orders_projects %]
 \smallskip
 \begin{tabular}{ll}
-Projekt:  & [% ordersproject.project.name %]\\
-[% FOREACH projectparam IN ordersproject.projectparams %]
+Projekt:  & [% orderproject.project.name %]\\
+[% FOREACH projectparam IN orderproject.projectparams %]
 [% projectparam.key %]: & [% projectparam.value %]  \\
 [% END %]
 \end{tabular}
 [% END %]
-\bigskip
 
-{\bf 3. Scan-Operator}
-\smallskip
 
-Name: \rule[-3mm]{0mm}{8mm}\hrulefill\\
-\bigskip
+\section {Scanner}
 
-{\bf 4. Bearbeitungszeit}
-\smallskip
-
-Beginn des Scannens: \hrulefill\ Beendet am: \hrulefill \\
-\bigskip
-
+Scan-Operator (Name): \rule[-3mm]{0mm}{8mm}\hrulefill\\
 
 \begin{tabular}{ll}
 [% FOREACH scanparameter IN order.scanparameters %]
@@ -106,82 +92,72 @@ Bereich: & [% scanparameter.range %]\\
 \end{tabular}
 \bigskip
 
-
-\rule[-3mm]{0mm}{8mm}{\bf 4. Probleme beim Scannen: }\hrulefill\\
+\rule[-3mm]{0mm}{8mm}{ Probleme beim Scannen: }\hrulefill\\
 \rule[-3mm]{0mm}{8mm}\hrulefill\\
 \rule[-3mm]{0mm}{8mm}\hrulefill\\
 \rule[-3mm]{0mm}{8mm}\hrulefill\\
-\pagebreak
-
-{\bf 6. Bildgr\"o{\ss}e}
-\smallskip
-
-\begin{tabular}{rll}
-{\bf Rahmen} & Schmaler schwarzer Rand au{\ss}en herum      & \usebox{\kk}\\
-             & Nur Satzspiegel                          & \usebox{\kk}\\
-{\bf Bilder} & Zwei Seiten in einem Rahmen              & \usebox{\kk}\\
-             & Jede Seite mit eigenem Rahmen            & \usebox{\kk}\\ 
-\end{tabular}
-\bigskip
 
 
-{\bf 7. Umfang}
-\smallskip
 
-nur Textblock \usebox{\kk}\hspace{1cm}  komplett (ohne Einband) \usebox{\kk}\\
-\bigskip
-
-{\bf 8. Datenkontrolle}
-\smallskip
-
-PDF \usebox{\kk}\hspace{1cm}  PDF in ODM-System \usebox{\kk} \hspace{1cm} OCR  \usebox{\kk}\\
-\smallskip
-
-\begin{tabular}{|l|p{3.5cm}|l|l|l|l|}\hline
-     Test
-     & Komprimierung \hfill \usebox{\kk} \newline
-       Seitenzahl \hfill \usebox{\kk} \newline
-       300 dpi  \hfill \usebox{\kk} \newline     
-       Book Restorer \hfill \usebox{\kk} \newline
-     &
-     PDF
-     &
-     OCR
-     &
-     Ver\"offentlicht
-     &
-     Verschoben auf rzblx8\\ \hline
-Namensk\"urzel & & & & &\\ \hline
-Datum & & & & &\\ \hline
-\end{tabular}
-
-\bigskip
-
-{\bf 9. Scan-Verlauf}
-\smallskip
-
-\begin{tabular}{ll}
-Auf dem Speicherserver "rzblx8" unter "Auftr\"age abgeschlossen" & \usebox{\kk}\\
-Ausdrucken f\"ur Fachreferenten & \usebox{\kk}\\
-PDF an Fachreferenten & \usebox{\kk}\\
-Als Hausbrochure binden lassen & \usebox{\kk}\\
-DVD/CD brennen lassen & \usebox{\kk}\\
-Batch-Dateien von OCR speichern & \usebox{\kk}\\
-\end{tabular}
-\bigskip
-
-{\bf 10. Scan-Verlauf}
-\smallskip
+\subsection*{Scan-Verlauf}
 
 \begin{tabular}{|l|l|l|} \hline
 \multicolumn{1}{|c|}{\rule[-3mm]{0mm}{8mm}Bis Spalte/Seite} & \multicolumn{1}{c|}{Namensk\"urzel} & \multicolumn{1}{c|}{Datum}\\ \hline
-\rule[-3mm]{0mm}{8mm}\hspace{8cm} & \hspace{4cm} & \hspace{4cm}\\ \hline
+\rule[-3mm]{0mm}{8mm}\hspace{8cm} & \hspace{4cm} & \hspace{7cm}\\ \hline
 \rule[-3mm]{0mm}{8mm} & & \\ \hline
 \rule[-3mm]{0mm}{8mm} & & \\ \hline
 \rule[-3mm]{0mm}{8mm} & & \\ \hline
 \rule[-3mm]{0mm}{8mm} & & \\ \hline
 \rule[-3mm]{0mm}{8mm} & & \\ \hline
 \end{tabular}
+
+
+
+\pagebreak
+
+
+
+\bigskip
+\section {Datenkontrolle}
+\subsection*{Nach dem Scannen}
+\begin{tabular}{p{15cm}r}
+Seitenzahl (XnView)     & \usebox{\kk}\\
+Komprimierung (SW-TIFF G4, Grau+Farbe - TIFF LZW)   & \usebox{\kk}\\
+Text nicht abgeschnitten         & \usebox{\kk}\\
+ ungerade Seiten = ungerade Tiff-Nr., gerade Seiten m\"ussen gerade Tiff-Nr. haben   & \usebox{\kk}\\ 
+\end{tabular}
+
+\subsection* {Datenkontrolle}
+\begin{tabular}{p{15cm}r}
+Komprimierung (SW-TIFF G4, Grau+Farbe - TIFF LZW)   & \usebox{\kk}\\
+Karten von 600 dpi auf 400 dpi komprimieren & \usebox{\kk}\\
+Gerader\"ucken (Scangate, Bookrestorer)   & \usebox{\kk}\\ 
+Farbprofil (OS 10.000 mG/oG, Scanrobot, OS 10.000 A1 mG/oG)   & \usebox{\kk}\\ 
+Rand zuschneiden (Scangate)   & \usebox{\kk}\\ 
+Rand hinzuf\"ugen (Scangate)   & \usebox{\kk}\\ 
+JPG mit sRGB erstellen (Photoshop) / 300 dpi IrfanView   & \usebox{\kk}\\ 
+\\
+OCR (ABBYY Finereader)   & \usebox{\kk}\\ 
+Batch einlesen \usebox{\kk}   Batch gelesen  \usebox{\kk} PDF speichern   \usebox{\kk} & \\  
+\\
+Karten nachtr\"aglich hinzuf\"ugen   & \usebox{\kk}\\ 
+\end{tabular}
+
+
+\subsection* {PDF-Kontrolle}
+\begin{tabular}{p{15cm}r}
+OCR richtig abgespeichert (Text unter dem Seitenbild)    & \usebox{\kk}\\
+Weisse R\"ander abscheiden & \usebox{\kk}\\
+PDF durchnummerieren       & \usebox{\kk}\\
+Seitenzahl im PDF = Tiff-Zahl   & \usebox{\kk}\\ 
+Karten am Ende in richtiger Reihenfolge  & \usebox{\kk}\\ 
+Optimiertes PDF abspeichern  & \usebox{\kk}\\ 
+Im ESA ver\"offentlichen  & \usebox{\kk}\\ 
+Verschieben auf "rzblx8" (DATA2, DATA3)  & \usebox{\kk}\\ 
+Original-Ordner \"uberpr\"ufen: Zeutschel (.OIP, .OJP, Tiff), \\Treventus Scanrobot
+(Setup, Thumbnails, Tiffs  [keine JPGs im Ordner!!!])  & \usebox{\kk}\\ 
+\end{tabular}
+
 
 
 

@@ -175,7 +175,7 @@
                      cache: false,
                      error: function(){  alert ("Diese Signatur existiert nicht.");    },                                    
                      success: function(result){    
-                    	 console.debug(result); 
+                    	// console.debug(result); 
 
                   
                     	 if (typeof result.json_data[1] != 'undefined') {

@@ -12,7 +12,7 @@
 <script type="text/javascript" src="[%c.uri_for_static('js/ext/jquery-ui/jquery-ui-1.8.11.custom.min.js')%]"></script>
 
 <script type="text/javascript"	src="[%c.uri_for_static('js/ext/plugins/jquery/ScrollTo/jquery.scrollTo-1.4.2-min.js')%]"></script>
-<script type="text/javascript" src="[%c.uri_for_static('js/main.js')%]"></script>
+<script type="text/javascript" src="[%c.uri_for_static('js/ext/json2.js')%]"></script>
 </head>
 <body id="page">
 
