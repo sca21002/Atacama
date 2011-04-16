@@ -54,6 +54,10 @@ sub work {
         = @{ $atacama_config->{'Model::AtacamaDB'}{connect_info} };
     my $atacama_schema = Atacama::Schema->connect(@dbic_connect_info)
         or $log->logcroak("Datenbankverbindung gescheitert");
+    
+    my $order = $atacama_schema->resultset('Order')->find($order_id);
+    $order->update(status_id => 22);
+
     my $remedi_config = get_remedi_config($remedi_configfile)
         or $log->logcroak("Lesen der Remedi-Konfiguration fehlgeschlagen"); 
     my @scanfiles = $atacama_schema->resultset('Scanfile')->search(
@@ -91,9 +95,6 @@ sub work {
             $log->info("$source --> $dest");
         }
     }
-    my $order = $atacama_schema->resultset('Order')->find($order_id);
-        # or
-        # $log->croak("Kein Auftrag in der Datenbank zu $order_id"); 
     my $titel = $order->titel;
     my %init_arg;
     if ($arg->{digifooter}) {
@@ -129,6 +130,7 @@ sub work {
         Remedi::CSV->new_with_config(%init_arg)->make_csv; 
     }
     $job->completed();
+    $order->update(status_id => 12);
 }
 
 sub get_logfile_name { $log_file_name }

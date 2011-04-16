@@ -47,7 +47,7 @@ sub sourcefile : Chained('/order/order') PathPart('sourcefile') Args(0) {
         );
         $c->model('TheSchwartzDB')->insert($job);    
         $c->res->redirect(
-            $c->uri_for_action('/order/edit', [$c->req->params->{order_id}] )
+            $c->uri_for_action('/order/edit', [$order->order_id] )
         );        
 
     }
