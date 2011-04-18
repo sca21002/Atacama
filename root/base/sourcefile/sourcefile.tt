@@ -1,8 +1,8 @@
-<table>
-<tr><td> Auftrag:   </td><td> [% order.order_id %]          </td></tr>
+<h1 class="main">Scandateien und PDF-Datei zu Auftrag [% order.order_id %] suchen</h1>
 
 <form name="[% form.name %]"
     action="[% c.req.uri %]"
     method="post">
+[% form.field('delete_scanfiles').render %]    
 [% form.field('submit').render %]
 </form>

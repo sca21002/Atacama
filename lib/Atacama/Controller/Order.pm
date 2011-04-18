@@ -38,8 +38,8 @@ sub orders : Chained('/login/required') PathPart('order') CaptureArgs(0) {
 sub list : Chained('orders') PathPart('list') Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->log->debug('LIST: ');
-    $c->log->debug('Filter stash: ' . $c->session->{order}{list}{filters});
+    # $c->log->debug('LIST: ');
+    # $c->log->debug('Filter stash: ' . $c->session->{order}{list}{filters});
 
     $c->stash(
         projects => [
@@ -70,7 +70,7 @@ sub json : Chained('orders') PathPart('json') Args(0) {
         : {}
         ; 
    
-    $c->log->debug('filters: ' . Dumper($data->{filters}));
+    # $c->log->debug('filters: ' . Dumper($data->{filters}));
     my $filters = $data->{filters};
     $filters = decode_json $filters if $filters;    
 
@@ -129,6 +129,9 @@ sub edit : Chained('order') {
 sub add : Chained('orders') {
     my ($self, $c) = @_;
     $c->forward('save');
+    $c->res->redirect(
+        $c->uri_for_action('/order/edit', [ $c->stash->{order}->order_id ] )
+    );
 }
 
 # both adding and editing happens here
@@ -136,18 +139,28 @@ sub add : Chained('orders') {
 sub save : Private {
     my ($self, $c) = @_;
 
-    my $order = $c->stash->{order} || $c->model('AtacamaDB::Order')->new_result({});
+    my $order = $c->stash->{order}
+        ||= $c->model('AtacamaDB::Order')->create_order();
     if ($c->req->method eq 'POST') {
-        $c->log->debug(Dumper($c->req->params));
+        # $c->log->debug(Dumper($c->req->params));
         my $order_params = $self->list_to_hash($c, $c->req->params);
         # $c->log->debug(Dumper($order_params));
         $order->save($order_params);
     }
-    #$c->log->debug(Dumper($order->properties));
+    # $c->log->debug(Dumper($order->properties));
     $c->stash(
         %{$order->properties},      
         template => 'order/edit.tt',   
     );
+    
+}
+
+sub delete : Chained('order') {
+    my ($self, $c) = @_;
+    
+    my $order = $c->stash->{order};
+    $order->delete();
+    $c->res->redirect($c->uri_for_action('/order/list'));
 }
 
 sub print : Chained('order') {

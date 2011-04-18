@@ -5,8 +5,7 @@
 <link rel="stylesheet" type="text/css" media="screen"
 	href="[% c.uri_for_static('css/ui-lightness/jquery-ui-1.8.9.custom.css') %]" />
 <link rel="stylesheet" type="text/css" media="screen"
-	href="[% c.uri_for_static('css/jqGrid/ui.jqgrid.css') %]" />
-<script type="text/javascript"
+	href="[% c.uri_for_static('css/jqGrid/ui.jqgrid.css') %]" /><script type="text/javascript"
 	src="[% c.uri_for_static('js/ext/jquery/jquery-1.5.min.js') %]"></script>
 <script type="text/javascript"
 	src="[% c.uri_for_static('js/ext/plugins/jquery/jqGrid/i18n/grid.locale-de.js') %]"></script>
@@ -83,52 +82,14 @@
 
 	}
 
-	function createField(name, op, data) {
-		var field = '{\"field\":\"' + name + '\",\"op\":\"' + op
-				+ '\",\"data\":\"' + data + '\"}';
-		return field;
-	}
-
-	function filterGrid(gridprefs) {
-		var fields = "";
-		var order_id = gridprefs.filter.order_id;
-		var titel_isbd = gridprefs.filter.titel_isbd;
-		var projects = gridprefs.filter.projects;
-		var status = gridprefs.status;
-
-		if (order_id != ""){
-			fields += (fields.length == 0 ? "" : ",")
-					+ createField("order_id", "bw", order_id); }
-		if (titel_isbd != ""){
-			fields += (fields.length == 0 ? "" : ",")
-					+ createField("titel_isbd", "bw", titel_isbd); }
-		if (projects != "" || projects !== "undefined") {
-			fields += (fields.length == 0 ? "" : ",")
-					+ createField("project_id", "eq", projects); }
-/*		if (status != "" || status !== "undefined") {
-			fields += (fields.length == 0 ? "" : ",")
-					+ createField("status_id", "eq", status); }
-*/
-		var filters = '{\"groupOp\":\"AND\",\"rules\":[' + fields + ']}';
-    	return filters;
-	}
-
-
-
-	
-
 	$(document)
 			.ready(
 					function() {
-
-
-						var gridprefs = prefs.load();
-
 						jQuery("#orders")
 								.jqGrid(
-										{											
-										 	url : "[% json_url %]",
-											datatype : "local",
+										{
+											url : "[% json_url %]",
+											datatype : "json",
 											colNames : [ 'Auftragsnr.',
 													'Titel', 'Projekte',
 													'Status' ],
@@ -150,91 +111,34 @@
 														index : 'project_id',
 														sortable : true,
 														width : 200,
-														stype : 'select',
-														editoptions : {
-															value : ":Alle;[% FOR project IN projects %];[% project.project_id %]:[% project.name %][% END %]"
-														}
-
-													},
-													{
+														stype:'select', 
+														editoptions:{value:":Alle;[% FOR project IN projects %];[% project.project_id %]:[% project.name %][% END %]"},
+														
+													}, {
 														name : 'status',
 														index : 'status_id',
 														sortable : true,
 														width : 80,
-														stype : 'select',
-														editoptions : {
-															value : ":Alle[% FOR stat IN status %];[% stat.status_id %]:[% stat.name %][% END %]"
-														}
-													} ],
-											rowNum : "20",
+														stype:'select', 
+														editoptions:{value:":Alle[% FOR stat IN status %];[% stat.status_id %]:[% stat.name %][% END %]"},
+													}, ],
+											rowNum : 20,
 											height : "100%",
 											width : '785',
 											rowList : [ 10, 20, 30, 40, 50, 60,
 													70, 80, 90, 100 ],
 											pager : '#pager_orders',
-											toppager: true,
-											sortname : gridprefs.scol,
-											gridview : true,
+											sortname : 'order_id',
+											gridview: true, 
 											viewrecords : true,
-											sortorder : gridprefs.sord,
+											sortorder : "asc",
 											caption : "Aufträge"
 										});
-
-						jQuery("#orders").jqGrid('navGrid', '#pager_orders', {
-							del : false,
-							add : false,
-							edit : false,
-							search : false
-						});
-
-						jQuery("#orders").jqGrid('filterToolbar', {
-							stringResult : true,
-							searchOnEnter : true
-						});
-
-						jQuery("#orders").jqGrid('navButtonAdd','#pager_orders',
-								{caption:"Zurücksetzen", onClickButton:function()
-							{ var grid = $("#orders");
-							grid[0].clearToolbar();
-							} }); 
 						
-
-						if (typeof gridprefs !== 'undefined'){
-							$('#gs_order_id').val(gridprefs.filter.order_id);
-							$('#gs_titel_isbd').val(gridprefs.filter.titel_isbd);
-							$('#gs_projects').val(gridprefs.filter.projects);
-							$('#gs_status').val(gridprefs.filter.status);
-
-    
-							filters = filterGrid(gridprefs);
-							console.debug(gridprefs);
-									
-					    
-					/*		$('#orders').jqGrid('setGridParam', {
-								sortname : gridprefs.scol,
-								sortorder : gridprefs.sord,
-								page : gridprefs.page,
-								rowNum : gridprefs.rows,
-								filter: filters,
-								search: true
-							}).trigger("reloadGrid");
-					*/		
+						jQuery("#orders").jqGrid('navGrid','#pager_orders',{del:false,add:false,edit:false,search:false}); 
+						jQuery("#orders").jqGrid('filterToolbar',{stringResult: true,searchOnEnter : true}); 
 						
-							var data = $('#orders').jqGrid("getGridParam", "postData");
-							data.search = true;
-							data.filters = filters;
-							data.hallodri = "Hallodri";
-						
-							$('#orders').jqGrid("setGridParam", { "postData": data,
-								"datatype": "json",
-								"search": "true" });
-							$('#orders').trigger("reloadGrid",[{page:gridprefs.page}]);
-			
-						}
 					
-
-						
-
 					});
 </script>
 <title>Aufträge</title>
@@ -242,17 +146,16 @@
 <body>
 
 <div id="nav_area">
-<ul id="navigation" class="ui-widget">
-	<li class="ui-state-default"><span class="ui-icon ui-icon-home"></span><a
-		href="[% c.uri_for('/') %]"> Startseite</a></li>
-	<li class="ui-state-default"><span class="ui-icon ui-icon-plus"></span><a
-		href="[% c.uri_for('add') %]"> Auftrag anlegen</a></li>
+<ul id="navigation" class="ui-widget" >
+<li class="ui-state-default"><span class="ui-icon ui-icon-home"></span><a href="[% c.uri_for('/') %]"> Startseite</a></li>
+<li class="ui-state-default"><span class="ui-icon ui-icon-plus"></span><a href="[% c.uri_for('add') %]"> Auftrag anlegen</a></li>
 </ul>
 </div>
 
 <div id="content">
 
 <h1 class="main">Alle Auftr&auml;ge</h1>
+
 
 <table id="orders"></table>
 <div id="pager_orders"></div>

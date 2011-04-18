@@ -19,7 +19,7 @@ html, body {
 function showCatlink (cellvalue, options, rowObject)
 {
     var idUrl = "/project/" +  options.rowId  +   "/edit";
-    return "<a href=\"" + idUrl + "\">" + cellvalue + "</a>";
+    return "<a href='" + idUrl + "'>" + cellvalue + "</a>";
 
 }
 </script>
@@ -32,7 +32,7 @@ jQuery("#orders").jqGrid({
     datatype: "json",
     colNames:['Projektnr.', 'Projekt'],
     colModel:[
-        {name:'project_id', formatter:showCatlink, index:'order_id', width:100},
+        {name:'project_id', formatter:showCatlink, index:'project_id', width:100, align: 'right' },
         {name:'name', sortable: false, width:300},
     ],
     rowNum:15,

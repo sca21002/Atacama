@@ -7,6 +7,34 @@ use Carp;
 use Data::Dumper;
 use feature qw(switch);
 
+sub create_order {
+    my ($self, $order_id) = @_;    
+    
+    $self->create({
+        order_id        => $order_id || $self->next_order_id,
+        creation_date   => DateTime->now(
+            locale      => 'de_DE',
+            time_zone   => 'Europe/Berlin',
+        ),       
+    });   
+    
+}
+
+sub next_order_id {
+    my $self = shift;    
+    
+    my ($order_last) 
+        = $self->search(
+            { order_id => { 'like', 'ubr%' },},
+            { order_by => 'order_id DESC'}
+          )->slice(0,1);
+    my $order_id = $order_last->order_id;
+    $order_id++;
+    return $order_id++;
+}
+
+
+
 
 sub filter {
     my ($self, $filters) = @_;

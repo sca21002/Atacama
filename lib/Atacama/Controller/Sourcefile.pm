@@ -40,9 +40,13 @@ sub sourcefile : Chained('/order/order') PathPart('sourcefile') Args(0) {
     if( $form->validated ) {
         # perform validated form actions
         $c->log->debug($c->log->debug(Dumper($c->req->params)));
+        if ( $c->req->params->{delete_scanfiles} ) {
+            $c->log->debug('Loeschen der Scanfiles in der DB');    
+            $order->scanfiles->delete_all() || $c->detach('error');
+            $order->pdffiles->delete_all()  || $c->detach('error');
+        }
         my $job = TheSchwartz::Job->new (
             funcname => 'Atacama::Worker::Sourcefile',
-            # arg => $c->req->params,
             arg => { order_id => $order->order_id },
         );
         $c->model('TheSchwartzDB')->insert($job);    

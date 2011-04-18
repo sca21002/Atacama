@@ -242,17 +242,26 @@
 		href="[% c.uri_for('list',page=>page) %]"> Liste der Auftr&auml;ge
 	</a></li>
 	<li class="ui-state-default"><span class="ui-icon ui-icon-trash"></span><a
-		href="[% c.uri_for('delete', order.order_id) %]"> Auftr&auml;g
+		href="[% c.uri_for_action('/order/delete', [order_href.order_id]) %]"> Auftr&auml;g
 	l&ouml;schen </a></li>
 	<li class="ui-state-default"><span class="ui-icon ui-icon-plus"></span><a
-		href="[% c.uri_for('add') %]" onClick="document.order_form.submit();">
+		href="[% c.uri_for_action('/order/add') %]" onClick="document.order_form.submit();">
 	Auftrag anlegen</a></li>
 	<li class="ui-state-default"><span class="ui-icon ui-icon-print"></span><a
-		href="[% c.action_for_uri('/order/print', [order_href.order_id]) %]"> Laufzettel
+		href="[% c.uri_for_action('/order/print', [order_href.order_id]) %]"> Laufzettel
 	drucken </a></li>
 	<li class="ui-state-default"><span class="ui-icon ui-icon-extlink"></span><a
-		href="[% c.action_for_uri('remedi/remedi', [order_href.order_id]) %]"> mit Remedi
+		href="[% c.uri_for_action('/remedi/remedi', [order_href.order_id] ) %]"> mit Remedi
 	bearbeiten </a></li>
+	<li class="ui-state-default"><span class="ui-icon ui-icon-extlink"></span><a
+		href="[% c.uri_for_action('/sourcefile/sourcefile', [order_href.order_id] ) %]"> Scandateien
+	suchen </a></li>
+        <li class="ui-state-default"><span class="ui-icon ui-icon-extlink"></span><a
+		href="[% c.uri_for_action('/job/scoreboard/list') %]">Laufender Job</a></li>
+        <li class="ui-state-default"><span class="ui-icon ui-icon-extlink"></span><a
+		href="[% c.uri_for_action('/job/queue/list') %]">Job-Warteschlange</a></li>
+        <li class="ui-state-default"><span class="ui-icon ui-icon-extlink"></span><a
+		href="[% c.uri_for_action('/job/error/list') %]">Fehlerhafte Jobs</a></li> 
 </ul>
 </div>
 
