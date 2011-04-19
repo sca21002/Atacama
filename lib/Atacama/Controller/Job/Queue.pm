@@ -2,6 +2,7 @@ package Atacama::Controller::Job::Queue;
 use Moose;
 use namespace::autoclean;
 use Data::Dumper;
+use Storable();
 BEGIN {extends 'Catalyst::Controller'; }
 
 =head1 NAME
@@ -75,10 +76,15 @@ sub json : Chained('queue') PathPart('json') Args(0) {
     $response->{records} = $queue_rs->pager->total_entries;
     my @rows; 
     while (my $job = $queue_rs->next) {
+        my $arg = Storable::thaw($job->arg);
+        $c->log->debug('Arg: ' . $arg);
+        my $order_id = $arg->{order_id};
+        my ($function) = reverse split /::/, $job->function->funcname;
         my $row->{id} = $job->jobid;
         $row->{cell} = [
             $job->jobid,
-            $job->funcid,
+            $order_id,
+            $function,
             $job->uniqkey,
             $job->insert_time->set_time_zone('Europe/Berlin')
                 ->strftime('%d.%m.%Y %T'),

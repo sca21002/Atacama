@@ -6,6 +6,7 @@
 %\documentclass[ngerman,11pt,a4paper]{article}
 \pagestyle{empty}
 \usepackage[T1]{fontenc}
+\usepackage{textcomp}
 %\usepackage{showframe}	% show page frames for development
 
 \usepackage{lastpage}	% support to show number of last page in document
@@ -63,9 +64,9 @@
 
 % Bibliographic information, preferentially ISBD formatted:
 [% IF order.titel.titel_avs -%]
-  [% order.titel.titel_isbd | latex_encode %]
+  [% order.titel.titel_isbd | latex_encode(except => 'ÄÖÜäöüß') %]
 [% ELSE %]
-  [% order.title | latex_encode %]
+  [% order.title | latex_encode(except => 'ÄÖÜäöüß') %]
 [% END %]
 
 \bigskip
@@ -77,16 +78,16 @@ BV-Nr.:          & [% order.titel.bvnr | latex_encode %]\\
 gedruckt:        & [% date.format(date.now, '%d.%m.%Y %H:%M:%S', 'de_DE') %]\\
 Status:          & [% order.status.name | latex_encode %]\\
                  & \\
-[% FOREACH ordersproject IN order.ordersprojects %]
-	Projekt:  & [% ordersproject.project.name | latex_encode %]\\
+[% FOREACH orders_projects IN order.orders_projects %]
+	Projekt:  & [% orders_projects.project.name | latex_encode(except => 'ÄÖÜäöüß') %]\\
 	[% FOREACH projectparam IN ordersproject.projectparams %]
 		[% projectparam.key | latex_encode %]: & [% projectparam.value | latex_encode %]  \\
 	[% END %]
 [% END %]
 \end{tabular}
 
-Bemerkung:\\
-[% order.remark | latex_encode %]
+%%%%%Bemerkung:\\
+[%# order.remark | latex_encode %]
 
   \end{minipage}
 \end{center}

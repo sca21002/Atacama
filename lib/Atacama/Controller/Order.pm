@@ -190,7 +190,33 @@ sub print_patchcode_t : Chained('order') {
     }
 }
 
-
+sub print_patchcode_all : Chained('orders') PathPart('print_patchcode') Args(0){ 
+    my ($self, $c)  = @_;
+    
+    my $orders_rs = $c->stash->{orders};
+    my $page = $c->req->query_params->{page} || 1;
+    
+    $orders_rs = $orders_rs->search(
+        {
+            'orders_projects.project_id' => { 'IN' => [3, 26, 40] },
+            status_id => 1,
+        },
+        {
+            join => 'orders_projects', 
+            page => $page,
+            rows => 100,
+            order_by => 'order_id',
+        }
+    );
+    $c->stash->{orders2print} = [ $orders_rs->all ];
+    
+    $c->stash->{template} = 'order/print_patchcode_t.tt'; 
+    if ($c->forward( 'Atacama::View::PDF' )) {
+         $c->response->content_type('application/pdf');
+         $c->response->header('Content-Disposition', 'attachment; filename='
+            . 'test' . 'pdf');
+    }
+}
 
 
 sub not_found : Local {

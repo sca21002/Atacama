@@ -76,10 +76,11 @@ sub json : Chained('errors') PathPart('json') Args(0) {
     $response->{records} = $errors_rs->pager->total_entries;
     my @rows; 
     while (my $error = $errors_rs->next) {
+        my ($function) = reverse split /::/, $error->function->funcname;
         my $row->{id} = $error->jobid;
         $row->{cell} = [
             $error->jobid,
-            $error->funcid,
+            $function,
             $error->error_time->set_time_zone('Europe/Berlin')
                 ->strftime('%d.%m.%Y %T'),
             $error->message,

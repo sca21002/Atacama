@@ -75,5 +75,13 @@ __PACKAGE__->add_columns(
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
+
+__PACKAGE__->belongs_to(
+    "function",
+    "Atacama::Schema::Result::Funcmap",
+    { "foreign.funcid" => "self.funcid" },
+    { join_type => 'left' }
+);
+
 __PACKAGE__->meta->make_immutable;
 1;
