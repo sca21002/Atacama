@@ -52,6 +52,7 @@ jQuery("#jobs").jqGrid({
     rowNum:15,
     rownumbers: true,
     height: 350,
+	width : '785',
     rowList:[10,20,30,40,50,60,70,80,90,100],
     pager: '#pager_jobs',
     sortname: 'id',
@@ -65,7 +66,17 @@ jQuery("#jobs").jqGrid('navGrid','#pager_jobs',{edit:false,add:false,del:false})
     <title>Testbeispiel für jqGrid</title>
 </head>
 <body>
- <div>       
- <div><table id="jobs"></table></div><div id="pager_jobs"></div></div> 
+
+ <div id="nav_area">
+<ul id="navigation" class="ui-widget" >
+<li class="ui-state-default"><span class="ui-icon ui-icon-home"></span><a href="[% c.uri_for('/') %]">Startseite</a></li>
+<li class="ui-state-default"><span class="ui-icon ui-icon-plus"></span><a href="[% c.uri_for('add') %]">Auftrag anlegen</a></li>
+<li class="ui-state-default"><span class="ui-icon ui-icon-contact"></span><a href="[% c.uri_for('order/list') %]">Liste der Auftr&auml;ge	</a></li>
+<li class="ui-state-default"><span class="ui-icon ui-icon-back"></span><a 	href="[% c.uri_for_action('order/edit', [order.order_id]) %]">zurück zum Auftrag</a></li>
+</ul>
+</div>
+
+<div id="content"><table id="jobs"></table>
+<div id="pager_jobs"></div></div> 
 </body>
 </html>

@@ -17,7 +17,7 @@
 	var prefs = {
 
 		data : {},
-
+		
 		load : function() {
 			var the_cookie = document.cookie.split(';');
 			console.debug("THE Cookie: " +document.cookie);
@@ -27,14 +27,17 @@
 
 				try	{
 				result = jQuery.parseJSON( the_cookie[0]);
+				return result;
 				}
 				catch(e) 	{
 				// We report an error, and show the erronous JSON string (we replace all " by ', to prevent another error)
 				result = jQuery.parseJSON( '{"code":"error","content":"' + e.replace(/"/g, "'") + '"}' );
 				} 
+
+			
 					
 			}
-			return result;
+			
 		},
 
 		save : function(expires, path) {
@@ -180,7 +183,7 @@
 			.ready(
 					function() {
 
-
+						
 						var gridprefs = prefs.load();
 
 						jQuery("#orders")
@@ -232,10 +235,10 @@
 													70, 80, 90, 100 ],
 											pager : '#pager_orders',
 											toppager: true,
-											sortname : gridprefs.scol,
+											sortname : 'order_id',
 											gridview : true,
 											viewrecords : true,
-											sortorder : gridprefs.sord,
+											sortorder : "asc",
 											caption : "Aufträge"
 										});
 
@@ -268,27 +271,21 @@
 							filters = filterGrid(gridprefs);
 							console.debug(gridprefs);
 									
-					    
-					/*		$('#orders').jqGrid('setGridParam', {
-								sortname : gridprefs.scol,
-								sortorder : gridprefs.sord,
-								page : gridprefs.page,
-								rowNum : gridprefs.rows,
-								filter: filters,
-								search: true
-							}).trigger("reloadGrid");
-					*/		
-						
 							var data = $('#orders').jqGrid("getGridParam", "postData");
 							data.search = true;
 							data.filters = filters;
-							data.hallodri = "Hallodri";
+						
 						
 							$('#orders').jqGrid("setGridParam", { "postData": data,
 								"datatype": "json",
 								"search": "true" });
 							$('#orders').trigger("reloadGrid",[{page:gridprefs.page}]);
 			
+						}
+						else {
+							$('#orders').jqGrid("setGridParam", { "postData": data,
+								"datatype": "json" });
+							$('#orders').trigger("reloadGrid");
 						}
 					
 

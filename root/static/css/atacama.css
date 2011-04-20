@@ -100,7 +100,7 @@ form#login_form {
 	float: none;
 }
 
-#gbox_orders,#gbox_scanfiles {
+#gbox_orders,#gbox_scanfiles, #gbox_errors, #gbox_queue {
 	margin-left: -10px;
 }
 
