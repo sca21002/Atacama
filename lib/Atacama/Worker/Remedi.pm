@@ -55,7 +55,8 @@ sub work {
     my $atacama_schema = Atacama::Schema->connect(@dbic_connect_info)
         or $log->logcroak("Datenbankverbindung gescheitert");
     
-    my $order = $atacama_schema->resultset('Order')->find($order_id);
+    my $order = $atacama_schema->resultset('Order')->find($order_id)
+            or croak("Kein Auftrag zu $order_id gefunden!");
     $order->update({status_id => 22});
 
     my $remedi_config = get_remedi_config($remedi_configfile)
@@ -130,7 +131,7 @@ sub work {
         Remedi::CSV->new_with_config(%init_arg)->make_csv; 
     }
     $job->completed();
-    $order->update({status_id => 12});
+    $order->update({status_id => 26});
 }
 
 sub get_logfile_name { $log_file_name }

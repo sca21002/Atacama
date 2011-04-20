@@ -43,12 +43,22 @@ sub add : Chained('worker') PathPart('add') Args(0) {
         funcname => 'Atacama::Worker::Remedi',
         arg => $c->req->params,
     );
-    $c->model('TheSchwartzDB')->insert($job);    
+    my $order_id = $c->req->params->{order_id};
+    my $order = $c->model('AtacamaDB::Order')->find($order_id)
+        or $c->detach('not_found');
+    $c->model('TheSchwartzDB')->insert($job);
+    $order->update({status_id => 24});
     $c->res->redirect(
-        $c->uri_for_action('/order/edit', [$c->req->params->{order_id}] )
+        $c->uri_for_action('/order/edit', [$order_id] )
     );
 }
 
+sub not_found : Local {
+    my ($self, $c) = @_;
+    $c->response->status(404);
+    $c->stash->{error_msg} = "Auftrag nicht gefunden!";
+    $c->detach('list');
+}
 
 
 =head1 AUTHOR

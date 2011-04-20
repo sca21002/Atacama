@@ -33,8 +33,14 @@ sub work {
         unless blessed($job) && $job->isa( 'TheSchwartz::Job' );
     my $arg = $job->arg or croak("Keine Job-Parameter gefunden");
     my $order_id = $arg->{order_id} or croak("Keine Auftragsnummer");
+    my $order = $atacama_schema->resultset('Order')->find($order_id)
+        or croak("Kein Auftrag zu $order_id gefunden!");
+    
+    $order->update({status_id => 23});
     my $log_file_name = File::Spec->catfile(
+                                            
         $FindBin::Bin, '..', 'log', 'sourcefile_' . $order_id
+        
     ); 
     unlink $log_file_name if -e $log_file_name;
     my $log_configfile = File::Spec->catfile(

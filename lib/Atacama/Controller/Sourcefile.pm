@@ -49,7 +49,8 @@ sub sourcefile : Chained('/order/order') PathPart('sourcefile') Args(0) {
             funcname => 'Atacama::Worker::Sourcefile',
             arg => { order_id => $order->order_id },
         );
-        $c->model('TheSchwartzDB')->insert($job);    
+        $c->model('TheSchwartzDB')->insert($job);
+        $order->update({status_id => 25});
         $c->res->redirect(
             $c->uri_for_action('/order/edit', [$order->order_id] )
         );        

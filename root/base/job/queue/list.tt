@@ -24,10 +24,10 @@ $(document).ready(function() {
 jQuery("#queue").jqGrid({
     url:"[% json_url %]",
     datatype: "json",
-    colNames:['Jobid', 'Auftragsnr.', 'Function', 'Uniqkey', 'Insert time', 'Run after', 'Grabbed until', 'Priority', 'Coalesce'],
+    colNames:['Jobid', 'Auftrag', 'Function', 'Uniqkey', 'Insert time', 'Run after', 'Grabbed until', 'Priority', 'Coalesce'],
     colModel:[
         {name:'jobid', index:'job_id', width:60},
-        {name:'order_id', index:'order_id', width:60},
+        {name:'order_id', index:'order_id', width:80},
         {name:'funcid', sortable: false, width:60},
         {name:'uniqkey', sortable: false, width:60},
         {name:'insert_time', sortable: false, width:120},
