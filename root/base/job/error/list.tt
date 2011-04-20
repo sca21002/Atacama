@@ -4,13 +4,7 @@
 <head>
     <link rel="stylesheet" type="text/css" media="screen" href="[% c.uri_for_static('css/ui-lightness/jquery-ui-1.8.9.custom.css') %]" />
     <link rel="stylesheet" type="text/css" media="screen" href="[% c.uri_for_static('css/jqGrid/ui.jqgrid.css') %]" />
-<style>
-html, body {
-    margin: 0;
-    padding: 0;
-    font-size: 50%;
-}
-</style>
+
     <script type="text/javascript" src="[% c.uri_for_static('js/ext/jquery/jquery-1.5.min.js') %]"></script> 
     <script type="text/javascript" src="[% c.uri_for_static('js/ext/plugins/jquery/jqGrid/i18n/grid.locale-de.js') %]"></script> 
     <script type="text/javascript" src="[% c.uri_for_static('js/ext/plugins/jquery/jqGrid/jquery.jqGrid.min.js') %]"></script> 
@@ -52,7 +46,20 @@ jQuery("#errors").jqGrid('navGrid','#pager_errors',{edit:false,add:false,del:fal
     <title>Jobs mit Fehler</title>
 </head>
 <body>
- <div>       
- <div><table id="errors"></table></div><div id="pager_errors"></div></div> 
+ <div id="nav_area">
+<ul id="navigation" class="ui-widget" >
+<li class="ui-state-default"><span class="ui-icon ui-icon-home"></span><a href="[% c.uri_for('/') %]">Startseite</a></li>
+<li class="ui-state-default"><span class="ui-icon ui-icon-plus"></span><a href="[% c.uri_for('add') %]">Auftrag anlegen</a></li>
+<li class="ui-state-default"><span class="ui-icon ui-icon-contact"></span><a href="[% c.uri_for('list',page=>page) %]">Liste der Auftr&auml;ge	</a></li>
+<li class="ui-state-default"><span class="ui-icon ui-icon-back"></span><a 	href="[% c.uri_for_action('order/edit', [order.order_id]) %]">zurück zum Auftrag</a></li>
+</ul>
+</div>
+
+<div id="content">
+  
+<h1 class="main">Fehlerhafte Jobs</h1>
+<table id="errors"></table>
+<div id="pager_errors"></div>
+ </div>
 </body>
 </html>

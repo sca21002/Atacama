@@ -253,14 +253,14 @@
 	<li class="ui-state-default"><span class="ui-icon ui-icon-extlink"></span><a
 		href="[% c.uri_for_action('/remedi/remedi', [order_href.order_id] ) %]"> mit Remedi
 	bearbeiten </a></li>
-	<li class="ui-state-default"><span class="ui-icon ui-icon-extlink"></span><a
+	<li class="ui-state-default"><span class="ui-icon ui-icon-search"></span><a
 		href="[% c.uri_for_action('/sourcefile/sourcefile', [order_href.order_id] ) %]"> Scandateien
 	suchen </a></li>
-        <li class="ui-state-default"><span class="ui-icon ui-icon-extlink"></span><a
+        <li class="ui-state-default"><span class="ui-icon ui-icon-circle-triangle-e"></span><a
 		href="[% c.uri_for_action('/job/scoreboard/list') %]">Laufender Job</a></li>
-        <li class="ui-state-default"><span class="ui-icon ui-icon-extlink"></span><a
+        <li class="ui-state-default"><span class="ui-icon ui-icon-info"></span><a
 		href="[% c.uri_for_action('/job/queue/list') %]">Job-Warteschlange</a></li>
-        <li class="ui-state-default"><span class="ui-icon ui-icon-extlink"></span><a
+        <li class="ui-state-default"><span class="ui-icon ui-icon-alert"></span><a
 		href="[% c.uri_for_action('/job/error/list') %]">Fehlerhafte Jobs</a></li> 
 </ul>
 </div>
