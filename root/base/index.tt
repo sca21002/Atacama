@@ -1,11 +1,29 @@
-﻿<p> Atacama verwaltet die Digitalisierungsaufträge der Universitätsbibliothek
-Regensburg</p>
+﻿<div id="nav_area">
+<ul id="navigation" class="ui-widget">
+	<li class="ui-state-default"><span class="ui-icon ui-icon-home"></span><a
+		href="[% c.uri_for('/') %]"> Startseite</a></li>
+	<li class="ui-state-default"><span class="ui-icon ui-icon-contact"></span><a
+		href="[% c.uri_for('/order/list') %]"> Liste der Auftr&auml;ge </a></li>
+	<li class="ui-state-default"><span class="ui-icon ui-icon-contact"></span><a
+		href="[% c.uri_for('/project/list') %]"> Liste der Projekte</a></li>
+	<li class="ui-state-default"><span class="ui-icon ui-icon-plus"></span><a
+		href="[% c.uri_for('order/add') %]">Auftrag anlegen</a></li>
+</ul>
+</div>
 
-<p>Von hier aus können Sie 
+<div id="content" class="ui-widget-content">
+
+<h1 class="main">Startseite</h1>
+
+<p>Atacama verwaltet die Digitalisierungsaufträge der
+Universitätsbibliothek Regensburg</p>
+
+<p>Von hier aus können Sie
 <ul>
-<li> die <a href="[% c.uri_for_action('/order/list') %]">Liste der Aufträge</a> 
-ansehen.<p/>
-<li> die <a href="[% c.uri_for_action('/project/list') %]">Liste der Projekte</a> 
-ansehen.
-</ul></p>
-
+	<li>die <a href="[% c.uri_for_action('/order/list') %]">Liste
+	der Aufträge</a> ansehen.</li>
+	<li>die <a href="[% c.uri_for_action('/project/list') %]">Liste
+	der Projekte</a> ansehen.</li>
+</ul>
+</p>
+</div>

@@ -1,3 +1,15 @@
+<div id="nav_area">
+<ul id="navigation" class="ui-widget">
+	<li class="ui-state-default"><span class="ui-icon ui-icon-home"></span><a
+		href="[% c.uri_for('/') %]"> Startseite</a></li>
+<li class="ui-state-default"><span class="ui-icon ui-icon-back"></span>
+<a 	href="[% c.uri_for_action('project/list') %]">zurück zur Übersicht</a></li>
+</ul>
+</div>
+
+<div id="content">
+
+<h1 class="main">Projekt bearbeiten</h1>
 <form name="[% form.name %]"
     action="[% c.req.uri %]"
     method="post">
@@ -6,3 +18,4 @@
 [% form.field('projectkeys').render %]
 [% form.field('submit').render %]
 </form>
+</div>

@@ -242,7 +242,7 @@
 		href="[% c.uri_for('list',page=>page) %]"> Liste der Auftr&auml;ge
 	</a></li>
 	<li class="ui-state-default"><span class="ui-icon ui-icon-trash"></span><a
-		href="[% c.uri_for_action('/order/delete', [order_href.order_id]) %]"> Auftr&auml;g
+		href="[% c.uri_for_action('/order/delete', [order_href.order_id]) %]"> Auftrag
 	l&ouml;schen </a></li>
 	<li class="ui-state-default"><span class="ui-icon ui-icon-plus"></span><a
 		href="[% c.uri_for_action('/order/add') %]" onClick="document.order_form.submit();">
@@ -257,11 +257,11 @@
 		href="[% c.uri_for_action('/sourcefile/sourcefile', [order_href.order_id] ) %]"> Scandateien
 	suchen </a></li>
         <li class="ui-state-default"><span class="ui-icon ui-icon-circle-triangle-e"></span><a
-		href="[% c.uri_for_action('/job/scoreboard/list') %]">Laufender Job</a></li>
+		href="[% c.uri_for_action('/job/scoreboard/list') %]"> Laufender Job</a></li>
         <li class="ui-state-default"><span class="ui-icon ui-icon-info"></span><a
-		href="[% c.uri_for_action('/job/queue/list') %]">Job-Warteschlange</a></li>
+		href="[% c.uri_for_action('/job/queue/list') %]"> Job-Warteschlange</a></li>
         <li class="ui-state-default"><span class="ui-icon ui-icon-alert"></span><a
-		href="[% c.uri_for_action('/job/error/list') %]">Fehlerhafte Jobs</a></li> 
+		href="[% c.uri_for_action('/job/error/list') %]"> Fehlerhafte Jobs</a></li> 
 </ul>
 </div>
 
