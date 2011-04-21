@@ -167,6 +167,10 @@
 		//Signaturen abrufen
          $('a#signatur_link').click( function(){
                  var signatur = $("input#signatur").val();
+
+                 //Leerzeichen entfernen
+                 signatur = signatur.replace(/ /g,'');
+
              
                   $.ajax({
                      type: "GET",
@@ -185,18 +189,22 @@
 
                     	  	  $.each(result.json_data, function(key, val) {    
                         	  	  i ++;                    		  	
-              		   			$("#bindeeinheit").append('<li id="'+i+'"><strong>Titel: </strong> '+val.titel_avs+'<br/><strong>Autor: </strong> '+ val.autor_avs+'<br/><strong>Verlag:</strong> '+val.verlag+'<br/><strong>BV-Nr.: </strong>' + val.bvnr+'<br/><strong>Erschienen:</strong> '+val.erschjahr+'<br/><strong>Bibliothek:</strong> '+val.library_id+'<br/><br/> <a href="#" id="book_selected" class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-search"></span>Auswählen</a></li>');
+              		   			$("#bindeeinheit").append('<li id="'+i+'"><strong>Titel: </strong> '+val.titel_avs+'<br/><strong>Autor: </strong> '+ val.autor_avs+'<br/><strong>Verlag:</strong> '+val.verlag+'<br/><strong>BV-Nr.: </strong>' + val.bvnr+'<br/><strong>Erschienen:</strong> '+val.erschjahr+'<br/><br/> <a href="#" id="book_selected" class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-search"></span>Auswählen</a></li>');
 							});
 
 
                     	  	$("a#book_selected").click( function () {
-								
+					
 								var array_key = ($(this).parent().attr("id"))-1;
 								$("input#bvnr").val(result.json_data[array_key].bvnr);
+								$("input#bvnr").attr("disabled", true).css('backgroundColor', '#E6E6E6');
 								$("input#katkey").val(result.json_data[array_key].katkey);
+								$("input#katkey").attr("disabled", true).css('backgroundColor', '#E6E6E6');
 								$("input#mediennr").val(result.json_data[array_key].mediennr);
+								$("input#mediennr").attr("disabled", true).css('backgroundColor', '#E6E6E6');
 								$("select#library").val(result.json_data[array_key].library_id);
-								$("#titel").text(result.json_data[array_key].titel_avs);
+								$("select#library").attr("disabled", true).css('backgroundColor', '#E6E6E6');
+								$("#titel").text(result.json_data[array_key].autor_avs + ": " + result.json_data[array_key].titel_avs);
 							
 
 								$("#bindeeinheit").dialog("close");
@@ -217,51 +225,68 @@
                     	 else {
                         	 //Zellen füllen
                     		 $("input#bvnr").val(result.json_data[0].bvnr);
+                    		 $("input#bvnr").attr("disabled", true).css('backgroundColor', '#E6E6E6');                    		 
 							 $("input#katkey").val(result.json_data[0].katkey);
+							 $("input#katkey").attr("disabled", true).css('backgroundColor', '#E6E6E6');
 							 $("input#mediennr").val(result.json_data[0].mediennr);
+							 $("input#mediennr").attr("disabled", true).css('backgroundColor', '#E6E6E6');
 							 $("select#library").val(result.json_data[0].library_id);
+							 $("select#library").attr("disabled", true).css('backgroundColor', '#E6E6E6');
 							 $("#titel").text(result.json_data[0].titel_avs);
-							 
-                    	 }
-                    	 
+					      	 }
  					}
                  });
+
+
+                      $("#loading").bind("ajaxSend", function(){
+                	   $(this).show();
+                	 }).bind("ajaxComplete", function(){
+                	   $(this).hide();
+                	 });
+                	                  
              });        
     
     });
 </script>
 
+<div id="loading" style="display: none;"><img
+	src="[% c.uri_for_static('images/ajax-loader.gif') %]" alt="Laden"
+	title="Laden" />
+<div id="grey_bg"></div>
+</div>
 
-<div id="bindeeinheit" style="display: none;" ></div>
+<div id="bindeeinheit" style="display: none;"></div>
 
 <div id="nav_area">
 <ul id="navigation" class="ui-widget">
 	<li class="ui-state-default"><span class="ui-icon ui-icon-home"></span><a
 		href="[% c.uri_for('/') %]"> Startseite</a></li>
 	<li class="ui-state-default"><span class="ui-icon ui-icon-contact"></span><a
-		href="[% c.uri_for('list',page=>page) %]"> Liste der Auftr&auml;ge
-	</a></li>
+		href="[% c.uri_for('list') %]"> Liste der Auftr&auml;ge </a></li>
 	<li class="ui-state-default"><span class="ui-icon ui-icon-trash"></span><a
-		href="[% c.uri_for_action('/order/delete', [order_href.order_id]) %]"> Auftrag
-	l&ouml;schen </a></li>
+		href="[% c.uri_for_action('/order/delete', [order_href.order_id]) %]">
+	Auftrag l&ouml;schen </a></li>
 	<li class="ui-state-default"><span class="ui-icon ui-icon-plus"></span><a
-		href="[% c.uri_for_action('/order/add') %]" onClick="document.order_form.submit();">
-	Auftrag anlegen</a></li>
+		href="[% c.uri_for_action('/order/add') %]"
+		onClick="document.order_form.submit();"> Auftrag anlegen</a></li>
 	<li class="ui-state-default"><span class="ui-icon ui-icon-print"></span><a
-		href="[% c.uri_for_action('/order/print', [order_href.order_id]) %]"> Laufzettel
-	drucken </a></li>
+		href="[% c.uri_for_action('/order/print', [order_href.order_id]) %]">
+	Laufzettel drucken </a></li>
 	<li class="ui-state-default"><span class="ui-icon ui-icon-extlink"></span><a
-		href="[% c.uri_for_action('/remedi/remedi', [order_href.order_id] ) %]"> mit Remedi
-	bearbeiten </a></li>
+		href="[% c.uri_for_action('/remedi/remedi', [order_href.order_id] ) %]">
+	mit Remedi bearbeiten </a></li>
 	<li class="ui-state-default"><span class="ui-icon ui-icon-search"></span><a
-		href="[% c.uri_for_action('/sourcefile/sourcefile', [order_href.order_id] ) %]"> Scandateien
-	suchen </a></li>
-        <li class="ui-state-default"><span class="ui-icon ui-icon-circle-triangle-e"></span><a
-		href="[% c.uri_for_action('/job/scoreboard/list') %]"> Laufender Job</a></li>
-        <li class="ui-state-default"><span class="ui-icon ui-icon-info"></span><a
-		href="[% c.uri_for_action('/job/queue/list') %]"> Job-Warteschlange</a></li>
-        <li class="ui-state-default"><span class="ui-icon ui-icon-alert"></span><a
-		href="[% c.uri_for_action('/job/error/list') %]"> Fehlerhafte Jobs</a></li> 
+		href="[% c.uri_for_action('/sourcefile/sourcefile', [order_href.order_id] ) %]">
+	Scandateien suchen </a></li>
+	<li class="ui-state-default"><span
+		class="ui-icon ui-icon-circle-triangle-e"></span><a
+		href="[% c.uri_for_action('/job/scoreboard/list') %]"> Laufender
+	Job</a></li>
+	<li class="ui-state-default"><span class="ui-icon ui-icon-info"></span><a
+		href="[% c.uri_for_action('/job/queue/list') %]">
+	Job-Warteschlange</a></li>
+	<li class="ui-state-default"><span class="ui-icon ui-icon-alert"></span><a
+		href="[% c.uri_for_action('/job/error/list') %]"> Fehlerhafte Jobs</a></li>
 </ul>
 </div>
 

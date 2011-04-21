@@ -156,7 +156,8 @@
 		var order_id = gridprefs.filter.order_id;
 		var titel_isbd = gridprefs.filter.titel_isbd;
 		var projects = gridprefs.filter.projects;
-		var status = gridprefs.status;
+		var status = gridprefs.filter.status;
+		console.debug ("status: "+status);
 
 		if (order_id != ""){
 			fields += (fields.length == 0 ? "" : ",")
@@ -164,13 +165,13 @@
 		if (titel_isbd != ""){
 			fields += (fields.length == 0 ? "" : ",")
 					+ createField("titel_isbd", "bw", titel_isbd); }
-		if (projects != "" || projects !== "undefined") {
+		if (projects != "" && projects !== "undefined") {
 			fields += (fields.length == 0 ? "" : ",")
 					+ createField("project_id", "eq", projects); }
-/*		if (status != "" || status !== "undefined") {
+		if (status != "" && status !== "undefined") {
 			fields += (fields.length == 0 ? "" : ",")
 					+ createField("status_id", "eq", status); }
-*/
+
 		var filters = '{\"groupOp\":\"AND\",\"rules\":[' + fields + ']}';
     	return filters;
 	}
@@ -210,7 +211,7 @@
 													{
 														name : 'projects',
 														index : 'project_id',
-														sortable : true,
+														sortable : false,
 														width : 200,
 														stype : 'select',
 														editoptions : {
@@ -255,7 +256,15 @@
 						});
 
 						jQuery("#orders").jqGrid('navButtonAdd','#pager_orders',
-								{caption:"Zurücksetzen", onClickButton:function()
+								{caption:"Filter zurücksetzen", onClickButton:function()
+							{ var grid = $("#orders");
+							grid[0].clearToolbar();
+							} }); 
+
+
+
+						jQuery("#orders").jqGrid('navButtonAdd','#orders_toppager',
+								{caption:"Filter zurücksetzen", onClickButton:function()
 							{ var grid = $("#orders");
 							grid[0].clearToolbar();
 							} }); 
@@ -283,7 +292,7 @@
 			
 						}
 						else {
-							$('#orders').jqGrid("setGridParam", { "postData": data,
+							$('#orders').jqGrid("setGridParam", {
 								"datatype": "json" });
 							$('#orders').trigger("reloadGrid");
 						}
