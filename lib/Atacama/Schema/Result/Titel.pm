@@ -213,7 +213,7 @@ sub titel_isbd {
       $titel_isbd .= ', ' if ($self->verlagsort || $self->verlag) && $self->erschjahr;
       $titel_isbd .= $self->erschjahr if $self->erschjahr;
     }
-    warn 'Titel: ' . $titel_isbd;
+    # warn 'Titel: ' . $titel_isbd || '<kein Titel (ISBD)>';
     return $titel_isbd;
 }
 

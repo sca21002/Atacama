@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <link rel="stylesheet" type="text/css" media="screen"
-	href="[% c.uri_for_static('css/ui-lightness/jquery-ui-1.8.9.custom.css') %]" />
+	href="[% c.uri_for_static('css/ui-lightness/jquery-ui-1.8.11.custom.css') %]" />
 <link rel="stylesheet" type="text/css" media="screen"
 	href="[% c.uri_for_static('css/jqGrid/ui.jqgrid.css') %]" />
 <script type="text/javascript"
@@ -215,7 +215,7 @@
 														width : 200,
 														stype : 'select',
 														editoptions : {
-															value : ":Alle;[% FOR project IN projects %];[% project.project_id %]:[% project.name %][% END %]"
+															value : ":Alle[% FOR project IN projects %];[% project.project_id %]:[% project.name %][% END %]"
 														}
 
 													},

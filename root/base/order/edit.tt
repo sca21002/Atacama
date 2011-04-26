@@ -262,7 +262,7 @@
 	<li class="ui-state-default"><span class="ui-icon ui-icon-home"></span><a
 		href="[% c.uri_for('/') %]"> Startseite</a></li>
 	<li class="ui-state-default"><span class="ui-icon ui-icon-contact"></span><a
-		href="[% c.uri_for('list') %]"> Liste der Auftr&auml;ge </a></li>
+		href="[% c.uri_for_action('/order/list') %]"> Liste der Auftr&auml;ge </a></li>
 	<li class="ui-state-default"><span class="ui-icon ui-icon-trash"></span><a
 		href="[% c.uri_for_action('/order/delete', [order_href.order_id]) %]">
 	Auftrag l&ouml;schen </a></li>

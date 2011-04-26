@@ -70,7 +70,7 @@ sub json : Chained('orders') PathPart('json') Args(0) {
         : {}
         ; 
    
-    # $c->log->debug('filters: ' . Dumper($data->{filters}));
+    $c->log->debug('filters: ' . Dumper($data->{filters}));
     my $filters = $data->{filters};
     $filters = decode_json $filters if $filters;    
 

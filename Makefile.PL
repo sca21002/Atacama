@@ -29,14 +29,18 @@ requires 'CatalystX::SimpleLogin';
 requires 'Config::ZOMG';
 requires 'Data::Page';
 requires 'DateTime::Format::Mail';
+requires 'DBD::mysql';
 requires 'DBIx::Class::DateTime::Epoch';
 requires 'DBIx::Class::EncodedColumn';
 requires 'File::MMagic';
 requires 'HTML::FormHandler';
+requires 'HTML::FormHandler::Model::DBIC';
+requires 'Image::ExifTool'                  # because of AtacamaWiki
 requires 'Image::Math::Constrain';
 requires 'Imager';
 requires 'List::Util';
 requires 'Moose';
+requires 'MooseX::NonMoose';
 requires 'MooseX::Types::Path::Class';
 requires 'MooseX::Types::DateTime';
 requires 'Number::Format';

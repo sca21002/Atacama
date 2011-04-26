@@ -46,7 +46,7 @@ sub filter {
         my $data = $rule->{data};
         given ( $rule->{field} ) {
             when (/order_id/) {
-                push @and_cond, { order_id => { like => "%$data%" } };
+                push @and_cond, { 'me.order_id' => { like => "%$data%" } };
             };    
             when (/titel_isbd/) {
                 push @join_attr, 'titel';
