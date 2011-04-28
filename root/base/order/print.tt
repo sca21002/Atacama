@@ -65,7 +65,7 @@ Datenkontrolle: & [% order.control %]\\
 \section {Projekte}
 
 
-[%- FOR orderproject IN order_href.orders_projects %]
+[%- FOR orderproject IN order.orders_projects %]
 \smallskip
 \begin{tabular}{ll}
 Projekt:  & [% orderproject.project.name %]\\
@@ -81,9 +81,9 @@ Projekt:  & [% orderproject.project.name %]\\
 Scan-Operator (Name): \rule[-3mm]{0mm}{8mm}\hrulefill\\
 
 
-\begin{itemize}
+
 [% FOREACH scanparameter IN order.scanparameters %]
-\item Scanner:  [% scanparameter.scanner.name %]\\
+Scanner:  [% scanparameter.scanner.name %]\\
 Format:  [% scanparameter.format.name %]\\
  Aufl\"osung:  [% scanparameter.resolution.value %]\\
  Bereich:  [% scanparameter.range %]\\
@@ -91,7 +91,7 @@ Format:  [% scanparameter.format.name %]\\
 [% scanoption.key %] : [% scanoption.value %]\\
 [% END %]
 [% END %]
-\end{itemize}
+
 
 \bigskip
 

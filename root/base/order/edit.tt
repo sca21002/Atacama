@@ -65,7 +65,7 @@
                    		$.each(result.json_data.formats, function(key, val) {       
 	                 				  active_li.append($("<option value='" + val.format_id +"'>" + val.name + "</option>"));                 				   
 	                 				  });  
-  	                    active_select.nextAll().wrapAll("<select class='json' name='scanparameters." + scanner_id + ".formats' size='1'>");
+  	                    active_select.nextAll().wrapAll("<select class='json' name='scanparameters." + count + ".formats' size='1'>");
         				}
 
 						//Resolution     
@@ -74,7 +74,7 @@
                  		$.each(result.json_data.resolutions, function(key, val) {       
                  				 active_li.append($("<option value='" + val.resolution_id +">" + val.value + "</option>"));                 				   
                  				  });  
-                 		active_select.next().nextAll().wrapAll("<select class='json' name='scanparameters." + scanner_id + ".resolutions' size='1'>");
+                 		active_select.next().nextAll().wrapAll("<select class='json' name='scanparameters." + count + ".resolutions' size='1'>");
 			       	    }
 	
                    	    //Scanoptions/Glasplatte
@@ -84,12 +84,12 @@
                  			active_li.append($("<option value=" + val.value_id + " >" + val.name + "</option>"));                 				   
                  				  });  
 						var zahlo = ($("option.options")).length;
-						active_select.next().next().nextAll().wrapAll("<select class='json' id='scanner_options' name='scanparameters." + scanner_id + ".scanoptions." + zahlo + ".value_id'  size='1'>");        
+						active_select.next().next().nextAll().wrapAll("<select class='json' id='scanner_options' name='scanparameters." + count +  ".scanoptions." + zahlo + ".value_id'  size='1'>");        
                    	    }   		
 
             			//Range
 						if (option_val != ''){
-                    	active_li.append('<label class="json" for="range"> Bereich&nbsp;</label><input class="json" id="range" name="scanparameters.'+ scanner_id + '.range" value="" type="text" />');
+                    	active_li.append('<br /><label class="json" for="range"> Bereich&nbsp;</label><input class="json" id="range" name="scanparameters.' + count + '.range" value="" type="text" />');
 						}  		
 					}
                 });
@@ -169,17 +169,18 @@
         });
 
 
+      
+
 		//Signaturen abrufen
-         $('a#signatur_link').click( function(){
-                 var signatur = $("input#signatur").val();
+		  function getSignature(signature) {
 
                  //Leerzeichen entfernen
-                 signatur = signatur.replace(/ /g,'');
+                 //signature = signature.replace(/ /g,'');
 
              
                   $.ajax({
                      type: "GET",
-                     url: "[% c.uri_for_action('/titel/json') %]?signatur=" + signatur,
+                     url: "[% c.uri_for_action('/titel/json') %]?signatur=" + signature,
                      dataType: "json",
                      cache: false,
                      error: function(){  alert ("Diese Signatur existiert nicht.");    },                                    
@@ -248,9 +249,42 @@
                 	 }).bind("ajaxComplete", function(){
                 	   $(this).hide();
                 	 });
-                	                  
-             });        
-    
+       }   
+		
+		
+		
+		
+		//Signaturensuche bei Enter
+		$('input#signatur').keyup(function(e) {
+		    if (e.keyCode == 13) {
+		       	jQuery('a#signatur_link').focus().click();			    
+		    			    }
+		});
+
+		//Signaturensuche Button
+        $('a#signatur_link').click( function(){
+             var signatur = $("input#signatur").val();
+             getSignature(signatur);
+              
+         });
+               
+
+
+
+        $("form#order_form").submit(function(e) {
+          //  console.debug(e);
+
+            
+       	 if (typeof e.originalEvent != 'undefined') {
+            if (e.originalEvent.explicitOriginalTarget.id == "signatur") {               
+            	 e.preventDefault();
+                 return false;
+                 }
+       	 }
+       	 else return true;
+               
+            });
+
     });
 </script>
 
@@ -267,30 +301,37 @@
 	<li class="ui-state-default"><span class="ui-icon ui-icon-home"></span><a
 		href="[% c.uri_for('/') %]"> Startseite</a></li>
 	<li class="ui-state-default"><span class="ui-icon ui-icon-contact"></span><a
-		href="[% c.uri_for_action('/order/list') %]"> Liste der Auftr&auml;ge </a></li>
+		class="form_submit" href="[% c.uri_for_action('/order/list') %]">
+	Liste der Auftr&auml;ge </a></li>
 	<li class="ui-state-default"><span class="ui-icon ui-icon-trash"></span><a
 		href="[% c.uri_for_action('/order/delete', [order_href.order_id]) %]">
 	Auftrag l&ouml;schen </a></li>
 	<li class="ui-state-default"><span class="ui-icon ui-icon-plus"></span><a
-		class="form_submit" href="[% c.uri_for_action('/order/add') %]"> Auftrag anlegen</a></li>
+		class="form_submit" href="[% c.uri_for_action('/order/add') %]">
+	Auftrag anlegen</a></li>
 	<li class="ui-state-default"><span class="ui-icon ui-icon-print"></span><a
+		class="form_submit"
 		href="[% c.uri_for_action('/order/print', [order_href.order_id]) %]">
 	Laufzettel drucken </a></li>
 	<li class="ui-state-default"><span class="ui-icon ui-icon-extlink"></span><a
+		class="form_submit"
 		href="[% c.uri_for_action('/remedi/remedi', [order_href.order_id] ) %]">
 	mit Remedi bearbeiten </a></li>
 	<li class="ui-state-default"><span class="ui-icon ui-icon-search"></span><a
+		class="form_submit"
 		href="[% c.uri_for_action('/sourcefile/sourcefile', [order_href.order_id] ) %]">
 	Scandateien suchen </a></li>
 	<li class="ui-state-default"><span
 		class="ui-icon ui-icon-circle-triangle-e"></span><a
+		class="form_submit"
 		href="[% c.uri_for_action('/job/scoreboard/list') %]"> Laufender
 	Job</a></li>
 	<li class="ui-state-default"><span class="ui-icon ui-icon-info"></span><a
-		href="[% c.uri_for_action('/job/queue/list') %]">
+		class="form_submit" href="[% c.uri_for_action('/job/queue/list') %]">
 	Job-Warteschlange</a></li>
 	<li class="ui-state-default"><span class="ui-icon ui-icon-alert"></span><a
-		href="[% c.uri_for_action('/job/error/list') %]"> Fehlerhafte Jobs</a></li>
+		class="form_submit" href="[% c.uri_for_action('/job/error/list') %]">
+	Fehlerhafte Jobs</a></li>
 </ul>
 </div>
 
@@ -459,7 +500,7 @@ Scanner </label>
 >
 		[%- resolution.value -%]</option>
 		[%- END %]
-	</select> <label for="range"> Bereich </label> <input id="range"
+	</select><br /> <label for="range"> Bereich </label> <input id="range"
 		name="scanparameters.[% loop.count - 1 %].range"
 		value="[% scanparameter.range %]" type="text" />[%- SET
 	scanparameter_count = loop.count - 1 -%] [%- FOR scanoption IN

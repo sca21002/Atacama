@@ -176,8 +176,6 @@
     	return filters;
 	}
 
-
-
 	
 
 	$(document)
@@ -244,6 +242,7 @@
 										});
 
 						jQuery("#orders").jqGrid('navGrid', '#pager_orders', {
+							cloneToTop:true,
 							del : false,
 							add : false,
 							edit : false,
@@ -262,7 +261,6 @@
 							} }); 
 
 
-
 						jQuery("#orders").jqGrid('navButtonAdd','#orders_toppager',
 								{caption:"Filter zurücksetzen", onClickButton:function()
 							{ var grid = $("#orders");
@@ -278,7 +276,7 @@
 
     
 							filters = filterGrid(gridprefs);
-							// console.debug(gridprefs);
+							//console.debug(gridprefs);
 									
 							var data = $('#orders').jqGrid("getGridParam", "postData");
 							data.search = true;
@@ -287,8 +285,12 @@
 						
 							$('#orders').jqGrid("setGridParam", { "postData": data,
 								"datatype": "json",
-								"search": "true" });
-							$('#orders').trigger("reloadGrid",[{page:gridprefs.page}]);
+								"search": "true",
+								"page": gridprefs.page,
+								"rowNum" : gridprefs.rows,
+								"sortname" : gridprefs.scol,
+								"sortorder" : gridprefs.sord });
+							$('#orders').trigger("reloadGrid");
 			
 						}
 						else {
@@ -296,10 +298,7 @@
 								"datatype": "json" });
 							$('#orders').trigger("reloadGrid");
 						}
-					
-
-						
-
+				
 					});
 </script>
 <title>Aufträge</title>
