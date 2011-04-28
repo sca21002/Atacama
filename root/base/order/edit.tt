@@ -250,16 +250,18 @@
                 	   $(this).hide();
                 	 });
        }   
-		
-		
-		
-		
+	
 		//Signaturensuche bei Enter
 		$('input#signatur').keyup(function(e) {
 		    if (e.keyCode == 13) {
-		       	jQuery('a#signatur_link').focus().click();			    
-		    			    }
+		       	jQuery('a#signatur_link').focus().click();	
+		    }
 		});
+
+		//Enter-Taste sperren im Signatur-Feld
+		$('input#signatur').keypress(function(event) { return event.keyCode != 13; });
+
+					
 
 		//Signaturensuche Button
         $('a#signatur_link').click( function(){
@@ -268,22 +270,6 @@
               
          });
                
-
-
-
-        $("form#order_form").submit(function(e) {
-          //  console.debug(e);
-
-            
-       	 if (typeof e.originalEvent != 'undefined') {
-            if (e.originalEvent.explicitOriginalTarget.id == "signatur") {               
-            	 e.preventDefault();
-                 return false;
-                 }
-       	 }
-       	 else return true;
-               
-            });
 
     });
 </script>
