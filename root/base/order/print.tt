@@ -20,6 +20,7 @@
 % \footskip0pt
 \textwidth18cm
 \textheight27cm
+\setlength{\itemsep}{2pt} 
 
 \begin{document}
 
@@ -79,17 +80,19 @@ Projekt:  & [% orderproject.project.name %]\\
 
 Scan-Operator (Name): \rule[-3mm]{0mm}{8mm}\hrulefill\\
 
-\begin{tabular}{ll}
+
+\begin{itemize}
 [% FOREACH scanparameter IN order.scanparameters %]
-Scanner: & [% scanparameter.scanner.name %]\\
-Format:  & [% scanparameter.format.name %]\\
-Aufl\"osung: & [% scanparameter.resolution.value %]\\
-Bereich: & [% scanparameter.range %]\\
+\item Scanner:  [% scanparameter.scanner.name %]\\
+Format:  [% scanparameter.format.name %]\\
+ Aufl\"osung:  [% scanparameter.resolution.value %]\\
+ Bereich:  [% scanparameter.range %]\\
 [% FOREACH scanoption IN scanparameter.scanoptions %]
-[% scanoption.key %] : & [% scanoption.value %]\\
+[% scanoption.key %] : [% scanoption.value %]\\
 [% END %]
 [% END %]
-\end{tabular}
+\end{itemize}
+
 \bigskip
 
 \rule[-3mm]{0mm}{8mm}{ Probleme beim Scannen: }\hrulefill\\
@@ -110,10 +113,6 @@ Bereich: & [% scanparameter.range %]\\
 \rule[-3mm]{0mm}{8mm} & & \\ \hline
 \rule[-3mm]{0mm}{8mm} & & \\ \hline
 \end{tabular}
-
-
-
-\pagebreak
 
 
 

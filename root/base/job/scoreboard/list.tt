@@ -56,19 +56,22 @@ jQuery("#jobs").jqGrid({
 jQuery("#jobs").jqGrid('navGrid','#pager_jobs',{edit:false,add:false,del:false});
 });
 </script>
-    <title>Testbeispiel für jqGrid</title>
+    <title>Laufender Job</title>
 </head>
 <body>
 
- <div id="nav_area">
+<div id="nav_area">
 <ul id="navigation" class="ui-widget" >
 <li class="ui-state-default"><span class="ui-icon ui-icon-home"></span><a href="[% c.uri_for('/') %]">Startseite</a></li>
 <li class="ui-state-default"><span class="ui-icon ui-icon-plus"></span><a href="[% c.uri_for_action('/order/add') %]">Auftrag anlegen</a></li>
 <li class="ui-state-default"><span class="ui-icon ui-icon-contact"></span><a href="[% c.uri_for_action('/order/list') %]">Liste der Auftr&auml;ge	</a></li>
+<li class="ui-state-default"><span class="ui-icon ui-icon-back"></span><a href="javascript:history.back()">zur&uuml;ck</a></li>
 </ul>
 </div>
 
-<div id="content"><table id="jobs"></table>
+<div id="content">
+<h1 class="main">Laufender Job</h1>
+<table id="jobs"></table>
 <div id="pager_jobs"></div></div> 
 </body>
 </html>

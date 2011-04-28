@@ -2,12 +2,7 @@
 <ul id="navigation" class="ui-widget">
 	<li class="ui-state-default"><span class="ui-icon ui-icon-home"></span><a
 		href="[% c.uri_for('/') %]"> Startseite</a></li>
-	<li class="ui-state-default"><span class="ui-icon ui-icon-contact"></span><a
-		href="[% c.uri_for('/order/list') %]"> Liste der Auftr&auml;ge </a></li>
-	<li class="ui-state-default"><span class="ui-icon ui-icon-contact"></span><a
-		href="[% c.uri_for('/project/list') %]"> Liste der Projekte</a></li>
-	<li class="ui-state-default"><span class="ui-icon ui-icon-plus"></span><a
-		href="[% c.uri_for('order/add') %]">Auftrag anlegen</a></li>
+<li class="ui-state-default"><span class="ui-icon ui-icon-back"></span><a href="javascript:history.back()">zur&uuml;ck</a></li>
 </ul>
 </div>
 
