@@ -38,7 +38,9 @@ requires 'HTML::FormHandler::Model::DBIC';
 requires 'Image::ExifTool'                  # because of AtacamaWiki
 requires 'Image::Math::Constrain';
 requires 'Imager';
+requires 'YAML::XS';
 requires 'List::Util';
+requires 'Log::Log4perl';
 requires 'Moose';
 requires 'MooseX::NonMoose';
 requires 'MooseX::Types::Path::Class';

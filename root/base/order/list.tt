@@ -20,10 +20,10 @@
 		
 		load : function() {
 			var the_cookie = document.cookie.split(';');
-			//console.debug("THE Cookie: " +document.cookie);
+			// console.debug("THE Cookie: " +document.cookie);
 			if (the_cookie[0]) {
 				the_cookie[0] = unescape(the_cookie[0]);
-				//console.debug(the_cookie[0]);
+				// console.debug(the_cookie[0]);
 
 				try	{
 				result = jQuery.parseJSON( the_cookie[0]);
@@ -60,7 +60,7 @@
 			projects : $('#gs_projects').val(),
 			status : $('#gs_status').val()
 		};
-		//console.debug(filters);
+		// console.debug(filters);
 
 		prefs.data = {
 			filter : filters,
@@ -157,7 +157,7 @@
 		var titel_isbd = gridprefs.filter.titel_isbd;
 		var projects = gridprefs.filter.projects;
 		var status = gridprefs.filter.status;
-		//console.debug ("status: "+status);
+		// console.debug ("status: "+status);
 
 		if (order_id != ""){
 			fields += (fields.length == 0 ? "" : ",")
@@ -278,7 +278,7 @@
 
     
 							filters = filterGrid(gridprefs);
-							//console.debug(gridprefs);
+							// console.debug(gridprefs);
 									
 							var data = $('#orders').jqGrid("getGridParam", "postData");
 							data.search = true;

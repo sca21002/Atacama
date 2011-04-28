@@ -33,14 +33,9 @@ sub work {
         unless blessed($job) && $job->isa( 'TheSchwartz::Job' );
     my $arg = $job->arg or croak("Keine Job-Parameter gefunden");
     my $order_id = $arg->{order_id} or croak("Keine Auftragsnummer");
-    my $order = $atacama_schema->resultset('Order')->find($order_id)
-        or croak("Kein Auftrag zu $order_id gefunden!");
-    
-    $order->update({status_id => 23});
+
     my $log_file_name = File::Spec->catfile(
-                                            
         $FindBin::Bin, '..', 'log', 'sourcefile_' . $order_id
-        
     ); 
     unlink $log_file_name if -e $log_file_name;
     my $log_configfile = File::Spec->catfile(
@@ -51,13 +46,16 @@ sub work {
     $log->info('Programm gestartet');        
     my $atacama_config = get_atacama_config()
       or $log->logcroak("Lesen der Atacama-Konfigurationsdatei fehlgeschlagen");       
-    my $sourcedir
-        = first { -d } map {Path::Class::Dir->new($_, $order_id) } @sourcedirs
-            or $log->logcroak('Verzeichnis mit Quelldateien nicht gefunden!');
     my @dbic_connect_info
         = @{ $atacama_config->{'Model::AtacamaDB'}{connect_info} };
     $atacama_schema = Atacama::Schema->connect(@dbic_connect_info)
         or $log->logcroak("Datenbankverbindung gescheitert");    
+    my $order = $atacama_schema->resultset('Order')->find($order_id)
+        or $log->logcroak("Kein Auftrag zu $order_id gefunden!");
+    $order->update({status_id => 23});    
+    my $sourcedir
+        = first { -d } map {Path::Class::Dir->new($_, $order_id) } @sourcedirs
+            or $log->logcroak('Verzeichnis mit Quelldateien nicht gefunden!');
     
     foreach  ('TIFF', 'PDF') {
         $format = $_;
