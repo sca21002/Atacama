@@ -144,7 +144,7 @@ sub save : Private {
     if ($c->req->method eq 'POST') {
         # $c->log->debug(Dumper($c->req->params));
         my $order_params = $self->list_to_hash($c, $c->req->params);
-        # $c->log->debug(Dumper($order_params));
+        $c->log->debug(Dumper($order_params));
         $order->save($order_params);
     }
     # $c->log->debug(Dumper($order->properties));
