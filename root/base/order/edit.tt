@@ -89,7 +89,7 @@
 
             			//Range
 						if (option_val != ''){
-                    	active_li.append('<br /><label class="json" for="range"> Bereich&nbsp;</label><input class="json" id="range" name="scanparameters.' + count + '.range" value="" type="text" />');
+                    	active_li.append('<br /><label class="json" for="scope"> Bereich&nbsp;</label><input class="json" id="scope" name="scanparameters.' + count + '.scope" value="" type="text" />');
 						}  		
 					}
                 });
@@ -486,9 +486,9 @@ Scanner </label>
 >
 		[%- resolution.value -%]</option>
 		[%- END %]
-	</select><br /> <label for="range"> Bereich </label> <input id="range"
-		name="scanparameters.[% loop.count - 1 %].range"
-		value="[% scanparameter.range %]" type="text" />[%- SET
+	</select><br /> <label for="scope"> Bereich </label> <input id="scope"
+		name="scanparameters.[% loop.count - 1 %].scope"
+		value="[% scanparameter.scope %]" type="text" />[%- SET
 	scanparameter_count = loop.count - 1 -%] [%- FOR scanoption IN
 	scanparameter.scanoptions %]<input type="hidden"
 		name="scanparameters.[% scanparameter_count %].scanoptions.[% loop.count - 1 %].scanoptionkey_id"

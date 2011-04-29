@@ -54,7 +54,7 @@ __PACKAGE__->table("scanparameters");
   extra: {unsigned => 1}
   is_nullable: 1
 
-=head2 range
+=head2 scope
 
   data_type: 'text'
   is_nullable: 1
@@ -77,7 +77,7 @@ __PACKAGE__->add_columns(
   { data_type => "tinyint", extra => { unsigned => 1 }, is_nullable => 1 },
   "format_id",
   { data_type => "tinyint", extra => { unsigned => 1 }, is_nullable => 1 },
-  "range",
+  "scope",
   { data_type => "text", is_nullable => 1 },
 );
 __PACKAGE__->set_primary_key("scanparameter_id");

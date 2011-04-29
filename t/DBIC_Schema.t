@@ -92,7 +92,7 @@ $params = {
     'scanparameters' => [
                           {
                             'format_id' => '2',
-                            'range' => 'Zusatz',
+                            'scope' => 'Zusatz',
                             'scanner_id' => '2',
                             'resolution_id' => '1'
                           },

@@ -43,7 +43,7 @@ my $params = {
           'scanparameters' => [
                                 {
                                   'format_id' => '2',
-                                  'range' => 'Text',
+                                  'scope' => 'Text',
                                   'scanner_id' => '6',
                                   'scanparameter_id' => '1033',
                                   'resolution_id' => '2'
@@ -56,7 +56,7 @@ my $params = {
                                                        'value_id' => '3'
                                                      }
                                                    ],
-                                  'range' => "Karten, zuerg\x{e4}nzende Textseiten und Einband",
+                                  'scope' => "Karten, zuerg\x{e4}nzende Textseiten und Einband",
                                   'scanparameter_id' => '1034',
                                   'scanner_id' => '2',
                                   'resolution_id' => '1'
@@ -69,7 +69,7 @@ my $params = {
                                                        'value_id' => '1'
                                                      }
                                                    ],
-                                  'range' => '',
+                                  'scope' => '',
                                   'scanparameter_id' => '6430',
                                   'scanner_id' => '1',
                                   'resolution_id' => ''
@@ -81,7 +81,7 @@ my $params = {
                                                        'value_id' => ''
                                                      }
                                                    ],
-                                  'range' => '',
+                                  'scope' => '',
                                   'resolutions' => '',
                                   'scanner_id' => '2',
                                   'scanparameter_id' => ''
@@ -159,7 +159,7 @@ my $params = {
 #    'scanparameters' => [
 #                          {
 #                            'format_id' => '2',
-#                            'range' => 'Text',
+#                            'scope' => 'Text',
 #                            'scanner_id' => '6',
 #                            'scanparameter_id' => '1033',
 #                            'resolution_id' => '1'
@@ -172,14 +172,14 @@ my $params = {
 #                                                 'value_id' => '1'
 #                                               }
 #                                             ],
-#                            'range' => "Karten, zuerg\x{e4}nzende Textseiten und Einband",
+#                            'scope' => "Karten, zuerg\x{e4}nzende Textseiten und Einband",
 #                            'scanparameter_id' => '1034',
 #                            'scanner_id' => '2',
 #                            'resolution_id' => '1'
 #                          },
 #                          {
 #                            'format_id' => '',
-#                            'range' => '',
+#                            'scope' => '',
 #                            'resolution_id' => '',
 #                            'scanner_id' => '5'
 #                          }
@@ -193,7 +193,6 @@ my $params = {
 my $config = Config::ZOMG->new(
     name => 'Atacama',
     path => File::Spec->catfile($FindBin::Bin,'..','..'),
-);
 my $config_hash = $config->load;
 my @connect = @{$config_hash->{'Model::AtacamaDB'}{connect_info}};  
 

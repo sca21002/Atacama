@@ -67,9 +67,10 @@ gepr\"uft von: & [% order.control %]
 [% IF order.orders_projects %]
 \section {Projekte}
 [%- FOR orderproject IN order.orders_projects %]
-Projekt:   [% orderproject.project.name %]
+\noindent\begin{tabular}{@{}ll}
+Projekt:  & [% orderproject.project.name %]\\
 [% FOREACH projectoption IN orderproject.projectoptions %]
-[% projectoption.pkey %]:  [% projectoption.value %]  \\
+[% projectoption.pkey %]: & [% projectoption.value %]  \\
 [% END %]
 
 [% END %]
@@ -84,16 +85,22 @@ Scan-Operator (Name): \rule[-3mm]{0mm}{8mm}\hrulefill
 \begin{trivlist}\setlength\labelwidth{-0.5em}
 [% FOREACH scanparameter IN order.scanparameters %] \item[$\bullet$]
 \textbf{Scanner:}  [% scanparameter.scanner.name %], \textbf{Format:}  [% scanparameter.format.name %], 
+<<<<<<< HEAD
 \textbf{Aufl\"osung:}  [% scanparameter.resolution.value %], \textbf{Bereich:}  [% scanparameter.scope %] 
 
 [% FOREACH scanoption IN scanparameter.scanoptions %]
 \noindent\hspace*{0.7em}%
 [% scanoption.skey %]: [% scanoption.name %][% END %]
+=======
+\textbf{Aufl\"osung:}  [% scanparameter.resolution.value %], \textbf{Bereich:}  [% scanparameter.scope %]
+[% FOREACH scanoption IN scanparameter.scanoptions %][% scanoption.skey %] : [% scanoption.name %][% END %]
+>>>>>>> e1228e1... Change columnname range to scope
 [% END %]
 \end{trivlist}
 [% END %]
 
-\rule[-3mm]{0mm}{8mm}{Probleme beim Scannen: }\hrulefill\\
+
+\rule[-3mm]{0mm}{8mm}{ Probleme beim Scannen: }\hrulefill\\
 \rule[-3mm]{0mm}{8mm}\hrulefill\\
 \rule[-3mm]{0mm}{8mm}\hrulefill\\
 \rule[-3mm]{0mm}{8mm}\hrulefill
