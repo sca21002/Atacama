@@ -46,6 +46,12 @@ __PACKAGE__->table("projectkeys");
   is_nullable: 1
   size: 255
 
+=head2 premiumkey
+
+  data_type: 'tinyint'
+  default_value: 0
+  is_nullable: 1
+
 =head2 info
 
   data_type: 'varchar'
@@ -68,6 +74,8 @@ __PACKAGE__->add_columns(
   { data_type => "tinyint", extra => { unsigned => 1 }, is_nullable => 1 },
   "pkey",
   { data_type => "varchar", is_nullable => 1, size => 255 },
+  "premiumkey",
+  { data_type => "tinyint", default_value => 0, is_nullable => 1 },
   "info",
   { data_type => "varchar", is_nullable => 1, size => 255 },
 );

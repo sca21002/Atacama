@@ -99,7 +99,8 @@ sub json : Chained('orders') PathPart('json') Args(0) {
         $row->{cell} = [
             $order->order_id,
             $order->titel && $order->titel->titel_isbd,
-            join(' -- ', map {$_->name} $order->projects->all),
+            # join(' -- ', map {$_->name} $order->projects->all),
+            $order->orders_projects->get_projects_as_string,
             $order->status && $order->status->name,
         ];
         push @rows, $row;

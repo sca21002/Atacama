@@ -24,6 +24,13 @@ sub get_new_result_as_href {
     return $href;
 }
 
+sub get_projects_as_string {
+    my $self = shift;
+    
+    return join(' -- ', map {$_->project->name} $self->all),
+    
+}
+
 sub save {
     my $self = shift;
     my $params = shift;
