@@ -27,8 +27,24 @@ sub get_new_result_as_href {
 sub get_projects_as_string {
     my $self = shift;
     
-    return join(' -- ', map {$_->project->name} $self->all),
-    
+    my @projects_as_string;
+    while ( my $order_project = $self->next ) { 
+        my $project = $order_project->project;
+        my $project_as_string = $project->name;
+        my @projectkeys = $project->projectkeys->all;
+        foreach my $projectkey (@projectkeys) {
+            if ( $projectkey->premiumkey ) {
+                my $projectvalue = $order_project->search_related(
+                    'projectvalues',
+                    { projectkey_id => $projectkey->projectkey_id }
+                )->single;
+                $project_as_string .= ' (' . $projectvalue->value . ')'
+                    if $projectvalue && $projectvalue->value;
+            }
+        }
+        push @projects_as_string, $project_as_string; 
+    }
+    return join ' -- ', @projects_as_string;
 }
 
 sub save {
