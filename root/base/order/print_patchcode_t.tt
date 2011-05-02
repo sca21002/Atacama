@@ -49,7 +49,7 @@
 		%angelegt:    & [% order.creation_date.dmy('.')%] [% order.creation_date.hms() %]\\
 		%ge\"andert:  & [% order.modification_date.dmy('.') %] [%order.modification_date.hms() %]\\
 		%gedruckt:    & [% date.format(date.now, '%d.%m.%Y %H:%M:%S', 'de_DE') %]\\
-		%Status:      & [% order.status.name | latex_encode %]\\
+		%Status:      & [% order.status.name | latex_encode(except => 'ÄÖÜäöüß') %]\\
 	  \end{tabular}
   \end{minipage}
 \end{center}
