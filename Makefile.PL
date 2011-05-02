@@ -24,6 +24,7 @@ requires 'Catalyst::Plugin::Session::State::Cookie';
 requires 'Catalyst::Plugin::Session::Store::FastMmap';
 requires 'Catalyst::Plugin::Static::Simple';
 requires 'Catalyst::Plugin::Unicode::Encoding';
+requires 'Catalyst::Model::File';
 requires 'Catalyst::Action::RenderView';
 requires 'CatalystX::SimpleLogin';
 requires 'Config::ZOMG';
