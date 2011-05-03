@@ -142,8 +142,8 @@ sub save : Private {
 
     my $order = $c->stash->{order}
         ||= $c->model('AtacamaDB::Order')->create_order();
-    if ($c->req->method eq 'POST') {
-        # $c->log->debug(Dumper($c->req->params));
+    if ($c->req->method eq 'POST' or $c->req->method eq 'GET' ) {
+        $c->log->debug(Dumper($c->req->params));
         my $order_params = $self->list_to_hash($c, $c->req->params);
         $c->log->debug(Dumper($order_params));
         $order->save($order_params);
@@ -254,7 +254,9 @@ sub list_to_hash {
             $order_params{$1} = $value;
             next;
         }
-    }    
+    }
+    $order_params{'ocr'} ||= 0; # Needed for ocr checkbox, since an unchecked
+                                # checkbox does not return a parameter
     return \%order_params;
 }
 

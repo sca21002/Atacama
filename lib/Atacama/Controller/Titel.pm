@@ -58,7 +58,9 @@ sub json : Chained('titel') {
             : $titel_new->{signatur} =~ /^W 02/
             ?   102
             : ''
-            ;    
+            ;
+            
+        $titel_new->{titel_isbd} = $titel->new($titel_new)->titel_isbd;
         push @$json_data, $titel_new;
     }
     $c->log->debug(Dumper($json_data));   
