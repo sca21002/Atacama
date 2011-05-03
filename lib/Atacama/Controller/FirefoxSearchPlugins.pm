@@ -24,9 +24,7 @@ Catalyst Controller.
 sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
 
-	my @files = $c->model('FirefoxSearchPlugins')->list;
-	my $file_list = join ':', @files;
-    $c->response->body('Matched Atacama::Controller::FirefoxSearchPlugins in FirefoxSearchPlugins.' . $file_list);
+    $c->response->body('Matched Atacama::Controller::FirefoxSearchPlugins in FirefoxSearchPlugins.');
 }
 
 
@@ -37,20 +35,33 @@ sub index :Path :Args(0) {
 sub list :Local :Args(0) {
     my ( $self, $c ) = @_;
 
-	my @files = $c->model('FirefoxSearchPlugins')->list(mode => 'both');
-	my $file_list = join ':', @files;
-    $c->response->body($file_list);
+	my $model = $c->model('FirefoxSearchPlugins');
+	$model->change_dir('plugins');	# go to where plugins are located
+	my @files = $model->list(mode => 'files');
+	map { $_ = $model->file($_)->basename } @files;	# remove path
+	$c->stash->{ffsearchplugins} = \@files;
+    $c->stash->{template} = "firefoxsearchplugins/list.tt";
 }
 
 
-=head2 pwd
+=head2 get
 
 =cut
 
-sub pwd :Local :Args(0) {
-    my ( $self, $c ) = @_;
+sub get :Local :Args(1) {
+    my ( $self, $c, $filename ) = @_;
 
-    $c->response->body($c->model('FirefoxSearchPlugins')->pwd);
+	$c->stash(no_wrapper => 1);
+	$c->response->content_type('application/opensearchdescription+xml');
+	$c->stash->{template} = "firefoxsearchplugins/plugins/" . $filename;
+}
+
+
+sub not_found : Local {
+    my ($self, $c) = @_;
+    $c->response->status(404);
+    $c->stash->{error_msg} = "Plugin nicht gefunden!";
+    $c->detach('list');
 }
 
 

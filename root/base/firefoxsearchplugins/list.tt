@@ -1,0 +1,10 @@
+[% META title =  'Firefox Such-Plugins' %]
+
+
+<ul>
+[% FOR ffplugin IN ffsearchplugins %]
+<li>
+  [% ffplugin %]: <a href="javascript:window.external.AddSearchProvider('[% c.uri_for('get', ffplugin) %]');">Installieren</a>, <a href="[% c.uri_for('get', ffplugin) %]">Download</a>
+</li>
+[% END %]
+</ul>
