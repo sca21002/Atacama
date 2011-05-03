@@ -1,3 +1,9 @@
+[% IF no_wrapper or template.name.match('\.(css|js|txt|xml)') -%]
+[%   debug("Passing page through as text: $template.name") -%]
+[%   content %]
+[% ELSE %]
+[%   debug("Applying HTML page layout wrappers to $template.name\n") %]
+
 [% PROCESS site/header.tt %]
 <div id="header">
    <h1>
@@ -15,3 +21,5 @@
 [% content %]
 </div>
 [% PROCESS site/footer.tt %]
+
+[% END -%]
