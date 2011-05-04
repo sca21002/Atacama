@@ -199,19 +199,56 @@
 							});
 
 
+                    	  	  
                     	  	$("a#book_selected").click( function () {
-					
+
+                          	  	//Zellen fuellen und sperren				
 								var array_key = ($(this).parent().attr("id"))-1;
-								$("input#bvnr").val(result.json_data[array_key].bvnr);
-								$("input#bvnr").attr("disabled", true).css('backgroundColor', '#E6E6E6');
-								$("input#katkey").val(result.json_data[array_key].katkey);
-								$("input#katkey").attr("disabled", true).css('backgroundColor', '#E6E6E6');
-								$("input#mediennr").val(result.json_data[array_key].mediennr);
-								$("input#mediennr").attr("disabled", true).css('backgroundColor', '#E6E6E6');
+								$("input#bvnr").hide();
+								$('#span_bvnr').remove();
+								$("<span/>").attr({id:'span_bvnr'}).text(result.json_data[array_key].bvnr).appendTo('label[for="bvnr"]');
+								$('<input>').attr({
+								    type: 'hidden',
+								    id: 'bvnr',
+								    name: 'titel.bvnr',
+								    value: result.json_data[array_key].bvnr
+								}).appendTo('form#order_form');
+
+								$("input#katkey").hide();
+								$('#span_katkey').remove();
+								$("<span/>").attr({id:'span_katkey'}).text(result.json_data[array_key].katkey).appendTo('label[for="katkey"]');
+								$('<input>').attr({
+								    type: 'hidden',
+								    id: 'katkey',
+								    name: 'titel.katkey',
+								    value: result.json_data[array_key].katkey
+								}).appendTo('form#order_form');
+								
+								$("input#mediennr").hide();
+								$('#span_mediennr').remove();
+								$("<span/>").attr({id:'span_mediennr'}).text(result.json_data[array_key].mediennr).appendTo('label[for="mediennr"]');
+								$('<input>').attr({
+								    type: 'hidden',
+								    id: 'mediennr',
+								    name: 'titel.mediennr',
+								    value: result.json_data[array_key].mediennr
+								}).appendTo('form#order_form');
+								
 								$("select#library").val(result.json_data[array_key].library_id);
-								$("select#library").attr("disabled", true).css('backgroundColor', '#E6E6E6');
-								$("#titel").text(result.json_data[array_key].autor_avs + ": " + result.json_data[array_key].titel_avs);
-							
+								var bibliothek = $("select#library option:selected").text();
+								$("select#library").hide();
+								$('#span_library').remove();
+								$("<span/>").attr({id:'span_lib'}).text(bibliothek).appendTo('label[for="library"]');
+								$('<input>').attr({
+								    type: 'hidden',
+								    id: 'library',
+								    name: 'titel.library_id',
+								    value: result.json_data[array_key].library_id
+								}).appendTo('form#order_form');
+								
+
+								$("#titel").text(result.json_data[array_key].titel_isbd);
+								
 
 								$("#bindeeinheit").dialog("close");
 							});
@@ -229,16 +266,17 @@
                             
              		     }
                     	 else {
-                        	 //Zellen füllen
+                        	 //Zellen füllen und sperren
                     		 $("input#bvnr").val(result.json_data[0].bvnr);
-                    		 $("input#bvnr").attr("disabled", true).css('backgroundColor', '#E6E6E6');                    		 
+					         $("input#bvnr").hide();                    		 
 							 $("input#katkey").val(result.json_data[0].katkey);
-							 $("input#katkey").attr("disabled", true).css('backgroundColor', '#E6E6E6');
+							 $("input#katkey").hide();
 							 $("input#mediennr").val(result.json_data[0].mediennr);
-							 $("input#mediennr").attr("disabled", true).css('backgroundColor', '#E6E6E6');
+							 $("input#mediennr").hide();
 							 $("select#library").val(result.json_data[0].library_id);
-							 $("select#library").attr("disabled", true).css('backgroundColor', '#E6E6E6');
-							 $("#titel").text(result.json_data[0].titel_avs);
+							 $("select#library").hide();
+							 $("#titel").text(result.json_data[array_key].titel_isbd);
+								
 					      	 }
  					}
                  });
