@@ -2,12 +2,14 @@
 <ul id="navigation" class="ui-widget">
 
 
-	<li class="ui-state-[% start or 'default' %]"><span class="ui-icon ui-icon-home"></span><a
-		href="[% c.uri_for('/') %]"> Startseite</a></li>
+<li class="ui-state-[% start or 'default' %]"><span class="ui-icon ui-icon-home"></span><a
+	href="[% c.uri_for('/') %]"> Startseite</a></li>
 		
 [%  FOREACH page IN menu_links %]
      <li class="ui-state-[% page.state or 'default' %]"><span class="ui-icon ui-icon-[% page.icon  or 'contact'%]"></span>
-     <a href="[% page.url %]">[% page.title %]</a></li>
+     <a 
+     [% IF page.class %] class="[% page.class %]" [% END %]
+     href="[% page.url %]">[% page.title %]</a></li>
 [%  END %]
 
 [% IF !start %]

@@ -1,6 +1,44 @@
 <script type="text/javascript">
-    $(document).ready(function(){
 
+    	var formChanged = false;
+
+    	$(document).ready(function() {
+
+        	//Änderungen überwachen
+    	     $('#order_form input[type=text], #order_form textarea').each(function (i) {
+    	          $(this).data('initial_value', $(this).val());
+    	     });
+
+    	     $('#order_form input[type=text], #order_form textarea').keyup(function() {
+    	          if ($(this).val() != $(this).data('initial_value')) {
+    	               handleFormChanged();
+    	          }
+    	     });
+
+    	     $('#order_form').bind('change paste', function() {
+    	          handleFormChanged();
+    	     });
+
+    	     $('a.prevent').bind("click", function () {
+    	          return confirmNavigation();
+    	     });
+    	
+
+    	function handleFormChanged() {
+    	     $('input.send').attr("disabled", false).css("color", "#333333");
+    	     formChanged = true;
+    	}
+
+    	function confirmNavigation() {
+    	     if (formChanged) {
+    	          return confirm('Sind Sie sicher? Ihre Änderungen werden nicht gespeichert!');
+    	     } else {
+    	          return true;
+    	     }
+    	}
+        
+
+    	//Seiten nur bei Artikel anzeigen
         if ($('#documenttype').val() != '2') {
 			$("#article_only").hide();
 		}
@@ -317,6 +355,7 @@
       { url   = c.uri_for_action('/order/list')
         title = 'Liste der Auftr&auml;ge' 
         icon = 'contact'
+        class = 'prevent'
       }
       { url   = c.uri_for_action('/order/delete', [order_href.order_id])
         title = 'Auftrag löschen'
@@ -325,34 +364,42 @@
       { url   =  c.uri_for_action('/order/add')
         title = 'Auftrag anlegen'
         icon = 'plus' 
+        class = 'prevent'
       }
       { url = c.uri_for_action('/order/print', [order_href.order_id])
       	title = 'Laufzettel drucken'
       	icon = 'print'
+      	class = 'prevent'
       }
       {	url =  c.uri_for_action('/remedi/remedi', [order_href.order_id] )
         title = 'mit Remedi bearbeiten'
         icon = 'extlink'
+        class = 'prevent'
       }
       {	url = c.uri_for_action('/sourcefile/sourcefile', [order_href.order_id] )
         title = 'Scandateien suchen'
         icon = 'search'
+        class = 'prevent'
       }
       { url = c.uri_for_action('/job/scoreboard/list')
       	title = 'Laufender Job'
       	icon = 'circle-triangle-e'
+      	class = 'prevent'
       }
       { url = c.uri_for_action('/job/queue/list')
         title = 'Job-Warteschlange'
         icon = 'info'
+        class = 'prevent'
        }
       { url = c.uri_for_action('/job/error/list')
       	title = 'Fehlerhafte Jobs'
       	icon = 'alert'
+      	class = 'prevent'
       }
       { url = c.uri_for_action('/order/print_patchcode_t', [order_href.order_id])
       	title = 'Patchcode T drucken'
       	icon = 'print'
+      	class = 'prevent'
       }
       
     ];
@@ -625,6 +672,6 @@ Publikation </label>
 	images/add.png') %]' alt='neues Publikationsfeld einfuegen' /></a></div>
 
 <hr />
-<input class="send" name="save" type="submit" value="Speichern">
+<input class="send" id="order_submit" name="save" type="submit" disabled="true" value="Speichern">
 </form>
 </div>

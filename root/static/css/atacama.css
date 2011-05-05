@@ -224,6 +224,11 @@ input[type='submit'] {
 	margin-top: 13px;
 }
 
+
+#order_submit {
+	color: #eee;
+}
+	
 textarea {
 	margin-left: 9.3em;
 }
