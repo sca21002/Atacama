@@ -356,6 +356,10 @@
 	<li class="ui-state-default"><span class="ui-icon ui-icon-alert"></span><a
 		class="form_submit" href="[% c.uri_for_action('/job/error/list') %]">
 	Fehlerhafte Jobs</a></li>
+        <li class="ui-state-default"><span class="ui-icon ui-icon-print"></span><a
+		class="form_submit"
+		href="[% c.uri_for_action('/order/print_patchcode_t', [order_href.order_id]) %]">
+	Patchcode T drucken </a></li>
 </ul>
 </div>
 

@@ -191,7 +191,7 @@ sub print_patchcode_t : Chained('order') {
     }
 }
 
-sub print_patchcode_all : Chained('orders') PathPart('print_patchcode') Args(0){ 
+sub print_patchcode_t_all : Chained('orders') PathPart('print_patchcode') Args(0){ 
     my ($self, $c)  = @_;
     
     my $orders_rs = $c->stash->{orders};
@@ -211,7 +211,7 @@ sub print_patchcode_all : Chained('orders') PathPart('print_patchcode') Args(0){
     );
     $c->stash->{orders2print} = [ $orders_rs->all ];
     
-    $c->stash->{template} = 'order/print_patchcode_t.tt'; 
+    $c->stash->{template} = 'order/print_patchcode.tt'; 
     if ($c->forward( 'Atacama::View::PDF' )) {
          $c->response->content_type('application/pdf');
          $c->response->header('Content-Disposition', 'attachment; filename='
