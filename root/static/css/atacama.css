@@ -2,7 +2,7 @@ body {
 	font-family: Tahoma, Helvetica, sans-serif;
 	color: #333333;
 	font-size: 97%;
-	background-color: #EFEFEE;
+	background-color: #eee;
 	margin: 0;
 	padding: 0;
 }
@@ -176,8 +176,12 @@ ul#navigation li a:visited {
 	color: #222222 !important;
 }
 
-ul#navigation li:hover, ul#navigation li.ui-state-active {
+ul#navigation li:hover  {
 	background-color: lightyellow;
+}
+
+ul#navigation li.ui-state-active {
+	background-color: #eee;
 }
 
 hr {

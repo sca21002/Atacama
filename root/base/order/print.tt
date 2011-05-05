@@ -34,11 +34,12 @@
     \section* {UB Regensburg \\
     Digitalisierungsauftrag: Scanlaufzettel}
 } \hfill
+[% new_order_id = order.order_id.replace('_', '\_') %]  % TeX special characters (must be escaped): \# \$ \% \& \\ \^ \_ \{ \}
 \begin{minipage}[t]{70mm}
 \begin{flushright}
-\fontsize{40}{50}\selectfont [% order.order_id %]\\
+\fontsize{40}{50}\selectfont [% new_order_id %]\\
 \bigskip
-\hfill \code{[% order.order_id %]}\\
+\hfill \code{[% new_order_id %]}\\
 \bigskip
 \end{flushright}
 \end{minipage}
