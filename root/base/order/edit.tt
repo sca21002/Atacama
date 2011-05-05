@@ -71,8 +71,12 @@
 						//Resolution     
 			       	    if (result.json_data.resolutions != '' && option_val != ''){    	
 			       			active_li.append($("<option value=''>-- select --</option>"));  	
+			       			
                  		$.each(result.json_data.resolutions, function(key, val) {       
-                 				 active_li.append($("<option value='" + val.resolution_id +">" + val.value + "</option>"));                 				   
+                 			console.debug (val.value);
+                 			$('<option>').attr({ value: val.resolution_id}).html(val.value).appendTo(active_li);
+                 			//funktioniert hier nicht
+                 			//active_li.append($("<option value='" + val.resolution_id +">" + val.value + "</option>"));                 				   
                  				  });  
                  		active_select.next().nextAll().wrapAll("<select class='json' name='scanparameters." + count + ".resolutions' size='1'>");
 			       	    }
