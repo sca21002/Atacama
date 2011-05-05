@@ -173,15 +173,62 @@
         });
 
 
-      
+
+         function insertSignature (array_key, result) {
+
+        		$("input#bvnr").hide();
+				$('#span_bvnr, input#bvnr').remove();
+				$("<span/>").attr({id:'span_bvnr'}).text(result.json_data[array_key].bvnr).appendTo('label[for="bvnr"]');
+				$('<input>').attr({
+				    type: 'hidden',
+				    id: 'bvnr',
+				    name: 'titel.bvnr',
+				    value: result.json_data[array_key].bvnr
+				}).appendTo('form#order_form');
+
+				$("input#katkey").hide();
+				$('#span_katkey, input#katkey').remove();
+				$("<span/>").attr({id:'span_katkey'}).text(result.json_data[array_key].katkey).appendTo('label[for="katkey"]');
+				$('<input>').attr({
+				    type: 'hidden',
+				    id: 'katkey',
+				    name: 'titel.katkey',
+				    value: result.json_data[array_key].katkey
+				}).appendTo('form#order_form');
+				
+				$("input#mediennr").hide();
+				$('#span_mediennr').remove();
+				$('input#mediennr').remove();
+				$("<span/>").attr({id:'span_mediennr'}).text(result.json_data[array_key].mediennr).appendTo('label[for="mediennr"]');
+				$('<input>').attr({
+				    type: 'hidden',
+				    id: 'mediennr',
+				    name: 'titel.mediennr',
+				    value: result.json_data[array_key].mediennr
+				}).appendTo('form#order_form');
+				
+				$("select#library").val(result.json_data[array_key].library_id);
+				var bibliothek = $("select#library option:selected").text();
+				$("select#library").hide();
+				$('#span_library').remove();
+				$('input#library').remove();
+				$("<span/>").attr({id:'span_library'}).text(bibliothek).appendTo('label[for="library"]');
+				$('<input>').attr({
+				    type: 'hidden',
+				    id: 'library',
+				    name: 'titel.library_id',
+				    value: result.json_data[array_key].library_id
+				}).appendTo('form#order_form');
+				$("#titel").text(result.json_data[array_key].titel_isbd);
+				
+         }
 
 		//Signaturen abrufen
 		  function getSignature(signature) {
 
-                 //Leerzeichen entfernen
+                 //Leerzeichen aus der Signatur entfernen
                  //signature = signature.replace(/ /g,'');
-
-             
+                 
                   $.ajax({
                      type: "GET",
                      url: "[% c.uri_for_action('/titel/json') %]?signatur=" + signature,
@@ -189,99 +236,38 @@
                      cache: false,
                      error: function(){  alert ("Diese Signatur existiert nicht.");    },                                    
                      success: function(result){    
-                    	// console.debug(result); 
-
-                  
+                 
                     	 if (typeof result.json_data[1] != 'undefined') {
-                    		  // Bindeeinheit
+                    		  //mehrere Treffer/Bindeeinheit
                     		  $("#bindeeinheit").append('<p>Bitte wählen Sie den passenden Treffer aus:</p>'); 
                     		  var i = 0;
-
                     	  	  $.each(result.json_data, function(key, val) {    
-                        	  	  i ++;                    		  	
+                        	  	i ++;                    		  	
               		   			$("#bindeeinheit").append('<li id="'+i+'"><strong>Titel: </strong> '+val.titel_avs+'<br/><strong>Autor: </strong> '+ val.autor_avs+'<br/><strong>Verlag:</strong> '+val.verlag+'<br/><strong>BV-Nr.: </strong>' + val.bvnr+'<br/><strong>Erschienen:</strong> '+val.erschjahr+'<br/><br/> <a href="#" id="book_selected" class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-search"></span>Auswählen</a></li>');
 							});
-
-
                     	  	  
                     	  	$("a#book_selected").click( function () {
-
                           	  	//Zellen fuellen und sperren				
-								var array_key = ($(this).parent().attr("id"))-1;
-								$("input#bvnr").hide();
-								$('#span_bvnr').remove();
-								$("<span/>").attr({id:'span_bvnr'}).text(result.json_data[array_key].bvnr).appendTo('label[for="bvnr"]');
-								$('<input>').attr({
-								    type: 'hidden',
-								    id: 'bvnr',
-								    name: 'titel.bvnr',
-								    value: result.json_data[array_key].bvnr
-								}).appendTo('form#order_form');
-
-								$("input#katkey").hide();
-								$('#span_katkey').remove();
-								$("<span/>").attr({id:'span_katkey'}).text(result.json_data[array_key].katkey).appendTo('label[for="katkey"]');
-								$('<input>').attr({
-								    type: 'hidden',
-								    id: 'katkey',
-								    name: 'titel.katkey',
-								    value: result.json_data[array_key].katkey
-								}).appendTo('form#order_form');
-								
-								$("input#mediennr").hide();
-								$('#span_mediennr').remove();
-								$("<span/>").attr({id:'span_mediennr'}).text(result.json_data[array_key].mediennr).appendTo('label[for="mediennr"]');
-								$('<input>').attr({
-								    type: 'hidden',
-								    id: 'mediennr',
-								    name: 'titel.mediennr',
-								    value: result.json_data[array_key].mediennr
-								}).appendTo('form#order_form');
-								
-								$("select#library").val(result.json_data[array_key].library_id);
-								var bibliothek = $("select#library option:selected").text();
-								$("select#library").hide();
-								$('#span_library').remove();
-								$("<span/>").attr({id:'span_lib'}).text(bibliothek).appendTo('label[for="library"]');
-								$('<input>').attr({
-								    type: 'hidden',
-								    id: 'library',
-								    name: 'titel.library_id',
-								    value: result.json_data[array_key].library_id
-								}).appendTo('form#order_form');
-								
-
-								$("#titel").text(result.json_data[array_key].titel_isbd);
-								
-
+								var array_key = ($(this).parent().attr("id"))-1;	
+								insertSignature (array_key, result);
 								$("#bindeeinheit").dialog("close");
 							});
 	                    	
-                    		  $("#bindeeinheit li").wrapAll('<ul id="bindeeinheit">');
-                    		     
+                    		$("#bindeeinheit li").wrapAll('<ul id="bindeeinheit">');
+           		     
 	               			                  
-                    		 $("#bindeeinheit").dialog({ 
+                    		$("#bindeeinheit").dialog({ 
                         		 modal: true, 
                         		 title: "Mehrere Treffer: Bindeeinheit", 
                         		 width: 700,                       		 
-                        		 close: function() { $('#bindeeinheit li, #bindeeinheit p').remove();	}
-	                 			         
+                        		 close: function() { $('#bindeeinheit li, #bindeeinheit p').remove();	}	                 			         
 				                });
                             
              		     }
                     	 else {
-                        	 //Zellen füllen und sperren
-                    		 $("input#bvnr").val(result.json_data[0].bvnr);
-					         $("input#bvnr").hide();                    		 
-							 $("input#katkey").val(result.json_data[0].katkey);
-							 $("input#katkey").hide();
-							 $("input#mediennr").val(result.json_data[0].mediennr);
-							 $("input#mediennr").hide();
-							 $("select#library").val(result.json_data[0].library_id);
-							 $("select#library").hide();
-							 $("#titel").text(result.json_data[array_key].titel_isbd);
-								
-					      	 }
+                        	 //nur 1 Treffer
+                    		insertSignature(0, result);
+				      	 }
  					}
                  });
 
