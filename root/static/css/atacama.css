@@ -291,3 +291,27 @@ h1,h1.main {
 	color: DarkKhaki;
 	font-weight: normal;
 }
+
+
+table#remedi td {
+	border-bottom: 1px dotted #bdb76b;
+	
+}
+table#remedi td:FIRST-CHILD {
+	width: 133px;
+	border-right: 1px dotted #bdb76b;
+	padding: 0 3px 0 7px;
+	height: 100%;	
+}
+
+form#remedi label {
+	padding-top: 3px;
+	padding-left: 8px;
+}
+
+
+form#remedi select, form#remedi input {
+	margin: 5px 1px;
+}
+
+	

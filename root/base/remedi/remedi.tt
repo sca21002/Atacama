@@ -1,4 +1,4 @@
-<table>
+<table id="remedi">
 <tr><td> Auftrag:   </td><td> [% order.order_id %]          </td></tr>
 <tr><td> Signatur:  </td><td> [% order.titel.signatur %]    </td></tr>
 <tr><td> BV-Nr.:    </td><td> [% order.titel.bvnr %]        </td></tr>
@@ -8,13 +8,16 @@
 
 <form name="[% form.name %]"
     action="[% c.req.uri %]"
-    method="post">
+    method="post" id="remedi">
 [% form.field('configfile').render %]
 [% form.field('source_pdf_name').render %]
 [% form.field('source_format').render %]
+<hr /><br />
 [% form.field('copy_files').render %]
 [% form.field('digifooter').render %]
 [% form.field('mets').render %]
 [% form.field('csv').render %]
+<hr/><br />
 [% form.field('submit').render %]
 </form>
+
