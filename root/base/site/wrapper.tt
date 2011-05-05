@@ -6,15 +6,7 @@
 
 [% PROCESS site/header.tt %]
 <div id="header"></div>
-<div id="heading">
 
-   <h1 class="main">
-   
-[% title or template.title or 'Bitte Titel eingeben' %]
-
-   </h1>
-  
-</div>
 [% IF error %]
     <p><span class="error">[% error | html %]</span></p>
 [% END %]
@@ -25,6 +17,12 @@
 <div id="content_container">
 [% PROCESS site/menu.tt %]
 <div id="content" class="ui-widget-content">
+
+   <h1 class="main">
+   
+[% title or template.title or 'Bitte Titel eingeben' %]
+
+   </h1>
 [% content %]
 </div>
 </div>
