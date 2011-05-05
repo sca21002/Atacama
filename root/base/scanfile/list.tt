@@ -39,22 +39,30 @@ jQuery("#scanfiles").jqGrid({
 jQuery("#scanfiles").jqGrid('navGrid','#pager_scanfiles',{edit:false,add:false,del:false,search:false});
 });
 </script>
-    <title>Scan-Dateien</title>
+   
 </head>
 <body>
- <div id="nav_area">
-<ul id="navigation" class="ui-widget" >
-<li class="ui-state-default"><span class="ui-icon ui-icon-home"></span><a href="[% c.uri_for('/') %]">Startseite</a></li>
-<li class="ui-state-default"><span class="ui-icon ui-icon-plus"></span><a href="[% c.uri_for('add') %]">Auftrag anlegen</a></li>
-<li class="ui-state-default"><span class="ui-icon ui-icon-contact"></span><a href="[% c.uri_for('../order/list') %]">Liste der Auftr&auml;ge	</a></li>
-<li class="ui-state-default"><span class="ui-icon ui-icon-back"></span><a href="javascript:history.back()">zur&uuml;ck</a></li>
-</ul>
-</div>
 
-<div id="content">
 
-<h1 class="main">Scan-Dateien zu Auftrag [% order.order_id %]</h1>
-<table id="scanfiles"></table></div><div id="pager_scanfiles">
+
+[%
+   menu_links = [
+      { url   = c.uri_for_action('/order/list')
+        title = 'Liste der Auftr&auml;ge' 
+        icon = 'contact'
+      }
+      { url   =  c.uri_for_action('/order/add')
+        title = 'Auftrag anlegen'
+        icon = 'plus' 
+      }
+    ];
+    
+ %]
+
+[% title = "Scan-Dateien zu Auftrag ${order.order_id}" %]
+
+<table id="scanfiles"></table>
+<div id="pager_scanfiles">
 </div> 
 </body>
 </html>

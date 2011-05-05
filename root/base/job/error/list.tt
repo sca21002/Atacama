@@ -44,23 +44,51 @@ jQuery("#errors").jqGrid({
 jQuery("#errors").jqGrid('navGrid','#pager_errors',{edit:false,add:false,del:false});
 });
 </script>
-    <title>Jobs mit Fehler</title>
+
 </head>
 <body>
- <div id="nav_area">
-<ul id="navigation" class="ui-widget" >
-<li class="ui-state-default"><span class="ui-icon ui-icon-home"></span><a href="[% c.uri_for('/') %]">Startseite</a></li>
-<li class="ui-state-default"><span class="ui-icon ui-icon-plus"></span><a href="[% c.uri_for_action('/order/add') %]">Auftrag anlegen</a></li>
-<li class="ui-state-default"><span class="ui-icon ui-icon-contact"></span><a href="[% c.uri_for_action('/order/list') %]">Liste der Auftr&auml;ge	</a></li>
-<li class="ui-state-default"><span class="ui-icon ui-icon-back"></span><a href="javascript:history.back()">zur&uuml;ck</a></li>
-</ul>
-</div>
 
-<div id="content">
+
+[%
+   menu_links = [
+      { url   = c.uri_for_action('/order/list')
+        title = 'Liste der Auftr&auml;ge' 
+        icon = 'contact'
+      }
+      { url   = c.uri_for_action('/order/delete', [order_href.order_id])
+        title = 'Auftrag löschen'
+        icon = 'trash' 
+      }
+      { url   =  c.uri_for_action('/order/add')
+        title = 'Auftrag anlegen'
+        icon = 'plus' 
+      }
+      {	url = c.uri_for_action('/sourcefile/sourcefile', [order_href.order_id] )
+        title = 'Scandateien suchen'
+        icon = 'search'
+      }
+      { url = c.uri_for_action('/job/scoreboard/list')
+      	title = 'Laufender Job'
+      	icon = 'circle-triangle-e'
+      }
+      { url = c.uri_for_action('/job/queue/list')
+        title = 'Job-Warteschlange'
+        icon = 'info'
+       }
+      { url = c.uri_for_action('/job/error/list')
+      	title = 'Fehlerhafte Jobs'
+      	icon = 'alert'
+      	state = 'active'
+      }
   
-<h1 class="main">Fehlerhafte Jobs</h1>
+    ];
+    
+ %]
+
+[% title = "Fehlerhafte Jobs"; %]
+
 <table id="errors"></table>
 <div id="pager_errors"></div>
- </div>
+
 </body>
 </html>

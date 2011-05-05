@@ -22,7 +22,7 @@ body {
 #content_container {
 	width: 956px;
 	background-color: white;
-	margin: 4px auto 0;
+	margin: -37px auto 0;
 	overflow: auto;
 }
 
@@ -39,7 +39,7 @@ body {
 	width: 775px;
 	float: right;
 	border-left: 1px dotted #BDB76B;
-	padding: 0 0 12px 10px;
+	padding: 71px 0 12px 10px;
 }
 
 #footer {
@@ -176,8 +176,8 @@ ul#navigation li a:visited {
 	color: #222222 !important;
 }
 
-ul#navigation li:hover {
-	background-color: #ffffe0;
+ul#navigation li:hover, ul#navigation li.ui-state-active {
+	background-color: lightyellow;
 }
 
 hr {
@@ -289,5 +289,8 @@ h1,h1.main {
 }
 
 h1.main {
-	clear: both;
+	margin: 0 auto;
+    width: 590px;
+    position: relative;
+    top: 15px;
 }

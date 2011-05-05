@@ -324,51 +324,57 @@
 
 <div id="bindeeinheit" style="display: none;"></div>
 
-<div id="nav_area">
-<ul id="navigation" class="ui-widget">
-	<li class="ui-state-default"><span class="ui-icon ui-icon-home"></span><a
-		href="[% c.uri_for('/') %]"> Startseite</a></li>
-	<li class="ui-state-default"><span class="ui-icon ui-icon-contact"></span><a
-		class="form_submit" href="[% c.uri_for_action('/order/list') %]">
-	Liste der Auftr&auml;ge </a></li>
-	<li class="ui-state-default"><span class="ui-icon ui-icon-trash"></span><a
-		href="[% c.uri_for_action('/order/delete', [order_href.order_id]) %]">
-	Auftrag l&ouml;schen </a></li>
-	<li class="ui-state-default"><span class="ui-icon ui-icon-plus"></span><a
-		class="form_submit" href="[% c.uri_for_action('/order/add') %]">
-	Auftrag anlegen</a></li>
-	<li class="ui-state-default"><span class="ui-icon ui-icon-print"></span><a
-		class="form_submit"
-		href="[% c.uri_for_action('/order/print', [order_href.order_id]) %]">
-	Laufzettel drucken </a></li>
-	<li class="ui-state-default"><span class="ui-icon ui-icon-extlink"></span><a
-		class="form_submit"
-		href="[% c.uri_for_action('/remedi/remedi', [order_href.order_id] ) %]">
-	mit Remedi bearbeiten </a></li>
-	<li class="ui-state-default"><span class="ui-icon ui-icon-search"></span><a
-		class="form_submit"
-		href="[% c.uri_for_action('/sourcefile/sourcefile', [order_href.order_id] ) %]">
-	Scandateien suchen </a></li>
-	<li class="ui-state-default"><span
-		class="ui-icon ui-icon-circle-triangle-e"></span><a
-		class="form_submit"
-		href="[% c.uri_for_action('/job/scoreboard/list') %]"> Laufender
-	Job</a></li>
-	<li class="ui-state-default"><span class="ui-icon ui-icon-info"></span><a
-		class="form_submit" href="[% c.uri_for_action('/job/queue/list') %]">
-	Job-Warteschlange</a></li>
-	<li class="ui-state-default"><span class="ui-icon ui-icon-alert"></span><a
-		class="form_submit" href="[% c.uri_for_action('/job/error/list') %]">
-	Fehlerhafte Jobs</a></li>
-        <li class="ui-state-default"><span class="ui-icon ui-icon-print"></span><a
-		class="form_submit"
-		href="[% c.uri_for_action('/order/print_patchcode_t', [order_href.order_id]) %]">
-	Patchcode T drucken </a></li>
-</ul>
-</div>
 
-<div id="content" class="ui-widget-content">
-<h1 class="main">Auftrag [% order_href.order_id %] bearbeiten</h1>
+
+[%
+   menu_links = [
+      { url   = c.uri_for_action('/order/list')
+        title = 'Liste der Auftr&auml;ge' 
+        icon = 'contact'
+      }
+      { url   = c.uri_for_action('/order/delete', [order_href.order_id])
+        title = 'Auftrag löschen'
+        icon = 'trash' 
+      }
+      { url   =  c.uri_for_action('/order/add')
+        title = 'Auftrag anlegen'
+        icon = 'plus' 
+      }
+      { url = c.uri_for_action('/order/print', [order_href.order_id])
+      	title = 'Laufzettel drucken'
+      	icon = 'print'
+      }
+      {	url =  c.uri_for_action('/remedi/remedi', [order_href.order_id] )
+        title = 'mit Remedi bearbeiten'
+        icon = 'extlink'
+      }
+      {	url = c.uri_for_action('/sourcefile/sourcefile', [order_href.order_id] )
+        title = 'Scandateien suchen'
+        icon = 'search'
+      }
+      { url = c.uri_for_action('/job/scoreboard/list')
+      	title = 'Laufender Job'
+      	icon = 'circle-triangle-e'
+      }
+      { url = c.uri_for_action('/job/queue/list')
+        title = 'Job-Warteschlange'
+        icon = 'info'
+       }
+      { url = c.uri_for_action('/job/error/list')
+      	title = 'Fehlerhafte Jobs'
+      	icon = 'alert'
+      }
+      { url = c.uri_for_action('/order/print_patchcode_t', [order_href.order_id])
+      	title = 'Patchcode T drucken'
+      	icon = 'print'
+      }
+      
+    ];
+    
+ %]
+
+[% title = "Auftrag ${order_href.order_id} bearbeiten"; %]
+
 
 <fieldset>
 <div class="left">Auftragsnummer:</div>
@@ -635,5 +641,4 @@ Publikation </label>
 <hr />
 <input class="send" name="save" type="submit" value="Speichern">
 </form>
-</div>
 </div>

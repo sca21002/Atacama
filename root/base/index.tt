@@ -1,19 +1,30 @@
-﻿<div id="nav_area">
-<ul id="navigation" class="ui-widget">
-	<li class="ui-state-default"><span class="ui-icon ui-icon-home"></span><a
-		href="[% c.uri_for('/') %]"> Startseite</a></li>
-	<li class="ui-state-default"><span class="ui-icon ui-icon-contact"></span><a
-		href="[% c.uri_for('/order/list') %]"> Liste der Auftr&auml;ge </a></li>
-	<li class="ui-state-default"><span class="ui-icon ui-icon-contact"></span><a
-		href="[% c.uri_for('/project/list') %]"> Liste der Projekte</a></li>
-	<li class="ui-state-default"><span class="ui-icon ui-icon-plus"></span><a
-		href="[% c.uri_for('order/add') %]">Auftrag anlegen</a></li>
-</ul>
-</div>
+﻿
+[%
+   start = 'active';
+   menu_links = [
+      { url   = c.uri_for_action('/order/list')
+        title = 'Liste der Auftr&auml;ge' 
+        icon = 'contact'
+      }
+      { url   =  c.uri_for('/project/list') 
+        title = 'Liste der Projekte'
+        icon = 'contact' 
+      }
+      { url   =  c.uri_for_action('/order/add')
+        title = 'Auftrag anlegen'
+        icon = 'plus' 
+      }
+       { url   =  c.uri_for_action('/firefoxsearchplugins/list')
+        title = 'Liste der Such-Plugins'
+        icon = 'contact' 
+      }
+      
+    ];
+    
+ %]
 
-<div id="content" class="ui-widget-content">
+[% title = "Startseite"; %]
 
-<h1 class="main">Startseite</h1>
 
 <p>Atacama verwaltet die Digitalisierungsaufträge der
 Universitätsbibliothek Regensburg.</p>
@@ -28,4 +39,4 @@ Universitätsbibliothek Regensburg.</p>
 	der Firefox-Such-Plugins</a> ansehen.</li>
 </ul>
 </p>
-</div>
+

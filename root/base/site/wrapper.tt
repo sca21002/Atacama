@@ -5,9 +5,13 @@
 [%   debug("Applying HTML page layout wrappers to $template.name\n") %]
 
 [% PROCESS site/header.tt %]
-<div id="header">
-   <h1>
-        [% title %]
+<div id="header"></div>
+<div id="heading">
+
+   <h1 class="main">
+   
+[% title or template.title or 'Bitte Titel eingeben' %]
+
    </h1>
   
 </div>
@@ -17,8 +21,12 @@
 [% IF message %]
     <p><span class="message">[% message | html %]</span></p>
 [% END %]
+
 <div id="content_container">
+[% PROCESS site/menu.tt %]
+<div id="content" class="ui-widget-content">
 [% content %]
+</div>
 </div>
 [% PROCESS site/footer.tt %]
 

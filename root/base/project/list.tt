@@ -40,21 +40,15 @@ jQuery("#orders").jqGrid({
 jQuery("#projects").jqGrid('navGrid','#pager_orders',{edit:false,add:false,del:false});
 });
 </script>
-    <title>Projekte</title>
 </head>
 <body>
-<div id="nav_area">
-<ul id="navigation" class="ui-widget">
-	<li class="ui-state-default"><span class="ui-icon ui-icon-home"></span><a
-		href="[% c.uri_for('/') %]"> Startseite</a></li>
-	
-</ul>
-</div>
 
-<div id="content">
+[% title = "Projekte" %]
 
-<h1 class="main">Projekte</h1>
+
+
 <table id="orders"></table>
-<div id="pager_orders"></div></div> 
+<div id="pager_orders"></div>
+
 </body>
 </html>

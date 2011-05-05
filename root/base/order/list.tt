@@ -301,25 +301,27 @@
 				
 					});
 </script>
-<title>Aufträge</title>
+[% title = "Alle Aufträge" %]
 </head>
 <body>
-
-<div id="nav_area">
-<ul id="navigation" class="ui-widget">
-	<li class="ui-state-default"><span class="ui-icon ui-icon-home"></span><a
-		href="[% c.uri_for('/') %]"> Startseite</a></li>
-	<li class="ui-state-default"><span class="ui-icon ui-icon-plus"></span><a
-		href="[% c.uri_for('add') %]"> Auftrag anlegen</a></li>
-</ul>
-</div>
-
-<div id="content">
-
-<h1 class="main">Alle Auftr&auml;ge</h1>
+[%
+   menu_links = [
+      { url   = c.uri_for_action('/order/list')
+        title = 'Liste der Auftr&auml;ge' 
+        icon = 'contact'
+        state= 'active'
+      }
+     { url   =  c.uri_for_action('/order/add')
+        title = 'Auftrag anlegen'
+        icon = 'plus' 
+      }
+        
+    ];
+    
+ %]
 
 <table id="orders"></table>
 <div id="pager_orders"></div>
-</div>
+
 </body>
 </html>

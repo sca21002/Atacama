@@ -57,22 +57,43 @@ jQuery("#jobs").jqGrid({
 jQuery("#jobs").jqGrid('navGrid','#pager_jobs',{edit:false,add:false,del:false});
 });
 </script>
-    <title>Laufender Job</title>
+    
 </head>
 <body>
 
-<div id="nav_area">
-<ul id="navigation" class="ui-widget" >
-<li class="ui-state-default"><span class="ui-icon ui-icon-home"></span><a href="[% c.uri_for('/') %]">Startseite</a></li>
-<li class="ui-state-default"><span class="ui-icon ui-icon-plus"></span><a href="[% c.uri_for_action('/order/add') %]">Auftrag anlegen</a></li>
-<li class="ui-state-default"><span class="ui-icon ui-icon-contact"></span><a href="[% c.uri_for_action('/order/list') %]">Liste der Auftr&auml;ge	</a></li>
-<li class="ui-state-default"><span class="ui-icon ui-icon-back"></span><a href="javascript:history.back()">zur&uuml;ck</a></li>
-</ul>
-</div>
 
-<div id="content">
-<h1 class="main">Laufender Job</h1>
+[%
+   menu_links = [
+      { url   = c.uri_for_action('/order/list')
+        title = 'Liste der Auftr&auml;ge' 
+        icon = 'contact'
+      }
+     
+      { url   =  c.uri_for_action('/order/add')
+        title = 'Auftrag anlegen'
+        icon = 'plus' 
+      }
+      { url = c.uri_for_action('/job/scoreboard/list')
+      	title = 'Laufender Job'
+      	icon = 'circle-triangle-e'
+      	state = 'active'
+      }
+      { url = c.uri_for_action('/job/queue/list')
+        title = 'Job-Warteschlange'
+        icon = 'info'
+       }
+      { url = c.uri_for_action('/job/error/list')
+      	title = 'Fehlerhafte Jobs'
+      	icon = 'alert'
+      }
+    ];
+    
+ %]
+
+[% title = "Laufender Job"; %]
+
+
 <table id="jobs"></table>
-<div id="pager_jobs"></div></div> 
+<div id="pager_jobs"></div>
 </body>
 </html>
