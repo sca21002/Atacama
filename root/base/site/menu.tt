@@ -5,12 +5,20 @@
 <li class="ui-state-[% start or 'default' %]"><span class="ui-icon ui-icon-home"></span><a
 	href="[% c.uri_for('/') %]"> Startseite</a></li>
 		
+
 [%  FOREACH page IN menu_links %]
-     <li class="ui-state-[% page.state or 'default' %]"><span class="ui-icon ui-icon-[% page.icon  or 'contact'%]"></span>
+[% IF page.level == '2' %] <ul id="navigation_level2">     [%  END %]	
+     <li class="ui-state-[% page.state or 'default' %]">
+     <span class="ui-icon ui-icon-[% page.icon  or 'contact'%]"></span>
      <a 
      [% IF page.class %] class="[% page.class %]" [% END %]
      href="[% page.url %]">[% page.title %]</a></li>
+ [% IF page.level == '2' %] </ul>     [%  END %]
+     
 [%  END %]
+
+
+
 
 [% IF !start %]
 <li class="ui-state-default">

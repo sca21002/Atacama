@@ -45,8 +45,24 @@ jQuery("#projects").jqGrid('navGrid','#pager_orders',{edit:false,add:false,del:f
 
 [% title = "Projekte" %]
 
+[%
+  
+   menu_links = [
 
+      { url   =  c.uri_for('/project/list') 
+        title = 'Liste der Projekte'
+        icon = 'contact' 
+        state = 'active'
+      }
 
+      { url   =  c.uri_for_action('/project/add')
+        title = 'Projekt anlegen'
+        icon = 'plus' 
+      }
+      
+    ];
+    
+ %]
 <table id="orders"></table>
 <div id="pager_orders"></div>
 

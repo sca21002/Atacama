@@ -352,7 +352,7 @@
 <div id="bindeeinheit" style="display: none;"></div>
 
 
-
+[% title = "Auftrag ${order_href.order_id} bearbeiten"; %]
 [%
    menu_links = [
       { url   = c.uri_for_action('/order/list')
@@ -360,30 +360,47 @@
         icon = 'contact'
         class = 'prevent'
       }
+       { url   = c.uri_for_action('/order/edit' [order_href.order_id])
+        title = title
+        icon = 'pencil'
+        class = 'prevent'
+        state = 'active'
+      }
       { url   = c.uri_for_action('/order/delete', [order_href.order_id])
         title = 'Auftrag löschen'
         icon = 'trash' 
+        level = '2'
+      }
+        { url = c.uri_for_action('/order/print', [order_href.order_id])
+      	title = 'Laufzettel drucken'
+      	icon = 'print'
+      	class = 'prevent'
+      	level = '2'
+      }
+      { url = c.uri_for_action('/order/print_patchcode_t', [order_href.order_id])
+      	title = 'Patchcode T drucken'
+      	icon = 'print'
+      	class = 'prevent'
+      	level = '2'
+      }
+      {	url =  c.uri_for_action('/remedi/remedi', [order_href.order_id] )
+        title = 'mit Remedi bearbeiten'
+        icon = 'extlink'
+        class = 'prevent'
+        level = '2'
+      }
+      {	url = c.uri_for_action('/sourcefile/sourcefile', [order_href.order_id] )
+        title = 'Scandateien suchen'
+        icon = 'search'
+        class = 'prevent'
+        level = '2'
       }
       { url   =  c.uri_for_action('/order/add')
         title = 'Auftrag anlegen'
         icon = 'plus' 
         class = 'prevent'
       }
-      { url = c.uri_for_action('/order/print', [order_href.order_id])
-      	title = 'Laufzettel drucken'
-      	icon = 'print'
-      	class = 'prevent'
-      }
-      {	url =  c.uri_for_action('/remedi/remedi', [order_href.order_id] )
-        title = 'mit Remedi bearbeiten'
-        icon = 'extlink'
-        class = 'prevent'
-      }
-      {	url = c.uri_for_action('/sourcefile/sourcefile', [order_href.order_id] )
-        title = 'Scandateien suchen'
-        icon = 'search'
-        class = 'prevent'
-      }
+    
       { url = c.uri_for_action('/job/scoreboard/list')
       	title = 'Laufender Job'
       	icon = 'circle-triangle-e'
@@ -399,17 +416,13 @@
       	icon = 'alert'
       	class = 'prevent'
       }
-      { url = c.uri_for_action('/order/print_patchcode_t', [order_href.order_id])
-      	title = 'Patchcode T drucken'
-      	icon = 'print'
-      	class = 'prevent'
-      }
+
       
     ];
     
  %]
 
-[% title = "Auftrag ${order_href.order_id} bearbeiten"; %]
+
 
 
 <fieldset>

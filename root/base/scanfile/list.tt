@@ -44,22 +44,65 @@ jQuery("#scanfiles").jqGrid('navGrid','#pager_scanfiles',{edit:false,add:false,d
 <body>
 
 
-
+[% title = "Scan-Dateien zu Auftrag ${order.order_id}" %]
+[% edit_link = "Auftrag ${order.order_id} bearbeiten"; %]
 [%
    menu_links = [
       { url   = c.uri_for_action('/order/list')
         title = 'Liste der Auftr&auml;ge' 
+        icon = 'contact'   }
+      { url   = c.uri_for_action('/order/edit' [order.order_id])
+        title = edit_link
+        icon = 'pencil'  }
+      { url   = c.uri_for_action('/order/delete', [order.order_id])
+        title = 'Auftrag löschen'
+        icon = 'trash' 
+        level = '2' }
+        { url = c.uri_for_action('/order/print', [order.order_id])
+      	title = 'Laufzettel drucken'
+      	icon = 'print'      	
+      	level = '2'  }
+      { url = c.uri_for_action('/order/print_patchcode_t', [order.order_id])
+      	title = 'Patchcode T drucken'
+      	icon = 'print'      	
+      	level = '2'
+      }
+      {	url =  c.uri_for_action('/remedi/remedi', [order.order_id] )
+        title = 'mit Remedi bearbeiten'
+        icon = 'extlink'        
+        level = '2'
+      }
+      {	url = c.uri_for_action('/sourcefile/sourcefile', [order.order_id] )
+        title = 'Scandateien suchen'
+        icon = 'search'        
+        level = '2'
+       }
+      { url = c.uri_for("/order/${orderhref.order_id}/scanfiles/list")
+        title = 'Scan-Dateien'
         icon = 'contact'
+        state = 'active'     
+        level = '2'
+              }
+    
+      { url = c.uri_for_action('/job/scoreboard/list')
+      	title = 'Laufender Job'
+      	icon = 'circle-triangle-e'      	
       }
-      { url   =  c.uri_for_action('/order/add')
-        title = 'Auftrag anlegen'
-        icon = 'plus' 
+      { url = c.uri_for_action('/job/queue/list')
+        title = 'Job-Warteschlange'
+        icon = 'info'        
+       }
+      { url = c.uri_for_action('/job/error/list')
+      	title = 'Fehlerhafte Jobs'
+      	icon = 'alert'	
       }
+
+      
     ];
     
  %]
 
-[% title = "Scan-Dateien zu Auftrag ${order.order_id}" %]
+
 
 <table id="scanfiles"></table>
 <div id="pager_scanfiles">

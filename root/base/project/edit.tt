@@ -1,5 +1,25 @@
 
-[% title = "Projekte" %]
+[% title = "Projekt bearbeiten" %]
+
+
+[%
+  
+   menu_links = [
+
+      { url   =  c.uri_for('/project/list') 
+        title = 'Liste der Projekte'
+        icon = 'contact' 
+      }
+
+      { url   =  c.uri_for_action('/project/add')
+        title = 'Projekt anlegen'
+        icon = 'plus' 
+      }
+      
+    ];
+    
+ %]
+ 
 <form id="project_form" name="[% form.name %]"
     action="[% c.req.uri %]"
     method="post">

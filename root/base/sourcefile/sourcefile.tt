@@ -5,48 +5,72 @@
 
     });
 </script>
+[% edit_link = "Auftrag ${order.order_id} bearbeiten"; %]
 [%
    menu_links = [
       { url   = c.uri_for_action('/order/list')
         title = 'Liste der Auftr&auml;ge' 
-        icon = 'contact'
+        icon = 'contact'        
       }
-   
-      { url   =  c.uri_for_action('/order/add')
-        title = 'Auftrag anlegen'
-        icon = 'plus' 
+       { url   = c.uri_for_action('/order/edit' [order.order_id])
+        title = edit_link
+        icon = 'pencil'        
       }
-      {	url =  c.uri_for_action('/remedi/remedi', [order_href.order_id] )
+      { url   = c.uri_for_action('/order/delete', [order.order_id])
+        title = 'Auftrag löschen'
+        icon = 'trash' 
+        level = '2'
+      }
+        { url = c.uri_for_action('/order/print', [order.order_id])
+      	title = 'Laufzettel drucken'
+      	icon = 'print'      	
+      	level = '2'
+      }
+      { url = c.uri_for_action('/order/print_patchcode_t', [order.order_id])
+      	title = 'Patchcode T drucken'
+      	icon = 'print'      	
+      	level = '2'
+      }
+      {	url =  c.uri_for_action('/remedi/remedi', [order.order_id] )
         title = 'mit Remedi bearbeiten'
-        icon = 'extlink'
+        icon = 'extlink'        
+        level = '2'
       }
-      {	url = c.uri_for_action('/sourcefile/sourcefile', [order_href.order_id] )
+      {	url = c.uri_for_action('/sourcefile/sourcefile', [order.order_id] )
         title = 'Scandateien suchen'
-        icon = 'search'
+        icon = 'search'        
+        level = '2'
         state = 'active'
       }
+      { url   =  c.uri_for_action('/order/add')
+        title = 'Auftrag anlegen'
+        icon = 'plus'         
+      }
+    
       { url = c.uri_for_action('/job/scoreboard/list')
       	title = 'Laufender Job'
-      	icon = 'circle-triangle-e'
+      	icon = 'circle-triangle-e'      	
       }
       { url = c.uri_for_action('/job/queue/list')
         title = 'Job-Warteschlange'
-        icon = 'info'
+        icon = 'info'        
        }
       { url = c.uri_for_action('/job/error/list')
       	title = 'Fehlerhafte Jobs'
-      	icon = 'alert'
+      	icon = 'alert'	
       }
-    
+
+      
     ];
     
  %]
 
-[% title = "Scandateien suchen"; %]
-<p>Suche nach Scandateien und PDF-Dateien zu Auftrag 
-<a href="[% c.uri_for_action('/order/edit', [order.order_id]) %]"> [% order.order_id %]</a></p>
 
-<form name="[% form.name %]"
+[% title = "Scandateien suchen"; %]
+Suche nach Scandateien und PDF-Dateien zu Auftrag 
+<a href="[% c.uri_for_action('/order/edit', [order.order_id]) %]"> [% order.order_id %]</a>
+
+<form id="scanfiles" name="[% form.name %]"
     action="[% c.req.uri %]"
     method="post">
 [% form.field('delete_scanfiles').render %]    

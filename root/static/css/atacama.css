@@ -148,6 +148,8 @@ ul#navigation {
 
 ul#navigation .ui-icon {
 	float: left;
+	 height: 17px;
+    width: 17px;
 }
 
 ul#navigation li {
@@ -156,11 +158,24 @@ ul#navigation li {
 	border: 0;
 	background-image: url("images/hr.png");
 	background-repeat: repeat-x;
-	background-position: left bottom;
+	background-position: left top;
 	display: block;
 	margin: 0 0 0 -10px;
 	padding: 7px 0 5px 3px;
 	background-color: white;
+}
+
+
+ul#navigation_level2 li {
+	
+	margin-bottom: 3px;
+	border: 0;
+	background-image: none;
+	display: block;
+	margin: 0 0 0 -32px;
+	padding: 3px 0 0 0;
+	font-size: 13px;
+	
 }
 
 ul#navigation li a {
@@ -169,7 +184,7 @@ ul#navigation li a {
 	color: #222222 !important;
 	display: block;
 	width: 168px;
-	height: 23px;
+	min-height: 23px;
 }
 
 ul#navigation li a:visited {
@@ -307,11 +322,17 @@ table.dotted_border td:FIRST-CHILD {
 	border-right: 1px dotted #bdb76b;
 	padding: 0 3px 0 7px;
 	height: 100%;	
+	font-weight: bold;
 }
 
 form#remedi label {
 	padding-top: 3px;
 	padding-left: 8px;
+}
+
+form#scanfiles label {
+	float: none;
+	width: auto;
 }
 
 

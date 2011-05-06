@@ -10,13 +10,17 @@
         title = 'Liste der Projekte'
         icon = 'contact' 
       }
-      { url   =  c.uri_for_action('/order/add')
+      { url   =  c.uri_for_action('/firefoxsearchplugins/list')
+        title = 'Liste der Such-Plugins'
+        icon = 'contact' 
+      }
+ 	  { url   =  c.uri_for_action('/order/add')
         title = 'Auftrag anlegen'
         icon = 'plus' 
       }
-       { url   =  c.uri_for_action('/firefoxsearchplugins/list')
-        title = 'Liste der Such-Plugins'
-        icon = 'contact' 
+      { url   =  c.uri_for_action('/project/add')
+        title = 'Projekt anlegen'
+        icon = 'plus' 
       }
       
     ];
