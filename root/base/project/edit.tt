@@ -1,13 +1,16 @@
 
 [% title = "Projekte" %]
-<form name="[% form.name %]"
+<form id="project_form" name="[% form.name %]"
     action="[% c.req.uri %]"
     method="post">
 [% form.field('name').render %]
 [% form.field('description').render %]
+<hr>
+[% form.field('projectkeys').label = "<h2>Parameter</h2>" %]
 [% form.field('projectkeys').render %]
 [% form.field('submit').render %]
+
 </form>
-</div>
+
 
 
