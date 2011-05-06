@@ -16,10 +16,15 @@ function showCatlink (cellvalue, options, rowObject)
     return "<a href=\"" + idUrl + "\">" + cellvalue + "</a>";
 
 }
+
 </script>
 
 <script type="text/javascript">
 $(document).ready(function() {
+
+	  var min_height = $('#nav_area').height();
+	  $('#content').height(min_height);
+
 jQuery("#jobs").jqGrid({
     url:"[% json_url %]",
     datatype: "json",
@@ -45,7 +50,7 @@ jQuery("#jobs").jqGrid({
     ],
     rowNum:15,
     rownumbers: true,
-    height: 350,
+    height: '100%',
 	width : '785',
     rowList:[10,20,30,40,50,60,70,80,90,100],
     pager: '#pager_jobs',

@@ -21,6 +21,11 @@ function showCatlink (cellvalue, options, rowObject)
 
 <script type="text/javascript">
 $(document).ready(function() {
+
+	  var min_height = $('#nav_area').height();
+	  $('#content').height(min_height);
+
+	
 jQuery("#errors").jqGrid({
     url:"[% json_url %]",
     datatype: "json",
