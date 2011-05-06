@@ -34,12 +34,11 @@ AAAFAgICAgICAgICAgIOAAAADgICAgICAgICAgICAgAAABECAgICAgICAgICAgIAAAALAgICAgIC
 AgIKAgICAAAAAAYMDgcMDwYAAAICAgAAAAAAAAAAAAAAAAACAgIQBwAAAAAAAAAAAAAADAICAgoA
 AAAAAAAAAAAAAAsHAgILAAAAAAAAAAAAAAAAAAQFC8ePAACPHwAAjw8AAIcPAACADwAAwAcAAMAD
 AACAAwAAgAMAAIADAACAAwAAwGMAAP/gAAD/4AAA/+AAAP/4AAA=</Image>
-  <Url type="text/html" method="GET" template="[% c.uri_for(c.controller('Order').action_for('add') ) %]">
+  <Url type="text/html" method="GET" template="[% c.uri_for(c.controller('Order').action_for('put') ) %]">
     <Param name="status_id" value="1"/>
     <Param name="documenttype_id" value="1"/>
     <Param name="copyright_id" value="2"/><!-- § 52b UrhG -->
-    <Param name="project_id" value="40"/><!--  -->
-
+    <Param name="orders_projects.0.project_id" value="40"/><!-- Projekt Regensburger Dissertationen -->
     <Param name="titel.signatur" value="{searchTerms}"/>
   </Url>
   <!-- URL for automatic updates for this OpenSearch plugin -->

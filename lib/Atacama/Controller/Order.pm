@@ -127,6 +127,15 @@ sub edit : Chained('order') {
     $c->forward('save');
 }
 
+
+sub put : Chained('orders') {
+    my ($self, $c) = @_;
+    $c->forward('save');
+    $c->res->redirect(
+        $c->uri_for_action('/order/edit', [ $c->stash->{order}->order_id ] )
+    );
+}
+
 sub add : Chained('orders') {
     my ($self, $c) = @_;
     $c->forward('save');
@@ -144,6 +153,7 @@ sub save : Private {
         ||= $c->model('AtacamaDB::Order')->create_order();
     if ($c->req->method eq 'POST' or $c->req->method eq 'GET' ) {
         $c->log->debug(Dumper($c->req->params));
+        $c->log->debug('Method: ' .Dumper($c->req->method));
         my $order_params = $self->list_to_hash($c, $c->req->params);
         $c->log->debug(Dumper($order_params));
         $order->save($order_params);

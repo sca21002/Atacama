@@ -36,16 +36,37 @@ sub titel : Chained('/') PathPart('titel') CaptureArgs(0) {
 sub json : Chained('titel') {
     my ($self, $c) = @_;
     
-    my $json_data;
+    $c->log->debug('JSON params ' . Dumper($c->req->query_params));
+    $c->stash->{signatur} =  $c->req->query_params->{signatur};
+    $c->forward('get_title');
+    $c->log->debug('nach get_title');
+    my $json_data = $c->stash->{titel_data}; 
+    $c->log->debug('json_data ' . Dumper($json_data));   
+    $c->stash(
+        json_data => $json_data,
+        current_view => 'JSON'
+    );
+}
+
+
+sub get_title : Private {
+    
+    my ($self, $c) = @_;
+    
+    
+    $c->log->debug('In get_title');
+    my $signatur = $c->stash->{signatur};
     my $titel = $c->stash->{titel};
-    # $c->log->debug(Dumper($c->req->query_params));
-   
+    return unless $signatur;
+
+    my @titel;
     my $buch = $c->model('SisisDB::D01buch')->search({
-        d01ort => $c->req->query_params->{signatur}
+        d01ort => $signatur
     })->first;
+    
     foreach my $titel_sisis (@{$buch->get_titel}) {
         my $titel_new = $titel->get_new_result_as_href({});
-        # $c->log->debug(Dumper($titel_sisis));
+        $c->log->debug('titel_sisis : ' . Dumper($titel_sisis));
         my $source_titel = $c->model('AtacamaDB')->source('Titel');
         %$titel_new = map {
             $_ =>
@@ -61,17 +82,15 @@ sub json : Chained('titel') {
             ;
             
         $titel_new->{titel_isbd} = $titel->new($titel_new)->titel_isbd;
-        push @$json_data, $titel_new;
+        push @titel, $titel_new;
     }
-    $c->log->debug(Dumper($json_data));   
-    $c->stash(
-        json_data => $json_data,
-        current_view => 'JSON'
+    $c->log->debug(Dumper(\@titel));   
+    $c->stash( 
+        titel_data => \@titel,
     );
-}
-
-
-
+    return;
+}    
+    
 =head1 AUTHOR
 
 A clever guy
