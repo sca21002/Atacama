@@ -9,6 +9,9 @@
 \pagestyle{empty}
 \usepackage{fix-cm}
 
+\usepackage{enumitem} 
+\setitemize{leftmargin=*} 
+
 \usepackage[T1]{fontenc}
 \usepackage{textcomp}
 \voffset-0.4in
@@ -71,11 +74,10 @@ gepr\"uft von: & [% order.control %]
 \noindent\begin{tabular}{@{}ll}
 Projekt:  & [% orderproject.project.name %]\\
 [% FOREACH projectoption IN orderproject.projectoptions %]
-[% projectoption.pkey %]: & [% projectoption.value %]  \\
-[% END %]
-
-[% END %]
-[% END %]
+[% projectoption.pkey %]:  [% projectoption.value %]  
+[%- END -%]
+[%- END -%]
+[%- END -%]
 
 
 
@@ -83,17 +85,16 @@ Projekt:  & [% orderproject.project.name %]\\
 Scan-Operator (Name): \rule[-3mm]{0mm}{8mm}\hrulefill
 
 [% IF order.scanparameters %]
-\begin{trivlist}\setlength\labelwidth{-0.5em}
-[% FOREACH scanparameter IN order.scanparameters %] \item[$\bullet$]
+\begin{itemize}
+[% FOREACH scanparameter IN order.scanparameters %] \item
 \textbf{Scanner:}  [% scanparameter.scanner.name %], \textbf{Format:}  [% scanparameter.format.name %], 
-\textbf{Aufl\"osung:}  [% scanparameter.resolution.value %] \\ 
-[% IF scanparameter.scope %]
-\noindent\hspace*{0.7em}% \textbf{Bereich:}  [% scanparameter.scope %] [% END %]
-\textbf{Aufl\"osung:}  [% scanparameter.resolution.value %], \textbf{Bereich:}  [% scanparameter.scope %]
-[% FOREACH scanoption IN scanparameter.scanoptions %][% scanoption.skey %] : [% scanoption.name %][% END %]
-[% END %]
-\end{trivlist}
-[% END %]
+\textbf{Aufl\"osung:}  [% scanparameter.resolution.value %] 
+[% IF scanparameter.scope %] \textbf{Bereich:}  [% scanparameter.scope %] [%- END -%] 
+[% FOREACH scanoption IN scanparameter.scanoptions %],
+\textbf{[% scanoption.skey %]}: [% scanoption.name %][%- END -%]
+[%- END -%]
+\end{itemize}
+[%- END -%]
 
 
 \rule[-3mm]{0mm}{8mm}{ Probleme beim Scannen: }\hrulefill\\
