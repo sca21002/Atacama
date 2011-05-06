@@ -224,7 +224,7 @@
 														width : 80,
 														stype : 'select',
 														editoptions : {
-															value : ":Alle[% FOR stat IN status %];[% stat.status_id %]:[% stat.name %][% END %]"
+															value : ":Alle[% FOR stat IN status %];[% stat.status_id %]:[% stat.name.replace(':', '\ /') %][% END %]"
 														}
 													} ],
 											rowNum : "20",
