@@ -86,16 +86,11 @@ Scan-Operator (Name): \rule[-3mm]{0mm}{8mm}\hrulefill
 \begin{trivlist}\setlength\labelwidth{-0.5em}
 [% FOREACH scanparameter IN order.scanparameters %] \item[$\bullet$]
 \textbf{Scanner:}  [% scanparameter.scanner.name %], \textbf{Format:}  [% scanparameter.format.name %], 
-<<<<<<< HEAD
-\textbf{Aufl\"osung:}  [% scanparameter.resolution.value %], \textbf{Bereich:}  [% scanparameter.scope %] 
-
-[% FOREACH scanoption IN scanparameter.scanoptions %]
-\noindent\hspace*{0.7em}%
-[% scanoption.skey %]: [% scanoption.name %][% END %]
-=======
+\textbf{Aufl\"osung:}  [% scanparameter.resolution.value %] \\ 
+[% IF scanparameter.scope %]
+\noindent\hspace*{0.7em}% \textbf{Bereich:}  [% scanparameter.scope %] [% END %]
 \textbf{Aufl\"osung:}  [% scanparameter.resolution.value %], \textbf{Bereich:}  [% scanparameter.scope %]
 [% FOREACH scanoption IN scanparameter.scanoptions %][% scanoption.skey %] : [% scanoption.name %][% END %]
->>>>>>> e1228e1... Change columnname range to scope
 [% END %]
 \end{trivlist}
 [% END %]
