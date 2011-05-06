@@ -298,11 +298,11 @@ h1,h1.main {
 }
 
 
-table#remedi td {
+table.dotted_border td {
 	border-bottom: 1px dotted #bdb76b;
 	
 }
-table#remedi td:FIRST-CHILD {
+table.dotted_border td:FIRST-CHILD {
 	width: 133px;
 	border-right: 1px dotted #bdb76b;
 	padding: 0 3px 0 7px;

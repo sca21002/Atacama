@@ -1,5 +1,5 @@
-<a href=[% c.uri_for_action('/job/scoreboard/list') %]>Liste</a>
-<table>
+[% title = "Jobdetails"; %]
+<table class="dotted_border">
 <tr>
 <td>pid</td><td>[% job.pid %]</td>
 </tr>

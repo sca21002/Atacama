@@ -1,4 +1,6 @@
-<table id="remedi">
+[% title = "Auftrag ${order.order_id} zur Veröffentlichung vorbereiten"; %] 
+
+<table class='dotted_border'>
 <tr><td> Auftrag:   </td><td> [% order.order_id %]          </td></tr>
 <tr><td> Signatur:  </td><td> [% order.titel.signatur %]    </td></tr>
 <tr><td> BV-Nr.:    </td><td> [% order.titel.bvnr %]        </td></tr>
