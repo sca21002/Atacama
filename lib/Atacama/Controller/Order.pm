@@ -130,6 +130,21 @@ sub edit : Chained('order') {
 
 sub put : Chained('orders') {
     my ($self, $c) = @_;
+    
+    $c->log->debug(Dumper($c->req->params));
+    $c->stash->{signatur} = $c->req->params->{'titel.signatur'};
+    $c->stash->{titel} = $c->model('AtacamaDB::Titel');
+    $c->forward('/titel/get_title');
+    my $titel = $c->stash->{titel_data};
+    $c->log->debug('titel_data ' . Dumper($titel));
+    if (scalar @$titel == 1) {
+        my $order = $c->model('AtacamaDB::Order')->create_order();
+        delete $titel->[0]->{titel_isbd};
+        delete $titel->[0]->{order_id};
+        my $titel_new = $order->create_related('titel', {});
+        $order->titel->save($titel->[0]);
+        $c->stash->{order} = $order;
+    }
     $c->forward('save');
     $c->res->redirect(
         $c->uri_for_action('/order/edit', [ $c->stash->{order}->order_id ] )
@@ -158,7 +173,7 @@ sub save : Private {
         $c->log->debug(Dumper($order_params));
         $order->save($order_params);
     }
-    # $c->log->debug(Dumper($order->properties));
+    #$c->log->debug(Dumper($order->properties));
     $c->stash(
         %{$order->properties},      
         template => 'order/edit.tt',   

@@ -3,6 +3,7 @@ use Moose;
 use namespace::autoclean;
 use Data::Dumper;
 BEGIN {extends 'Catalyst::Controller'; }
+use Encode;
 
 =head1 NAME
 

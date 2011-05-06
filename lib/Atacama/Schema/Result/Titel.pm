@@ -12,6 +12,8 @@ extends 'DBIx::Class::Core';
 
 __PACKAGE__->load_components("InflateColumn::DateTime");
 
+use Encode;
+
 =head1 NAME
 
 Atacama::Schema::Result::Titel
@@ -244,6 +246,8 @@ sub save {
             $self->$key->save($val);    
         }
     }
+    
+    %column = map { $_ => encode('utf8', $column{$_}) } keys %column;
     $self->update(\%column);
 }
 
