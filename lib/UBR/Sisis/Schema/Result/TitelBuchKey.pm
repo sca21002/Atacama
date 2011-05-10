@@ -8,6 +8,9 @@ use MooseX::NonMoose;
 use namespace::autoclean;
 extends 'DBIx::Class::Core';
 
+#__PACKAGE__->load_components(qw/EncodeColumns/);
+#__PACKAGE__->decode_columns('latin-1');
+
 __PACKAGE__->table('sisis.titel_buch_key');
 
 __PACKAGE__->add_columns(

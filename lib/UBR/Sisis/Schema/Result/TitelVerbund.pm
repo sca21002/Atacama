@@ -8,6 +8,9 @@ use MooseX::NonMoose;
 use namespace::autoclean;
 extends 'DBIx::Class::Core';
 
+#__PACKAGE__->load_components(qw/EncodeColumns/);
+#__PACKAGE__->decode_columns('latin-1');
+
 __PACKAGE__->table('sisis.titel_verbund');
 
 __PACKAGE__->add_columns(
@@ -28,7 +31,7 @@ sub get_titel {
         { katkey => \$where },
     )->first;
     my $titel_href = $titel_buch_key->get_titel_dup_daten();
-    $where = '= ' . $titel_buch_key->mcopyno;
+    my $where = '= ' . $titel_buch_key->mcopyno;
     my $buch = $schema->resultset('D01buch')->search(
         { d01mcopyno => \$where },
         { result_class => 'DBIx::Class::ResultClass::HashRefInflator' }

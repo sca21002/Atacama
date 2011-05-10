@@ -68,6 +68,7 @@ sub work {
     }
     
     $job->completed();
+    $order->update({status_id => 27});
 }
 
 sub get_logfile_name { $log_file_name }
