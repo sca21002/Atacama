@@ -47,6 +47,20 @@
 \end{flushright}
 \end{minipage}
 
+%[% FOREACH item IN order.items %]
+%item: [% item %]
+%[%- END -%]
+
+%[% FOREACH item IN order.each %]  
+%item1: [% item %]
+%[%- END -%]
+
+%[% FOREACH pair IN order.pairs %]
+%   \* [% pair.key %] is [% pair.value %]
+%[% END %]
+
+
+
 \section {Vorlage}
 \begin{tabular}{@{}lp{14cm}}
 Medientyp: & [% order.documenttyp.name %]\\
@@ -56,14 +70,20 @@ Seiten: & [% order.pages %]\\
 BV-Nr.: & [% order.titel.bvnr %]\\
 Signatur: & [% order.titel.signatur %]\\
 [% IF order.titel.titel_avs -%]
-Titel (Katalog): & [% order.titel.titel_isbd %]\\
+[% titel_isbd_escaped = order.titel.titel_isbd.replace('&', '\&') %]
+[% titel_isbd_escaped = titel_isbd_escaped.replace('#', '\#') %]
+Titel (Katalog): & [% titel_isbd_escaped %]\\
 [% ELSE %]
-Titel: & [% order.title %]\\
+[% titel_escaped = order.titel.replace('&', '\&') %]
+[% titel_escaped = titel_escaped.replace('#', '\#') %]
+Titel: & [% titel_escaped %]\\
 [% END %]
 OCR: & 
 [% IF order.ocr == 1 -%] Ja 
 [% ELSE %] Nein [% END %] \\
-Bemerkung: & [% order.remark %]\\
+[% bem_escaped = order.remark.replace('&', '\&') %]
+[% bem_escaped = order.remark.replace('#', '\#') %]
+Bemerkung: & [% bem_escaped %]\\
 gepr\"uft von: & [% order.control %]
 \end{tabular}
 
