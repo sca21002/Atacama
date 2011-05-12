@@ -237,7 +237,7 @@ sub save {
 
     while ( my($key, $val) = each %$params) {
         if (exists $columns_info->{$key}) {
-            if ($val eq ''
+            if (defined $val and $val eq ''
                 and exists $integer_type{$columns_info->{$key}{data_type}}
             ){ $val = undef; } 
            $column{$key} = $val;        
@@ -246,8 +246,6 @@ sub save {
             $self->$key->save($val);    
         }
     }
-    
-    %column = map { $_ => encode('utf8', $column{$_}) } keys %column;
     $self->update(\%column);
 }
 

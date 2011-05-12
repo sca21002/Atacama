@@ -70,13 +70,12 @@ sub json : Chained('orders') PathPart('json') Args(0) {
         : {}
         ; 
    
-    $c->log->debug('filters: ' . Dumper($data->{filters}));
+    # $c->log->debug('filters: ' . Dumper($data->{filters}));
     my $filters = $data->{filters};
     $filters = decode_json $filters if $filters;    
 
     $c->session->{order}{list}{filters} = $data->{filters};
 
-       
     my $orders_rs = $c->stash->{orders};
     $orders_rs = $orders_rs->filter($filters);
     $orders_rs = $orders_rs->search(
@@ -99,7 +98,6 @@ sub json : Chained('orders') PathPart('json') Args(0) {
         $row->{cell} = [
             $order->order_id,
             $order->titel && $order->titel->titel_isbd,
-            # join(' -- ', map {$_->name} $order->projects->all),
             $order->orders_projects->get_projects_as_string,
             $order->status && $order->status->name,
         ];
@@ -131,12 +129,12 @@ sub edit : Chained('order') {
 sub put : Chained('orders') {
     my ($self, $c) = @_;
     
-    $c->log->debug(Dumper($c->req->params));
+    # $c->log->debug(Dumper($c->req->params));
     $c->stash->{signatur} = $c->req->params->{'titel.signatur'};
     $c->stash->{titel} = $c->model('AtacamaDB::Titel');
     $c->forward('/titel/get_title');
     my $titel = $c->stash->{titel_data};
-    $c->log->debug('titel_data ' . Dumper($titel));
+    # $c->log->debug('titel_data ' . Dumper($titel));
     if (scalar @$titel == 1) {
         my $order = $c->model('AtacamaDB::Order')->create_order();
         delete $titel->[0]->{titel_isbd};
@@ -166,11 +164,21 @@ sub save : Private {
 
     my $order = $c->stash->{order}
         ||= $c->model('AtacamaDB::Order')->create_order();
-    if ($c->req->method eq 'POST' or $c->req->method eq 'GET' ) {
-        $c->log->debug(Dumper($c->req->params));
-        $c->log->debug('Method: ' .Dumper($c->req->method));
+    if ($c->req->method eq 'POST') {
+        # $c->log->debug(Dumper($c->req->params));
+        # $c->log->debug('Method: ' .Dumper($c->req->method));
         my $order_params = $self->list_to_hash($c, $c->req->params);
-        $c->log->debug(Dumper($order_params));
+        # $c->log->debug(Dumper($order_params));
+        # $c->log->debug('BVNr: ' . $order_params->{titel}{bvnr});
+        # $c->log->debug($order->titel ? $order->titel->bvnr || '' : 'kein Titel');
+        if ( $order_params->{titel}{bvnr}  and not ( $order->titel && $order->titel->bvnr eq  $order_params->{titel}{bvnr}  )   ) {
+            # $c->log->debug('Titel holen');
+            $c->stash->{bvnr} = $order_params->{titel}{bvnr};
+            $c->stash->{titel} = $c->model('AtacamaDB::Titel');
+            $c->forward('/titel/get_title_by_bvnr');
+            $order_params->{titel} = {  %{$order_params->{titel}}, %{$c->stash->{titel_data}} };
+            delete $order_params->{titel}{order_id};
+        }
         $order->save($order_params);
     }
     #$c->log->debug(Dumper($order->properties));

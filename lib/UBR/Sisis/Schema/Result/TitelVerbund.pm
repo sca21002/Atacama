@@ -17,4 +17,23 @@ __PACKAGE__->add_columns(
     {data_type  => 'VARCHAR', default_value => undef, is_nullable => 1, size => 25,  },
 );
 
+sub get_titel {
+    my $self = shift;
+    
+    my %titel = $self->get_columns;
+    
+    my $schema = $self->result_source->schema;
+    my $where = '= ' . $self->katkey;
+    my $titel_buch_key = $schema->resultset('TitelBuchKey')->search(
+        { katkey => \$where },
+    )->first;
+    my $titel_href = $titel_buch_key->get_titel_dup_daten();
+    $where = '= ' . $titel_buch_key->mcopyno;
+    my $buch = $schema->resultset('D01buch')->search(
+        { d01mcopyno => \$where },
+        { result_class => 'DBIx::Class::ResultClass::HashRefInflator' }
+    )->first;
+    return { %titel, %$titel_href, %$buch };
+}
+
 1;
