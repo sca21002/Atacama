@@ -57,7 +57,7 @@ Signatur: & [% order.titel.signatur  | latex_encode %]\\
 [% IF order.titel.titel_avs -%]
 Titel (Katalog): & [% order.titel.titel_isbd | latex_encode(except => 'ÄÖÜäöüß') %]\\
 [% ELSE %]
-Titel: & [%  order.titel  | latex_encode(except => 'ÄÖÜäöüß') %]\\
+Titel: & [%- IF order.titel -%] [%  order.titel  | latex_encode(except => 'ÄÖÜäöüß') %] [% END %]\\
 [% END %]
 OCR: & 
 [% IF order.ocr == 1 -%] Ja 
@@ -77,7 +77,6 @@ Projekt:   [% orderproject.project.name  | latex_encode(except => 'ÄÖÜäöü�
 [% END %]
 [%- END -%]
 
-[
 
 
 \section {Scanner}
