@@ -68,10 +68,7 @@ jQuery("#errors").jqGrid('navGrid','#pager_errors',{edit:false,add:false,del:fal
         title = 'Auftrag anlegen'
         icon = 'plus' 
       }
-      {	url = c.uri_for_action('/sourcefile/sourcefile', [order_href.order_id] )
-        title = 'Scandateien suchen'
-        icon = 'search'
-      }
+
       { url = c.uri_for_action('/job/scoreboard/list')
       	title = 'Laufender Job'
       	icon = 'circle-triangle-e'

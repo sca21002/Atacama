@@ -37,68 +37,47 @@
     \section* {UB Regensburg \\
     Digitalisierungsauftrag: Scanlaufzettel}
 } \hfill
-[% new_order_id = order.order_id.replace('_', '\_') %]  % TeX special characters (must be escaped): \# \$ \% \& \\ \^ \_ \{ \}
 \begin{minipage}[t]{70mm}
 \begin{flushright}
-\fontsize{40}{50}\selectfont [% new_order_id %]\\
-\bigskip
-\hfill \code{[% new_order_id %]}\\
+\fontsize{40}{50}\selectfont [% order.order_id | latex_encode %]\\
+\bigskip 
+\hfill \code{[% order.order_id | latex_encode %]}\\
 \bigskip
 \end{flushright}
 \end{minipage}
 
-%[% FOREACH item IN order.items %]
-%item: [% item %]
-%[%- END -%]
-
-%[% FOREACH item IN order.each %]  
-%item1: [% item %]
-%[%- END -%]
-
-%[% FOREACH pair IN order.pairs %]
-%   \* [% pair.key %] is [% pair.value %]
-%[% END %]
-
-
-
 \section {Vorlage}
 \begin{tabular}{@{}lp{14cm}}
-Medientyp: & [% order.documenttyp.name %]\\
-[% IF order.pages %]
-Seiten: & [% order.pages %]\\
+Medientyp: & [% order.documenttype.name | latex_encode(except => 'ÄÖÜäöüß')  %]\\
+[% IF order.titel.pages %]
+Seiten: & [% order.titel.pages | latex_encode  %]\\
 [% END %]
-BV-Nr.: & [% order.titel.bvnr %]\\
-Signatur: & [% order.titel.signatur %]\\
+BV-Nr.: & [% order.titel.bvnr  | latex_encode %]\\
+Signatur: & [% order.titel.signatur  | latex_encode %]\\
 [% IF order.titel.titel_avs -%]
-[% titel_isbd_escaped = order.titel.titel_isbd.replace('&', '\&') %]
-[% titel_isbd_escaped = titel_isbd_escaped.replace('#', '\#') %]
-Titel (Katalog): & [% titel_isbd_escaped %]\\
+Titel (Katalog): & [% order.titel.titel_isbd | latex_encode(except => 'ÄÖÜäöüß') %]\\
 [% ELSE %]
-[% titel_escaped = order.titel.replace('&', '\&') %]
-[% titel_escaped = titel_escaped.replace('#', '\#') %]
-Titel: & [% titel_escaped %]\\
+Titel: & [%  order.titel  | latex_encode(except => 'ÄÖÜäöüß') %]\\
 [% END %]
 OCR: & 
 [% IF order.ocr == 1 -%] Ja 
 [% ELSE %] Nein [% END %] \\
-[% bem_escaped = order.remark.replace('&', '\&') %]
-[% bem_escaped = order.remark.replace('#', '\#') %]
-Bemerkung: & [% bem_escaped %]\\
-gepr\"uft von: & [% order.control %]
+Bemerkung: & [% order.remark | latex_encode(except => 'ÄÖÜäöüß') %]\\
+gepr\"uft von: & [% order.control | latex_encode(except => 'ÄÖÜäöüß') %]
 \end{tabular}
 
 
 [% IF order.orders_projects %]
 \section {Projekte}
-[%- FOR orderproject IN order.orders_projects %]
-\noindent\begin{tabular}{@{}ll}
-Projekt:  & [% orderproject.project.name %]\\
-[% FOREACH projectoption IN orderproject.projectoptions %]
-[% projectoption.pkey %]:  [% projectoption.value %]  
-[%- END -%]
-[%- END -%]
+[% FOR orderproject IN order.orders_projects %]
+Projekt:   [% orderproject.project.name  | latex_encode(except => 'ÄÖÜäöüß') %]
+[%- FOREACH projectoption IN orderproject.projectoptions %],
+[% projectoption.pkey | latex_encode(except => 'ÄÖÜäöüß')%]:  [% projectoption.value  | latex_encode(except => 'ÄÖÜäöüß') %]  
+[% END %]
+[% END %]
 [%- END -%]
 
+[
 
 
 \section {Scanner}
@@ -107,11 +86,11 @@ Scan-Operator (Name): \rule[-3mm]{0mm}{8mm}\hrulefill
 [% IF order.scanparameters %]
 \begin{itemize}
 [% FOREACH scanparameter IN order.scanparameters %] \item
-\textbf{Scanner:}  [% scanparameter.scanner.name %], \textbf{Format:}  [% scanparameter.format.name %], 
+\textbf{Scanner:}  [% scanparameter.scanner.name  | latex_encode(except => 'ÄÖÜäöüß') %], \textbf{Format:}  [% scanparameter.format.name %], 
 \textbf{Aufl\"osung:}  [% scanparameter.resolution.value %] 
-[% IF scanparameter.scope %] \textbf{Bereich:}  [% scanparameter.scope %] [%- END -%] 
+[% IF scanparameter.scope %] \textbf{Bereich:}  [% scanparameter.scope | latex_encode(except => 'ÄÖÜäöüß') %] [%- END -%] 
 [% FOREACH scanoption IN scanparameter.scanoptions %],
-\textbf{[% scanoption.skey %]}: [% scanoption.name %][%- END -%]
+\textbf{[% scanoption.skey | latex_encode(except => 'ÄÖÜäöüß') %]}: [% scanoption.name | latex_encode(except => 'ÄÖÜäöüß') %][%- END -%]
 [%- END -%]
 \end{itemize}
 [%- END -%]

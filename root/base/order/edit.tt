@@ -447,10 +447,7 @@ order_href.modification_date.hms %]</fieldset>
 <fieldset>
 <div class="left">Titel:</div>
 <div id="titel">[% order_href.titel.titel_isbd %] [% IF
-!order.titel.katkey %] <a href="[% c.uri_for("
-	/titel/edit/${order_href.order_id}") %]" id="edit_link"
-	class="ui-state-default ui-corner-all"> <span
-	class="ui-icon ui-icon-pencil"></span>von Hand bearbeiten </a> [% END %]</div>
+!order.titel.katkey %] (Bitte Signatur abrufen)[% END %]</div>
 </fieldset>
 
 
@@ -501,7 +498,7 @@ Signatur: </label>
 <div class="innen"><input id="signatur" name="titel.signatur"
 	type="text" value="[% order_href.titel.signatur %]" size="25" /> <a
 	href="#" id="signatur_link" class="ui-state-default ui-corner-all">
-<span class="ui-icon ui-icon-search"></span>Suchen</a>
+<span class="ui-icon ui-icon-search"></span>Abrufen</a>
 
 <fieldset><label for="library">Bibliothek: </label> <select
 	id="library" name="titel.library_id">
