@@ -1,0 +1,8 @@
+
+hr {
+	display: list-item;
+	
+	list-style: url("images/hr.png") inside;
+	filter: alpha(opacity=0);
+	margin: -3px 0 -5px -9px;
+}

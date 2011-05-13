@@ -4,7 +4,7 @@
 
     	$(document).ready(function() {
 
-        	//Änderungen überwachen
+        	//Aenderungen ueberwachen
     	     $('#order_form input[type=text], #order_form textarea').each(function (i) {
     	          $(this).data('initial_value', $(this).val());
     	     });
@@ -33,7 +33,7 @@
 
     	function confirmNavigation() {
     	     if (formChanged) {
-    	          return confirm('Sind Sie sicher? Ihre Änderungen werden nicht gespeichert!');
+    	          return confirm('Sind Sie sicher? Ihre &Auml;nderungen werden nicht gespeichert!');
     	     } else {
     	          return true;
     	     }

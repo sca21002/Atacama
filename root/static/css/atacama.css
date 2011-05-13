@@ -7,6 +7,18 @@ body {
 	padding: 0;
 }
 
+h2 {
+	color: black;
+	padding-left: 0;
+}
+
+legend {
+	color: black;
+	font-weight: bold;
+	padding-left: 0;
+}
+
+
 #header {
 	background-image: url("images/atacamaLama3.png");
 	background-repeat: no-repeat;
@@ -40,6 +52,7 @@ body {
 	float: right;
 	border-left: 1px dotted #BDB76B;
 	padding: 7px 0 12px 10px;
+	overflow: hidden;
 }
 
 #footer {
@@ -144,6 +157,7 @@ ul#navigation {
 	margin: 0;
 	padding: 0;
 	font-size: 0.9em;
+	background-color: white;
 }
 
 ul#navigation .ui-icon {
@@ -163,19 +177,19 @@ ul#navigation li {
 	margin: 0 0 0 -10px;
 	padding: 7px 0 5px 3px;
 	background-color: white;
+	width: 190px;
 }
 
 
 ul#navigation_level2 li {
-	
-	margin-bottom: 3px;
-	border: 0;
-	background-image: none;
-	display: block;
-	margin: 0 0 0 -32px;
-	padding: 3px 0 0 0;
-	font-size: 13px;
-	
+  background-image: none;
+    border: 0 none;
+    display: block;
+    font-size: 13px;
+    margin: 0 0 0 -50px;
+    padding: 2px 0 2px 17px;
+    width: 190px;
+
 }
 
 ul#navigation li a {
@@ -208,6 +222,7 @@ hr {
 	width: 783px;
 	margin-left: -9px;
 }
+
 
 input[type='text'],input[type='submit'],input[type='password'],select,textarea
 	{
@@ -244,7 +259,7 @@ input[type='submit'] {
 	color: #ccc;
 }
 	
-textarea {
+form#order_form textarea {
 	margin-left: 9.3em;
 }
 
