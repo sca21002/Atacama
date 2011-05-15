@@ -72,7 +72,7 @@ sub get_title : Private {
         my $source_titel = $c->model('AtacamaDB')->source('Titel');
         %$titel_new = map {
             $_ =>
-            $titel_sisis->{ $source_titel->column_info($_)->{sisis} || $_ }
+            decode('iso-8859-1', $titel_sisis->{ $source_titel->column_info($_)->{sisis} || $_ })
         } keys %$titel_new;
         $titel_new->{library_id} = $titel_new->{library_id} != 5
             ? $titel_new->{library_id}
