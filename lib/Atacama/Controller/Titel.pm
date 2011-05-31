@@ -123,6 +123,7 @@ sub get_title_by_bvnr : Private {
         ;
             
     $titel_new->{titel_isbd} = $titel->new($titel_new)->titel_isbd;
+    $titel_new->{bvnr} = $bvnr;
     $c->stash( 
         titel_data => $titel_new,
     );
