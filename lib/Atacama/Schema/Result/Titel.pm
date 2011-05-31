@@ -193,7 +193,13 @@ use Data::Dumper;
 
 sub titel_isbd {
     my $self = shift;
-    
+   
+    my %data = $self->get_columns;
+    foreach my $key (keys %data) { 
+        $data{$key} =~ s/^\s+|\s+$//g if $data{$key};
+        $self->$key($data{$key});
+    }
+
     my $titel_isbd;
     $titel_isbd .= $self->autor_uw if $self->autor_uw;
     $titel_isbd .= ' : ' if $self->autor_uw && $self->titel_uw;
