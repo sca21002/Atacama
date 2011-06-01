@@ -20,7 +20,7 @@
 
    <h1 class="main">
    
-[% title or template.title or 'Bitte Titel eingeben' %]
+[% title or template.title or 'Login' %]
 
    </h1>
 [% content %]
