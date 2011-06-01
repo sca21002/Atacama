@@ -33,7 +33,7 @@
 
     	function confirmNavigation() {
     	     if (formChanged) {
-    	          return confirm('Sind Sie sicher? Ihre &Auml;nderungen werden nicht gespeichert!');
+    	          return confirm('Sind Sie sicher? Ihre Änderungen werden nicht gespeichert!');
     	     } else {
     	          return true;
     	     }
@@ -219,13 +219,19 @@
 
         		$("input#bvnr").hide();
 				$('#span_bvnr, input#bvnr').remove();
-				$("<span/>").attr({id:'span_bvnr'}).text(result.json_data[array_key].bvnr).appendTo('label[for="bvnr"]');
-				$('<input>').attr({
-				    type: 'hidden',
-				    id: 'bvnr',
-				    name: 'titel.bvnr',
-				    value: result.json_data[array_key].bvnr
-				}).appendTo('form#order_form');
+
+				if (result.json_data[array_key].bvnr == undefined) { 
+					$("<span/>").attr({id:'span_bvnr'}).text("keine BV-Nr.").appendTo('label[for="bvnr"]');
+					}
+				else {
+					$("<span/>").attr({id:'span_bvnr'}).text(result.json_data[array_key].bvnr).appendTo('label[for="bvnr"]');
+					$('<input>').attr({
+					    type: 'hidden',
+					    id: 'bvnr',
+					    name: 'titel.bvnr',
+					    value: result.json_data[array_key].bvnr
+					}).appendTo('form#order_form');
+				}
 
 				$("input#katkey").hide();
 				$('#span_katkey, input#katkey').remove();
@@ -320,7 +326,7 @@
                 	 });
        }   
 	
-		//Signaturensuche bei Enter
+		//Signaturensuche durch Enter
 		$('input#signatur').keyup(function(e) {
 		    if (e.keyCode == 13) {
 		       	jQuery('a#signatur_link').focus().click();	
