@@ -297,7 +297,7 @@
                           	  	//Zellen fuellen und sperren				
 								var array_key = ($(this).parent().attr("id"))-1;	
 								if (array_key == -1) array_key = 0;
-								#console.debug(array_key);
+							
 								insertSignature (array_key, result);
 								$("#bindeeinheit").dialog("close");
 							});
