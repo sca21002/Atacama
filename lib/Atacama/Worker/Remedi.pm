@@ -116,11 +116,13 @@ sub work {
         %init_arg = ( 
             image_path   => $order_id,
             bv_nr        => $titel->bvnr,
-            shelf_number => $titel->signatur,
+            # shelf_number => $titel->signatur,
             title        => $titel->titel_isbd,
-            author       => $titel->autor_avs,
+            # author       => $titel->autor_avs,
             configfile   => $remedi_configfile,
         );
+        $init_arg{shelf_number} =  $titel->signatur if $titel->signatur;
+        $init_arg{author} =  $titel->autor_avs if $titel->autor_avs;
         Remedi::Mets->new_with_config(%init_arg)->make_mets;
     }
     if ($arg->{csv}) {        

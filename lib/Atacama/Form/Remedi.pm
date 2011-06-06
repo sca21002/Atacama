@@ -101,6 +101,8 @@ sub default_configfile {
         ? first { $_->basename eq 'remedi_de-M135-355.yml' } @list
         : ( $library eq 'Osteuropa-Institut' )
         ? first { $_->basename eq 'remedi_de-M357-355.yml' } @list
+        : ( $library eq 'Handwerkskammer Niederbayern-Oberpfalz' )
+        ? first { $_->basename eq 'remedi_de-355_hwkno.yml' } @list  
         : first { $_->basename eq 'remedi_de-355.yml' } @list
         ;
     return $default; 
