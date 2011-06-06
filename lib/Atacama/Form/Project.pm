@@ -22,7 +22,7 @@ has_field 'projectkeys.projectkey_id' => ( type => 'PrimaryKey' );
 has_field 'projectkeys.sorting';
 has_field 'projectkeys.pkey';
 has_field 'projectkeys.info';
-has_field 'submit' => ( type => 'Submit', value => 'Starten' );
+has_field 'submit' => ( type => 'Submit', value => 'Speichern' );
 
 no HTML::FormHandler::Moose;
 1;

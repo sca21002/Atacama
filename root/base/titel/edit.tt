@@ -1,0 +1,90 @@
+
+[% title = "Titel ${titel_single.order_id} bearbeiten" %]
+[% edit_link = "Auftrag ${titel_single.order_id} bearbeiten"; %]
+
+
+[%
+   menu_links = [
+      { url   = c.uri_for_action('/order/list')
+        title = 'Liste der Auftr&auml;ge' 
+        icon = 'contact'   }
+      { url   = c.uri_for_action('/order/edit' [titel_single.order_id])
+        title = edit_link
+        icon = 'pencil'  }
+      { url   = c.uri_for_action('/order/delete', [titel_single.order_id])
+        title = 'Auftrag löschen'
+        icon = 'trash' 
+        level = '2' }
+        { url = c.uri_for_action('/order/print', [titel_single.order_id])
+      	title = 'Laufzettel drucken'
+      	icon = 'print'      	
+      	level = '2'  }
+      { url = c.uri_for_action('/order/print_patchcode_t', [titel_single.order_id])
+      	title = 'Patchcode T drucken'
+      	icon = 'print'      	
+      	level = '2'
+      }
+      {	url =  c.uri_for_action('/remedi/remedi', [titel_single.order_id] )
+        title = 'mit Remedi bearbeiten'
+        icon = 'extlink'        
+        level = '2'
+      }
+      {	url = c.uri_for_action('/sourcefile/sourcefile', [titel_single.order_id] )
+        title = 'Scandateien suchen'
+        icon = 'search'        
+        level = '2'
+       }
+      { url = c.uri_for("/order/${titel_single.order_id}/scanfiles/list")
+        title = 'Scan-Dateien'
+        icon = 'contact'
+        level = '2'
+              }
+      { url = c.uri_for("/titel/${titel_single.order_id}/edit")
+        title = 'Titel bearbeiten'
+        icon = 'pencil'
+        state = 'active'     
+        level = '2'
+              }
+    
+      { url = c.uri_for_action('/job/scoreboard/list')
+      	title = 'Laufender Job'
+      	icon = 'circle-triangle-e'      	
+      }
+      { url = c.uri_for_action('/job/queue/list')
+        title = 'Job-Warteschlange'
+        icon = 'info'        
+       }
+      { url = c.uri_for_action('/job/error/list')
+      	title = 'Fehlerhafte Jobs'
+      	icon = 'alert'	
+      }
+
+      
+    ];
+    
+ %]
+<span class="left"> Auftragsnummer:  </span> [% titel_single.order_id %]<br />
+<span class="left"> Signatur:  </span>[% titel_single.signatur %] <br />
+<span class="left"> BV-Nr.:  </span>[% titel_single.bvnr %]<br />
+<span class="left"> Katkey:  </span>[% titel_single.katkey %] <br />
+<span class="left"> Mediennr.:  </span>[% titel_single.mediennr %]<br />
+<span class="left"> Bibliothek:  </span>[% titel_single.library.name %] <br />
+
+
+<form id="titel_form" name="[% form.name %]"
+    action="[% c.req.uri %]"
+    method="post">
+[% form.field('autor_avs').render %]    
+[% form.field('titel_avs').render %]
+[% form.field('zusatz').render %]
+[% form.field('verlagsort').render %]
+[% form.field('verlag').render %]
+[% form.field('erschjahr').render %]
+[% form.field('bandangabe').render %]
+[% form.field('autor_uw').render %]
+[% form.field('titel_uw').render %]
+[% form.field('submit').render %]
+</form>
+
+
+

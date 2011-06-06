@@ -1,6 +1,8 @@
 package Atacama::Controller::Titel;
 use Moose;
 use namespace::autoclean;
+use Atacama::Form::Titel;
+
 use Data::Dumper;
 BEGIN {extends 'Catalyst::Controller'; }
 use Encode;
@@ -34,6 +36,13 @@ sub titel : Chained('/') PathPart('titel') CaptureArgs(0) {
     $c->stash->{titel} = $c->model('AtacamaDB::Titel');
 }
 
+sub titel_single : Chained('titel') PathPart('') CaptureArgs(1) {
+    my ($self, $c, $order_id) = @_;
+
+    my $titel_single = $c->stash->{titel_single}
+        = $c->stash->{titel}->find($order_id) || $c->detach('not_found');
+}
+
 sub json : Chained('titel') {
     my ($self, $c) = @_;
     
@@ -50,6 +59,17 @@ sub json : Chained('titel') {
     );
 }
 
+sub edit : Chained('titel_single') {
+    my ($self, $c) = @_;
+    my $titel_single = $c->stash->{titel_single};
+    my $form = Atacama::Form::Titel->new;
+    $c->stash( template => 'titel/edit.tt', form => $form );
+    $form->process(item => $titel_single, params => $c->req->params );
+    return unless $form->validated;
+    #$c->flash( message => 'Book created' );
+    # Redirect the user back to the list page
+    $c->response->redirect($c->uri_for_action('/order/edit', [ $c->stash->{titel_single}->order_id ]));
+}
 
 sub get_title : Private {
     
@@ -128,7 +148,15 @@ sub get_title_by_bvnr : Private {
         titel_data => $titel_new,
     );
     return;
-}    
+}
+
+sub not_found : Local {
+    my ($self, $c) = @_;
+    $c->response->status(404);
+    $c->stash->{error_msg} = "Titel nicht gefunden!";
+    $c->detach('/order/list');
+}
+
     
 =head1 AUTHOR
 

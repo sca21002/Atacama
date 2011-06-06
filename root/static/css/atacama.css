@@ -112,7 +112,7 @@ ul#bindeeinheit li {
 	margin-bottom: 27px;
 }
 
-#signatur_link span.ui-icon,#edit_link span.ui-icon,#book_selected span.ui-icon
+#signatur_link span.ui-icon,#edit_link span.ui-icon,#book_selected span.ui-icon, #edit_signature span.ui-icon
 	{
 	left: 0.2em;
 	margin: -8px 5px 0 0;
@@ -124,7 +124,7 @@ form#login_form {
 	padding: 20px;
 }
 
-#signatur_link,#edit_link,#book_selected {
+#signatur_link,#edit_link,#book_selected, #edit_signature {
 	font-size: 0.8em;
 	padding: 3px 10px 2px 22px;
 	position: relative;
@@ -337,10 +337,10 @@ table.dotted_border td:FIRST-CHILD {
 	border-right: 1px dotted #bdb76b;
 	padding: 0 3px 0 7px;
 	height: 100%;	
-	font-weight: bold;
+
 }
 
-form#remedi label {
+form#remedi label, form#titel_form label {
 	padding-top: 3px;
 	padding-left: 8px;
 }
@@ -351,8 +351,9 @@ form#scanfiles label {
 }
 
 
-form#remedi select, form#remedi input {
+form#remedi select, form#remedi input, form#titel_form input, form#titel_form select {
 	margin: 5px 1px;
+	max-width: 600px;
 }
 
 
