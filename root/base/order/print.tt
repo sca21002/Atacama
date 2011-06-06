@@ -88,8 +88,12 @@ Scan-Operator (Name): \rule[-3mm]{0mm}{8mm}\hrulefill
 \textbf{Scanner:}  [% scanparameter.scanner.name  | latex_encode(except => 'ÄÖÜäöüß') %], \textbf{Format:}  [% scanparameter.format.name %], 
 \textbf{Aufl\"osung:}  [% scanparameter.resolution.value %] 
 [% IF scanparameter.scope %] \textbf{Bereich:}  [% scanparameter.scope | latex_encode(except => 'ÄÖÜäöüß') %] [%- END -%] 
-[% FOREACH scanoption IN scanparameter.scanoptions %],
-\textbf{[% scanoption.skey | latex_encode(except => 'ÄÖÜäöüß') %]}: [% scanoption.name | latex_encode(except => 'ÄÖÜäöüß') %][%- END -%]
+[% FOREACH scanoption IN scanparameter.scanoptions %]
+\textbf{[% scanoption.skey | latex_encode(except => 'ÄÖÜäöüß') %]}: 
+[%- FOREACH option IN scanoption.options -%]
+[%- IF option.value_id == scanoption.scanoptionkey_id -%] [% option.name | latex_encode(except => 'ÄÖÜäöüß') %] [%- END -%]
+[%- END -%]
+[% END %]
 [%- END -%]
 \end{itemize}
 [%- END -%]
