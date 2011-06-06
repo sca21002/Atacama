@@ -8,7 +8,8 @@ has '+item_class' => ( default =>'Project' );
 
 has_field 'name' => (
     type => 'Text',
-    label => 'Projektname'
+    label => 'Projektname',
+    required => 1,
 );
 has_field 'description' => (
     type => 'TextArea',

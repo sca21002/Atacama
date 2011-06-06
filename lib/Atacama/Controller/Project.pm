@@ -124,7 +124,7 @@ sub save : Private {
     return unless $form->validated;
     #$c->flash( message => 'Book created' );
     # Redirect the user back to the list page
-    $c->response->redirect($c->uri_for_action('list'));
+    $c->response->redirect($c->uri_for_action('/project/list'));
 }
 
 
