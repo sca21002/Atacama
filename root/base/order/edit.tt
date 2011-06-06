@@ -290,12 +290,14 @@
                     		  var i = 0;
                     	  	  $.each(result.json_data, function(key, val) {    
                         	  	i ++;                    		  	
-              		   			$("#bindeeinheit").append('<li id="'+i+'"><strong>Titel: </strong> '+val.titel_avs+'<br/><strong>Autor: </strong> '+ val.autor_avs+'<br/><strong>Verlag:</strong> '+val.verlag+'<br/><strong>BV-Nr.: </strong>' + val.bvnr+'<br/><strong>Erschienen:</strong> '+val.erschjahr+'<br/><br/> <a href="#" id="book_selected" class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-search"></span>Auswählen</a></li>');
+              		   			$("#bindeeinheit").append('<li id="'+i+'">'+val.titel_isbd+'<br/><strong>BV-Nr.: </strong>' + val.bvnr+'<br/><br/> <a href="#" id="book_selected" class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-search"></span>Auswählen</a></li>');
 							});
                     	  	  
                     	  	$("a#book_selected").click( function () {
                           	  	//Zellen fuellen und sperren				
 								var array_key = ($(this).parent().attr("id"))-1;	
+								if (array_key == -1) array_key = 0;
+								#console.debug(array_key);
 								insertSignature (array_key, result);
 								$("#bindeeinheit").dialog("close");
 							});
