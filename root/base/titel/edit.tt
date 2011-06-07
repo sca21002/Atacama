@@ -63,7 +63,7 @@
     ];
     
  %]
-<span class="left"> Auftragsnummer:  </span> [% titel_single.order_id %]<br />
+<span class="left"> Auftragsnummer:  </span> [% order_id %]<br />
 <span class="left"> Signatur:  </span>[% titel_single.signatur %] <br />
 <span class="left"> BV-Nr.:  </span>[% titel_single.bvnr %]<br />
 <span class="left"> Katkey:  </span>[% titel_single.katkey %] <br />

@@ -39,8 +39,10 @@ sub titel : Chained('/') PathPart('titel') CaptureArgs(0) {
 sub titel_single : Chained('titel') PathPart('') CaptureArgs(1) {
     my ($self, $c, $order_id) = @_;
 
-    my $titel_single = $c->stash->{titel_single}
-        = $c->stash->{titel}->find($order_id) || $c->detach('not_found');
+    $c->stash->{order_id} = $order_id;
+    my $order = $c->model('AtacamaDB::Order')->find($order_id)
+        || $c->detach('not_found');
+    $c->stash->{titel_single} = $order->find_or_new_related('titel', {} );
 }
 
 sub json : Chained('titel') {
@@ -68,7 +70,9 @@ sub edit : Chained('titel_single') {
     return unless $form->validated;
     #$c->flash( message => 'Book created' );
     # Redirect the user back to the list page
-    $c->response->redirect($c->uri_for_action('/order/edit', [ $c->stash->{titel_single}->order_id ]));
+    $c->response->redirect(
+        $c->uri_for_action('/order/edit', [ $c->stash->{order_id} ])
+    );
 }
 
 sub get_title : Private {

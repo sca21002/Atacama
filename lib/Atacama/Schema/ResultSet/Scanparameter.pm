@@ -59,7 +59,6 @@ sub save {
         next unless (%$param);
         my $column;
         foreach my $key (keys %$param) {
-            warn 'KEYKEYKEYKEY : ' . $key . ' Value: ' . $param->{$key};
             if (exists $columns_info->{$key}) {
                 if ($param->{$key} eq ''
                     and exists $integer_type{$columns_info->{$key}{data_type}}
