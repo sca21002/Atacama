@@ -105,7 +105,7 @@
                    		$.each(result.json_data.formats, function(key, val) {       
 	                 				  active_li.append($("<option value='" + val.format_id +"'>" + val.name + "</option>"));                 				   
 	                 				  });  
-  	                    active_select.nextAll().wrapAll("<select class='json' name='scanparameters." + count + ".formats' size='1'>");
+  	                    active_select.nextAll().wrapAll("<select class='json' name='scanparameters." + count + ".format_id' size='1'>");
         				}
 
 						//Resolution     
@@ -118,7 +118,7 @@
                  			//funktioniert hier nicht
                  			//active_li.append($("<option value='" + val.resolution_id +">" + val.value + "</option>"));                 				   
                  				  });  
-                 		active_select.next().nextAll().wrapAll("<select class='json' name='scanparameters." + count + ".resolutions' size='1'>");
+                 		active_select.next().nextAll().wrapAll("<select class='json' name='scanparameters." + count + ".resolution_id' size='1'>");
 			       	    }
 	
                    	    //Scanoptions/Glasplatte
@@ -168,7 +168,7 @@
                    		//Options 
                    		if (result.json_data.projectoptions != '' && option_val != '' ) {          
                      		$.each(result.json_data.projectoptions, function(key, val) {       
-	                 				  active_li.append($(" <label class='json'> "+val.pkey+" </label> <input class='json' name='orders_projects."+count+".projectoptions."+count+".value' value='' type='text' />"));                 				   
+	                 				  active_li.append($(" <label class='json'> "+val.pkey+" </label> <input class='json' name='orders_projects."+count+".projectoptions."+count+".value' value='' type='text' /> <input class='json' name='orders_projects."+count+".projectoptions."+count+".value' value='' type='text' />"));                 				   
 	                 				  });             	          
         				}        
 					}
