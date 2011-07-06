@@ -1,30 +1,73 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>[% title %]</title>
-<link rel="icon" href="[%c.uri_for_static('images/atacama_icon.ico')%]" type="image/x-icon">
-<link title="main stylesheet" href="[%c.uri_for_static('css/atacama.css')%]" type="text/css" rel="stylesheet" />
-<link title="main stylesheet" href="[%c.uri_for_static('css/ui-lightness/jquery-ui-1.8.11.custom.css')%]" type="text/css" rel="stylesheet" />
-	<!--[if lt IE 7]>
+
+<script type="text/javascript"
+	src="[% c.uri_for_static('js/ext/jquery/jquery-1.5.min.js') %]"></script>
+<script type="text/javascript"
+	src="[% c.uri_for_static('js/ext/plugins/jquery/jqGrid/i18n/grid.locale-de.js') %]"></script>
+<script type="text/javascript"
+	src="[% c.uri_for_static('js/ext/plugins/jquery/jqGrid/jquery.jqGrid.min.js') %]"></script>
+<!-- <script type="text/javascript" src="https://getfirebug.com/firebug-lite.js"></script> -->
+<script type="text/javascript"
+	src="[%c.uri_for_static('js/ext/jquery-ui/jquery-ui-1.8.11.custom.min.js')%]"></script>
+<script type="text/javascript"
+	src="[%c.uri_for_static('js/ext/plugins/jquery/ScrollTo/jquery.scrollTo-1.4.2-min.js')%]"></script>
+<script type="text/javascript"
+	src="[%c.uri_for_static('js/ext/plugins/jquery/jquery-cookie/jquery.cookie.js')%]"></script>
+<script type="text/javascript"
+	src="[%c.uri_for_static('js/ext/json2.js')%]"></script>
+
+<link rel="stylesheet" type="text/css" media="screen"
+	href="[% c.uri_for_static('css/ui-lightness/jquery-ui-1.8.11.custom.css') %]" />
+<link rel="stylesheet" type="text/css" media="screen"
+	href="[% c.uri_for_static('css/jqGrid/ui.jqgrid.css') %]" />
+<link rel="icon" href="[%c.uri_for_static('images/atacama_icon.ico')%]"
+	type="image/x-icon">
+<link title="main stylesheet"
+	href="[%c.uri_for_static('css/atacama1.css')%]" type="text/css"
+	rel="stylesheet" />
+<!--[if lt IE 7]>
 			<link rel="stylesheet" href="[%c.uri_for_static('css/ie6.css')%]" media="screen" type="text/css" />
-			<![endif]-->
-			<!--[if IE 7]>
+			<![endif]--> <!--[if IE 7]>
 			<link rel="stylesheet" href="[%c.uri_for_static('css/ie7.css')%]" media="screen" type="text/css" />
-			<![endif]-->
-			<!--[if IE 8]>
+			<![endif]--> <!--[if IE 8]>
 			<link rel="stylesheet" href="[%c.uri_for_static('css/ie8.css')%]" media="screen" type="text/css" />
-			<![endif]-->
-	
-<script type="text/javascript" src="https://getfirebug.com/firebug-lite.js"></script>
+			<![endif]--> <script type="text/javascript">
+	$(document).ready(
 
-<script type="text/javascript" 	src="[%c.uri_for_static('js/ext/jquery/jquery-1.5.1.min.js')%]"></script>
-<script type="text/javascript" src="[%c.uri_for_static('js/ext/jquery-ui/jquery-ui-1.8.11.custom.min.js')%]"></script>
-
-<script type="text/javascript"	src="[%c.uri_for_static('js/ext/plugins/jquery/ScrollTo/jquery.scrollTo-1.4.2-min.js')%]"></script>
-<script type="text/javascript" src="[%c.uri_for_static('js/ext/json2.js')%]"></script>
+	function() {
 
 
+		var saved_image = $.cookie("image");
+		console.debug($.cookie("image"));
+		if (saved_image !== null){
+			$('body').css('background-image', 'url(' + saved_image + ')');
+		}
+		
+		
+
+		function setimage (image) {
+			$('body').css('background-image', 'url(' + image + ')');
+			console.debug(image);
+			$.cookie("image", image, { expires: 7, path: '/' });
+		}
+
+			$('#color1').click(function() {
+				setimage ("http://ubuntu:3000/static/css/images/modgymh.png");
+			});
+			$('#color2').click(function() {
+				setimage ("http://ubuntu:3000/static/css/images/y29n9kr.png");
+			});
+			$('#color3').click(function() {
+ 				setimage ("http://ubuntu:3000/static/css/images/prxyxwz.png");
+			});
+
+		});
+
+</script>
+<title>[% title %]</title>
 </head>
 <body id="page">
 

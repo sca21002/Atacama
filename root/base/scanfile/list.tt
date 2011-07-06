@@ -28,7 +28,7 @@ jQuery("#scanfiles").jqGrid({
     rowNum:15,
     rownumbers: true,
     height: "100%",
-    width: "785",
+    width: "756",
     rowList:[10,20,30,40,50,60,70,80,90,100],
     pager: '#pager_scanfiles',
     sortname: 'id',

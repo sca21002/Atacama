@@ -2,13 +2,13 @@
 <ul id="navigation" class="ui-widget">
 
 
-<li class="ui-state-[% start or 'default' %]"><span class="ui-icon ui-icon-home"></span><a
+<li class="ui-state-[% start or 'default' %] ui-corner-all alpha60"><span class="ui-icon ui-icon-home"></span><a
 	href="[% c.uri_for('/') %]"> Startseite</a></li>
 		
 
 [%  FOREACH page IN menu_links %]
-[% IF page.level == '2' %] <ul id="navigation_level2">     [%  END %]	
-     <li class="ui-state-[% page.state or 'default' %]">
+[% IF page.level == '2' %] <ul id="navigation_level2" >     [%  END %]	
+     <li class="ui-state-[% page.state or 'default' %] ui-corner-all alpha60">
      <span class="ui-icon ui-icon-[% page.icon  or 'contact'%]"></span>
      <a 
      [% IF page.class %] class="[% page.class %]" [% END %]
@@ -21,7 +21,7 @@
 
 
 [% IF !start %]
-<li class="ui-state-default">
+<li class="ui-state-default ui-corner-all alpha60">
 <span class="ui-icon ui-icon-back"></span>
 <a href="javascript:history.back()">zur&uuml;ck</a></li>
 [% END %]

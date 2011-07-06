@@ -36,7 +36,7 @@ requires 'DBIx::Class::EncodedColumn';
 requires 'File::MMagic';
 requires 'HTML::FormHandler';
 requires 'HTML::FormHandler::Model::DBIC';
-requires 'Image::ExifTool'                  # because of AtacamaWiki
+requires 'Image::ExifTool';                  # because of AtacamaWiki
 requires 'Image::Math::Constrain';
 requires 'Imager';
 requires 'YAML::XS';

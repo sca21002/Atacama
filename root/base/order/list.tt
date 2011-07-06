@@ -1,17 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-<link rel="stylesheet" type="text/css" media="screen"
-	href="[% c.uri_for_static('css/ui-lightness/jquery-ui-1.8.11.custom.css') %]" />
-<link rel="stylesheet" type="text/css" media="screen"
-	href="[% c.uri_for_static('css/jqGrid/ui.jqgrid.css') %]" />
-<script type="text/javascript"
-	src="[% c.uri_for_static('js/ext/jquery/jquery-1.5.min.js') %]"></script>
-<script type="text/javascript"
-	src="[% c.uri_for_static('js/ext/plugins/jquery/jqGrid/i18n/grid.locale-de.js') %]"></script>
-<script type="text/javascript"
-	src="[% c.uri_for_static('js/ext/plugins/jquery/jqGrid/jquery.jqGrid.min.js') %]"></script>
 
 <script type="text/javascript">
 	var prefs = {
@@ -33,11 +19,7 @@
 				// We report an error, and show the erronous JSON string (we replace all " by ', to prevent another error)
 				result = jQuery.parseJSON( '{"code":"error","content":"' + e.replace(/"/g, "'") + '"}' );
 				} 
-
-			
-					
 			}
-			
 		},
 
 		save : function(expires, path) {
@@ -198,19 +180,19 @@
 														name : 'order_id',
 														formatter : showCatlink,
 														index : 'order_id',
-														width : 100
+														width : 90
 													},
 													{
 														name : 'titel_isbd',
 														sortable : false,
 														index : 'titel_isbd',
-														width : 300
+														width : 330
 													},
 													{
 														name : 'projects',
 														index : 'project_id',
 														sortable : false,
-														width : 200,
+														width : 160,
 														stype : 'select',
 														editoptions : {
 															value : ":Alle[% FOR project IN projects %];[% project.project_id %]:[% project.name %][% END %]"
@@ -221,7 +203,7 @@
 														name : 'status',
 														index : 'status_id',
 														sortable : true,
-														width : 80,
+														width : 100,
 														stype : 'select',
 														editoptions : {
 															value : ":Alle[% FOR stat IN status %];[% stat.status_id %]:[% stat.name.replace(':', '\ /') %][% END %]"
@@ -229,7 +211,7 @@
 													} ],
 											rowNum : "20",
 											height : "100%",
-											width : '785',
+											width : '756',
 											rowList : [ 10, 20, 30, 40, 50, 60,
 													70, 80, 90, 100 ],
 											pager : '#pager_orders',
@@ -302,8 +284,7 @@
 					});
 </script>
 [% title = "Alle Aufträge" %]
-</head>
-<body>
+
 [%
    menu_links = [
       { url   = c.uri_for_action('/order/list')
@@ -335,5 +316,3 @@
 <table id="orders"></table>
 <div id="pager_orders"></div>
 
-</body>
-</html>
