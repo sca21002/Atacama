@@ -74,6 +74,7 @@ sub save {
             $row->update($column);
         }
         else {
+            warn 'Column: ' . Dumper($column);
             $self->create($column);        
         }
     }

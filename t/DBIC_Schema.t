@@ -115,11 +115,33 @@ $params = {
     'orders_projects' => [
                             {
                              'ordersprojects_id' => '',
-                             'project_id' => '1'
+                             'project_id' => '1',
+                             'projectoptions' => [
+                                                     {
+                                                       'projectkey_id' => '1',
+                                                       'value' => 'UBR10A003555'
+                                                     }
+                                                 ],                             
+                             
+                             
            
                             },
                          ],
 };
-ok($order->save($params),'add a EOD');           
+ok($order->save($params),'add a EOD');
+diag 'ORDERSPROJECTS_ID ' . $order->search_related('orders_projects',{'project_id' => '1'})->single->ordersprojects_id;
 is($order->orders_projects->count,2,'Projekte after add a new one');
+
+ok(my $ordersprojects_id = $order->search_related('orders_projects', {'project_id' => '1'})->single->ordersprojects_id);
+
+ok(my $projectvalue_rs = $schema->resultset('Projectvalue')->find({
+    ordersprojects_id => $ordersprojects_id,
+    'projectkey_id' => '1',
+}));
+ 
+ok($order = $schema->resultset('Order')->create({}));
+
+diag "angelegt: " . $order->order_id;
+                                        
+is($projectvalue_rs->value,'UBR10A003555','Fetch projectvalues');
 done_testing();

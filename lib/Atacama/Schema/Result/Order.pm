@@ -234,7 +234,7 @@ sub save {
                 $self->$key->save($params->{$key})
             }
             elsif (ref $params->{$key} eq 'ARRAY') {
-                $self->$key->save($params->{$key});
+                $self->$key->save($params->{$key}, $self->order_id);
             }
         }
     }
