@@ -136,11 +136,11 @@ sub put : Chained('orders') {
     my $titel = $c->stash->{titel_data};
     # $c->log->debug('titel_data ' . Dumper($titel));
     if (scalar @$titel == 1) {
-        my $order = $c->model('AtacamaDB::Order')->create_order();
-        delete $titel->[0]->{titel_isbd};
-        delete $titel->[0]->{order_id};
-        my $titel_new = $order->create_related('titel', {});
-        $order->titel->save($titel->[0]);
+        my $order = $c->model('AtacamaDB::Order')->create_order({titel => $titel->[0]});
+        # delete $titel->[0]->{titel_isbd};
+        # delete $titel->[0]->{order_id};
+        # my $titel_new = $order->create_related('titel', {});
+        # $order->titel->save($titel->[0]);
         $c->stash->{order} = $order;
     }
     $c->forward('save');
@@ -163,7 +163,7 @@ sub save : Private {
     my ($self, $c) = @_;
 
     my $order = $c->stash->{order}
-        ||= $c->model('AtacamaDB::Order')->create_order();
+        ||= $c->model('AtacamaDB::Order')->create_order({});
     if ($c->req->method eq 'POST') {
         # $c->log->debug(Dumper($c->req->params));
         # $c->log->debug('Method: ' .Dumper($c->req->method));

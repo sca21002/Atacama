@@ -8,16 +8,16 @@ use Data::Dumper;
 use feature qw(switch);
 
 sub create_order {
-    my ($self, $order_id) = @_;    
+    my ($self, $vals) = @_;
     
-    $self->create({
-        order_id        => $order_id || $self->next_order_id,
-        creation_date   => DateTime->now(
+    die 'HASHREF expected' unless ref($vals) eq 'HASH'; 
+    
+    $vals->{order_id} ||=  $self->next_order_id;
+    $vals->{creation_date} = DateTime->now(
             locale      => 'de_DE',
             time_zone   => 'Europe/Berlin',
-        ),       
-    });   
-    
+    );       
+    $self->create($vals);   
 }
 
 sub next_order_id {
