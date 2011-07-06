@@ -9,7 +9,8 @@ use feature qw(switch);
 
 sub create_order {
     my ($self, $vals) = @_;
-    
+
+    # warn "VALS: " . Dumper($vals);    
     die 'HASHREF expected' unless ref($vals) eq 'HASH'; 
     
     $vals->{order_id} ||=  $self->next_order_id;

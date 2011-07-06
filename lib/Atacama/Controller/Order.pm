@@ -130,15 +130,20 @@ sub put : Chained('orders') {
     my ($self, $c) = @_;
     
     # $c->log->debug(Dumper($c->req->params));
-    $c->stash->{signatur} = $c->req->params->{'titel.signatur'};
+    my $order_params = $self->list_to_hash($c, $c->req->params);
+    $c->stash->{signatur} = $order_params->{titel}{signatur};
     $c->stash->{titel} = $c->model('AtacamaDB::Titel');
     $c->forward('/titel/get_title');
     my $titel = $c->stash->{titel_data};
     # $c->log->debug('titel_data ' . Dumper($titel));
     if (scalar @$titel == 1) {
-        my $order = $c->model('AtacamaDB::Order')->create_order({titel => $titel->[0]});
-        # delete $titel->[0]->{titel_isbd};
-        # delete $titel->[0]->{order_id};
+        delete $titel->[0]->{titel_isbd};
+        delete $titel->[0]->{order_id};
+        $order_params->{titel} = { %{$order_params->{titel}}, %{$titel->[0]} };
+        my $order = $c->model('AtacamaDB::Order')->create_order(
+           $order_params,
+        );
+
         # my $titel_new = $order->create_related('titel', {});
         # $order->titel->save($titel->[0]);
         $c->stash->{order} = $order;
