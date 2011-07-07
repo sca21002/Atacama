@@ -234,7 +234,7 @@ sub save {
                 $self->$key->save($params->{$key})
             }
             elsif (ref $params->{$key} eq 'ARRAY') {
-                $self->$key->save($params->{$key}, $self->order_id);
+                $self->$key->save($params->{$key});
             }
         }
     }
@@ -278,22 +278,53 @@ sub properties {
     $properties->{order_href} = $order;
     
     my %rel = (
-        status => {resultset => 'Status', columns => ['status_id', 'name']},
-        documenttypes => {resultset => 'Documenttype', columns => ['documenttype_id', 'name']},
-        libraries => {resultset => 'Library', columns => ['library_id', 'name']},
-        scanners => {resultset => 'Scanner', columns => ['scanner_id', 'name']},
-        formats => {resultset => 'Format', columns => ['format_id', 'name']},
-        resolutions => {resultset => 'Resolution', columns => ['resolution_id', 'value']},
-        copyrights => {resultset => 'Copyright', columns => ['copyright_id', 'name']},
-        projects => {resultset => 'Project', columns => ['project_id', 'name']},
-        platforms => {resultset => 'Platform', columns => ['platform_id', 'name']},
+        status => {
+            resultset => 'Status',
+            columns => ['status_id', 'name'],
+        },
+        documenttypes => {
+            resultset => 'Documenttype',
+            columns => ['documenttype_id', 'name'],
+        },
+        libraries => {
+            resultset => 'Library',
+            columns => ['library_id', 'name'],
+        },
+        scanners => {
+            resultset => 'Scanner',
+            columns => ['scanner_id', 'name'],
+        },
+        formats => {
+            resultset => 'Format',
+            columns => ['format_id', 'name'],
+        },
+        resolutions => {
+            resultset => 'Resolution',
+            columns => ['resolution_id', 'value'],
+        },
+        copyrights => {
+            resultset => 'Copyright',
+            columns => ['copyright_id', 'name'],
+        },
+        projects => {
+            resultset => 'Project',
+            columns => ['project_id', 'name'],
+            order_by => 'name',
+        },
+        platforms => {
+            resultset => 'Platform',
+            columns => ['platform_id', 'name'],
+        },
     );           
     while ( my($rel, $val) = each %rel ) {
-        $properties->{$rel} = [$self->result_source->schema->resultset($val->{resultset})
-            ->search({},{
-                result_class => 'DBIx::Class::ResultClass::HashRefInflator',
-                columns => $val->{columns},
-            })->all];    
+        $properties->{$rel} = [
+            $self->result_source->schema->resultset($val->{resultset})
+                ->search({}, {
+                    result_class => 'DBIx::Class::ResultClass::HashRefInflator',
+                    columns => $val->{columns},
+                    $val->{order_by} ? (order_by => $val->{order_by}) : (),
+            })->all
+        ];    
     }
     return $properties;    
 }
