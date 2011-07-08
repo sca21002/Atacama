@@ -41,7 +41,6 @@
 
 
 		var saved_image = $.cookie("image");
-		console.debug($.cookie("image"));
 		if (saved_image !== null){
 			$('body').css('background-image', 'url(' + saved_image + ')');
 		}
@@ -50,18 +49,20 @@
 
 		function setimage (image) {
 			$('body').css('background-image', 'url(' + image + ')');
-			console.debug(image);
+		
 			$.cookie("image", image, { expires: 7, path: '/' });
 		}
 
 			$('#color1').click(function() {
 				setimage ("http://ubuntu:3000/static/css/images/modgymh.png");
+				//$('h1').css('color', "#B38190");
 			});
 			$('#color2').click(function() {
 				setimage ("http://ubuntu:3000/static/css/images/y29n9kr.png");
 			});
 			$('#color3').click(function() {
  				setimage ("http://ubuntu:3000/static/css/images/prxyxwz.png");
+ 				
 			});
 
 		});
