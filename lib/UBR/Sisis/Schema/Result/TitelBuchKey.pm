@@ -43,4 +43,12 @@ sub get_bvnr {
     return $titel_buch_key->verbundid if $titel_buch_key;    
 }
 
+sub get_titel {
+    my $self = shift;
+    
+    my $titel_href = $self->get_titel_dup_daten();
+    $titel_href->{bvnr} = $self->get_bvnr;
+    return $titel_href;
+}
+
 1;
