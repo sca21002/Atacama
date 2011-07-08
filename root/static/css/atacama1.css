@@ -45,8 +45,8 @@ legend {
     width: 761px;
 }
 #footer {
-    margin: 12px auto;
-    padding: 2px 7px 3px 10px;
+    margin: 14px auto;
+    padding: 1px 7px 8px 10px;
     width: 943px;
 }
 .row {
@@ -150,8 +150,6 @@ ul#navigation_level2 li {
 ul#navigation > li:first-child {
     margin-top: 0;
 }
-
-
 ul#navigation li a {
     display: block;
     min-height: 21px;
@@ -239,6 +237,7 @@ ul#scanner li {
 }
 #powered {
     float: right;
+    margin-top: 2px;
 }
 img {
     border: 0 none;
@@ -249,7 +248,7 @@ img {
 }
 p#name {
     font-size: 70%;
-    padding: 0.2em 0 0;
+    padding: 6px 0px 0px 0px;
     width: 453px;
 }
 h1, h1.main {
@@ -268,7 +267,7 @@ table.dotted_border td:first-child {
     padding: 0 3px 0 7px;
     width: 133px;
 }
-form#remedi label, form#titel_form label {
+form#remedi label {
     padding-left: 8px;
     padding-top: 3px;
 }
@@ -330,15 +329,12 @@ ul#colorchooser li:hover {
     background-color: #98CED3;
     color: #98CED3;
 }
-
-
 #lama {
-float: left;
-margin-right: 10px;
+    float: left;
+    margin-right: 10px;
 }
-
-#test{
-  color: white;
+#test {
+    color: white;
     font-size: 2em;
     font-weight: bold;
     margin-left: -236px;
