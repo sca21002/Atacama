@@ -337,10 +337,10 @@ float: left;
 margin-right: 10px;
 }
 
-
-#test {
-font-size: 2em;
-opacity: 0.5;
-  margin-left: -224px;
+#test{
+  color: white;
+    font-size: 2em;
+    font-weight: bold;
+    margin-left: -236px;
     margin-top: 10px;
 }
