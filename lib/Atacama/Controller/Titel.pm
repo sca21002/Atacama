@@ -117,53 +117,56 @@ sub get_title : Private {
     return;
 }
 
-sub get_title_by_bvnr : Private {
-    
-    my ($self, $c) = @_;
-    
-    
-    # $c->log->debug('In get_title_by_bvnr');
-    my $bvnr = $c->stash->{bvnr};
-    my $titel = $c->stash->{titel};
-    return unless $bvnr;
-
-    my $titel_verbund = $c->model('SisisDB::TitelVerbund')->search({
-        verbundid => $bvnr,
-    })->first;
-    my $titel_sisis = $titel_verbund->get_titel;
-    my $titel_new = $titel->get_new_result_as_href({});
-    # $c->log->debug('titel_sisis : ' . Dumper($titel_sisis));
-    my $source_titel = $c->model('AtacamaDB')->source('Titel');
-    %$titel_new = map {
-        $_ =>  decode('iso-8859-1', $titel_sisis->{ $source_titel->column_info($_)->{sisis} || $_ })
-    } keys %$titel_new;
-    $titel_new->{library_id} = $titel_new->{library_id} != 5
-        ? $titel_new->{library_id}
-        : $titel_new->{signatur} =~ /^W 01/
-        ?   103
-        : $titel_new->{signatur} =~ /^W 02/
-        ?   102
-        : ''
-        ;
-            
-    $titel_new->{titel_isbd} = $titel->new($titel_new)->titel_isbd;
-    $titel_new->{bvnr} = $bvnr;
-    $c->stash( 
-        titel_data => $titel_new,
-    );
-    return;
-}
+# Das ist reichlich verworren!!!
+#
+#sub get_title_by_bvnr : Private {
+#    
+#    my ($self, $c) = @_;
+#    
+#    
+#    # $c->log->debug('In get_title_by_bvnr');
+#    my $bvnr = $c->stash->{bvnr};
+#    my $titel = $c->stash->{titel};
+#    return unless $bvnr;
+#
+#    my $titel_verbund = $c->model('SisisDB::TitelVerbund')->search({
+#        verbundid => $bvnr,
+#    })->first;
+#    my $titel_sisis = $titel_verbund->get_titel;
+#    my $titel_new = $titel->get_new_result_as_href({});
+#    # $c->log->debug('titel_sisis : ' . Dumper($titel_sisis));
+#    my $source_titel = $c->model('AtacamaDB')->source('Titel');
+#    %$titel_new = map {
+#        $_ =>  decode('iso-8859-1', $titel_sisis->{ $source_titel->column_info($_)->{sisis} || $_ })
+#    } keys %$titel_new;
+#    $titel_new->{library_id} = $titel_new->{library_id} != 5
+#        ? $titel_new->{library_id}
+#        : $titel_new->{signatur} =~ /^W 01/
+#        ?   103
+#        : $titel_new->{signatur} =~ /^W 02/
+#        ?   102
+#        : ''
+#        ;
+#            
+#    $titel_new->{titel_isbd} = $titel->new($titel_new)->titel_isbd;
+#    $titel_new->{bvnr} = $bvnr;
+#    $c->stash( 
+#        titel_data => $titel_new,
+#    );
+#    return;
+#}
 
 
 sub get_title_by_katkey : Private {
     
     my ($self, $c) = @_;
     
-    
     # $c->log->debug('In get_title_by_katkey');
     my $katkey = $c->stash->{katkey};
+    my $signatur = $c->stash->{signatur};
     my $titel = $c->stash->{titel};
     return unless $katkey;
+    return unless $signatur;
     
     my $where = '= ' . $katkey;
     my $titel_buch_key = $c->model('SisisDB::TitelBuchKey')->search(
@@ -176,14 +179,24 @@ sub get_title_by_katkey : Private {
     %$titel_new = map {
         $_ =>  decode('iso-8859-1', $titel_sisis->{ $source_titel->column_info($_)->{sisis} || $_ })
     } keys %$titel_new;
-    $titel_new->{library_id} = $titel_new->{library_id} != 5
-        ? $titel_new->{library_id}
-        : $titel_new->{signatur} =~ /^W 01/
-        ?   103
-        : $titel_new->{signatur} =~ /^W 02/
-        ?   102
-        : ''
-        ;
+    
+    my $buch = $c->model('SisisDB::D01buch')->search(
+        { d01ort => $signatur },
+    )->first;
+    if ($buch) { 
+        $titel_new->{signatur} = $signatur;
+        $titel_new->{library_id} = $buch->d01zweig == 9
+            ?   0 
+            : $buch->d01zweig != 5
+            ? $buch->d01zweig
+            : $signatur =~ /^W 01/
+            ?   103
+            : $signatur =~ /^W 02/
+            ?   102
+            : ''
+            ;
+        $titel_new->{mediennr} = $buch->d01gsi;
+    }
     $titel_new->{titel_isbd} = $titel->new($titel_new)->titel_isbd;
     $c->stash( 
         titel_data => $titel_new,

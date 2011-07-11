@@ -173,7 +173,7 @@ sub save : Private {
         $c->log->debug(Dumper($c->req->params));
         # $c->log->debug('Method: ' .Dumper($c->req->method));
         my $order_params = $self->list_to_hash($c, $c->req->params);
-        $c->log->debug(Dumper($order_params));
+        $c->log->debug('Orderparams: ' . Dumper($order_params));
         # $c->log->debug('BVNr: ' . $order_params->{titel}{bvnr});
         # $c->log->debug($order->titel ? $order->titel->bvnr || '' : 'kein Titel');
         #if ( $order_params->{titel}{bvnr}  and not ( $order->titel && $order->titel->bvnr eq  $order_params->{titel}{bvnr}  )   ) {
@@ -184,13 +184,18 @@ sub save : Private {
         #    $order_params->{titel} = {  %{$order_params->{titel}}, %{$c->stash->{titel_data}} };
         #    delete $order_params->{titel}{order_id};
         #}
+        
         if ( $order_params->{titel}{katkey}  and not ( $order->titel && $order->titel->katkey eq  $order_params->{titel}{katkey}  )   ) {
             $c->log->debug('Titel holen');
             $c->stash->{katkey} = $order_params->{titel}{katkey};
+            $c->stash->{signatur} = $order_params->{titel}{signatur};
             $c->stash->{titel} = $c->model('AtacamaDB::Titel');
             $c->forward('/titel/get_title_by_katkey');
+            $c->log->debug('order->titel ' . Dumper($order_params->{titel}));
+            $c->log->debug('titel_data ' . Dumper($c->stash->{titel_data}));
             $order_params->{titel} = {  %{$order_params->{titel}}, %{$c->stash->{titel_data}} };
             delete $order_params->{titel}{order_id};
+            $c->log->debug('order_params ' . Dumper($order_params->{titel}));
         }
         $order->save($order_params);
     }

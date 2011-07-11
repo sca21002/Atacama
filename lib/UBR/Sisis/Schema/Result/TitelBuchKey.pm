@@ -47,7 +47,7 @@ sub get_titel {
     my $self = shift;
     
     my $titel_href = $self->get_titel_dup_daten();
-    $titel_href->{bvnr} = $self->get_bvnr;
+    $titel_href->{bvnr} = $self->get_bvnr || 'BV000000000';
     return $titel_href;
 }
 
