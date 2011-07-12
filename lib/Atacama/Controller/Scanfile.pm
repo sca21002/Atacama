@@ -79,6 +79,12 @@ sub json : Chained('scanfiles') PathPart('json') Args(0) {
         my $row->{id} = $scanfile->filepath . $scanfile->filename;
         $row->{cell} = [
             $scanfile->filename,
+            $scanfile->volume
+                || sprintf(
+                       "DATA%d",
+                       $scanfile->filepath =~ m#^/[^/]*DATA(\d)/#
+                   )
+                || ' ',
             $scanfile->format,
             $scanfile->colortype,
             $scanfile->resolution,
