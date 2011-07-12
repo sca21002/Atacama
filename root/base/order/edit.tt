@@ -168,7 +168,7 @@
                    		//Options 
                    		if (result.json_data.projectoptions != '' && option_val != '' ) {          
                      		$.each(result.json_data.projectoptions, function(key, val) {       
-	                 				  active_li.append($(" <label class='json'> "+val.pkey+" </label> <input class='json' name='orders_projects."+count+".projectoptions.0.value' value='' type='text' /> <input class='json' name='orders_projects."+count+".projectoptions.0.projectkey_id' value='"+val.projectkey_id+"' type='hidden' />"));                 				   
+	                 				  active_li.append($(" <label class='json'> "+val.pkey+" </label> <input class='json' name='orders_projects."+count+".projectoptions."+count+".value' value='' type='text' /> <input class='json' name='orders_projects."+count+".projectoptions."+count+".value' value='' type='text' />"));                 				   
 	                 				  });             	          
         				}        
 					}
@@ -438,7 +438,7 @@
 [% order_href.order_id %] [% IF order_href.scanfiles_count %]
 (Scandateien: <a href="[% c.uri_for("/order/${order_href.order_id}/scanfiles/list") %]">
 [% order_href.scanfiles_count %] </a> ) [% END %] [% IF
-order_href.pdffiles_count %] ( PDF-Dateien: <a href="[% c.uri_for("/pdffile/${order_href.order_id}") %]">
+order_href.pdffiles_count %] ( PDF-Dateien: <a href="[% c.uri_for("/order/${order_href.order_id}/pdffiles/list") %]">
 [% order_href.pdffiles_count %] </a> ) [% END %]</fieldset>
 
 [% IF order_href.creation_date.hms %]
