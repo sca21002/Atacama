@@ -168,7 +168,7 @@
                    		//Options 
                    		if (result.json_data.projectoptions != '' && option_val != '' ) {          
                      		$.each(result.json_data.projectoptions, function(key, val) {       
-	                 				  active_li.append($(" <label class='json'> "+val.pkey+" </label> <input class='json' name='orders_projects."+count+".projectoptions."+count+".value' value='' type='text' /> <input class='json' name='orders_projects."+count+".projectoptions."+count+".projectkey_id' value='."+count+".' type='hidden' />"));                 				   
+	                 				  active_li.append($(" <label class='json'> "+val.pkey+" </label> <input class='json' name='orders_projects."+count+".projectoptions.0.value' value='' type='text' /> <input class='json' name='orders_projects."+count+".projectoptions.0.projectkey_id' value='"+val.projectkey_id+"' type='hidden' />"));                 				   
 	                 				  });             	          
         				}        
 					}
