@@ -15,7 +15,7 @@ $(document).ready(function() {
 jQuery("#scanfiles").jqGrid({
     url:"[% json_url %]",
     datatype: "json",
-    colNames:['Dateiname', 'Format', 'Farbe', 'Auflösung', 'Bildgröße [px]', 'Seitenformat [cm]', 'Dateigröße [MB]'],
+    colNames:['Dateiname', 'Format', 'Farbe', 'Auflösung', 'Bildgröße [px]', 'Seitenformat [cm]', 'Dateigröße'],
     colModel:[
         {name:'filename',index:'filename', width:150},
         {name:'format',index:'format', width:80},

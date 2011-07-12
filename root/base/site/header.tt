@@ -54,14 +54,14 @@
 		}
 
 			$('#color1').click(function() {
-				setimage ("[%c.uri_for_static('css/images/modgymh.png')%]");
+				setimage ("[%c.uri_for_static('css/images/5hfs39j.png')%]");
 				//$('h1').css('color', "#B38190");
 			});
 			$('#color2').click(function() {
-				setimage ("[%c.uri_for_static('css/images/y29n9kr.png')%]");
+				setimage ("[%c.uri_for_static('css/images/ayzbr1j.png')%]");
 			});
 			$('#color3').click(function() {
- 				setimage ("[%c.uri_for_static('css/images/prxyxwz.png')%]");
+ 				setimage ("[%c.uri_for_static('css/images/mas6qmm.png')%]");
  				
 			});
 

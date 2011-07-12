@@ -1,5 +1,5 @@
 body {
-    background-image: url("images/prxyxwz.png");
+    background-image: url("images/ayzbr1j.png");
     color: #333333;
     font-family: Tahoma,Helvetica,sans-serif;
     font-size: 97%;
@@ -318,16 +318,17 @@ ul#colorchooser li:hover {
     cursor: pointer;
 }
 #color1 {
-    background-color: #B38190;
-    color: #B38190;
+    background-color: #e0dae4;
+    color: #e0dae4;
 }
 #color2 {
-    background-color: #EDECE4;
-    color: #EDECE4;
+	background-color: #b8b8b8;
+    color: #b8b8b8;
+   
 }
 #color3 {
-    background-color: #98CED3;
-    color: #98CED3;
+     background-color: #d3e0e0;
+    color: #d3e0e0;
 }
 #lama {
     float: left;
