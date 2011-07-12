@@ -97,7 +97,8 @@ sub json : Chained('orders') PathPart('json') Args(0) {
         my $row->{id} = $order->order_id;
         $row->{cell} = [
             $order->order_id,
-            $order->titel && $order->titel->titel_isbd,
+            $order->titel && $order->titel->titel_isbd
+                || $order->title =~ /\S/ && 'alt: ' . $order->title ,
             $order->orders_projects->get_projects_as_string,
             $order->status && $order->status->name,
         ];
