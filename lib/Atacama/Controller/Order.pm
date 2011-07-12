@@ -3,6 +3,7 @@ use Moose;
 use namespace::autoclean;
 use Data::Dumper;
 use JSON;
+# use utf8;
 
 BEGIN {extends 'Catalyst::Controller'; }
 
@@ -72,7 +73,8 @@ sub json : Chained('orders') PathPart('json') Args(0) {
    
     # $c->log->debug('filters: ' . Dumper($data->{filters}));
     my $filters = $data->{filters};
-    $filters = decode_json $filters if $filters;    
+    # $filters = decode_json $filters if $filters; ging nicht mit utf8??    
+    $filters = from_json $filters if $filters;   
 
     $c->session->{order}{list}{filters} = $data->{filters};
 
