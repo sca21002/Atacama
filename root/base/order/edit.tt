@@ -147,34 +147,39 @@
             $('<li  name="' + count +'"><input type="hidden" name="orders_projects.' + count +'.ordersprojects_id"	value=""> <select class="select_project" name="orders_projects.' + count +'.project_id">	<option value="">-- select --</option> [%- FOR project IN projects %]	<option value="[% project.project_id %]" [%-  IF project.project_id==orderproject.project_id -%]  selected="selected"[%-  END -%]>[%- project.name -%]</option>[%- END %]</select>').appendTo('ul#project'); 
             $.scrollTo( 'label#project_label', 500, {axis:'y'} );
       	                   	
-            $('select.select_project').change(function(){
-                var active_li = $(this).parent();     
-                var active_select = $(this);
-                var option_val = $(this).val();                                      
-                //console.debug(active_li);               
-
-                $.ajax({
-                    type: "GET",
-                    url: "[% c.uri_for_action('/orderproject/json') %]",
-                    dataType: "json",
-                    data: "project_id="+option_val,
-                    cache: false,
-                    error: function(){ alert ("Fehler"); },                                    
-                    success: function(result){    
-                                                 			
-                	    //console.debug(result);
-           	      	  	active_li.children('.json').remove();
-          	      	  	
-                   		//Options 
-                   		if (result.json_data.projectoptions != '' && option_val != '' ) {          
-                     		$.each(result.json_data.projectoptions, function(key, val) {       
-	                 				  active_li.append($(" <label class='json'> "+val.pkey+" </label> <input class='json' name='orders_projects."+count+".projectoptions."+count+".value' value='' type='text' /> <input class='json' name='orders_projects."+count+".projectoptions."+count+".value' value='' type='text' />"));                 				   
-	                 				  });             	          
-        				}        
-					}
-                });
-            });        
+           
         });
+
+         $('select.select_project').change(function(){
+             var active_li = $(this).parent();     
+             var active_select = $(this);
+             var option_val = $(this).val(); 
+             var count = $("ul#project li").size();          
+             //console.debug(active_select);                           
+             //console.debug(option_val);   
+             //console.debug(active_li);            
+             active_li.children('.json').remove();      
+
+             $.ajax({
+                 type: "GET",
+                 url: "[% c.uri_for_action('/orderproject/json') %]",
+                 dataType: "json",
+                 data: "project_id="+option_val,
+                 cache: false,
+                 error: function(){ alert ("Fehler"); },                                    
+                 success: function(result){    
+                                              			
+   
+                 	//console.debug(result);
+                		//Options 
+                		if (result.json_data.projectoptions != '' && option_val != '' ) {          
+                  		$.each(result.json_data.projectoptions, function(key, val) {       
+	                 				  active_li.append($(" <label class='json'> "+val.pkey+" </label> <input class='json' name='orders_projects."+count+".projectoptions.0.value' value='' type='text' /> <input class='json' name='orders_projects."+count+".projectoptions.0.projectkey_id' value='"+val.projectkey_id+"' type='hidden' />"));                 				   
+	                 				  });             	          
+     				}        
+					}
+             });
+         });        
 
          //Publikation      
          $('a#add_publication').live("click", function(){
@@ -637,7 +642,7 @@ Projekt/ID </label>
 	<li><input type="hidden"
 		name="orders_projects.[% loop.count - 1 %].ordersprojects_id"
 		value="[% orderproject.ordersprojects_id %]"> <select
-		id='select_project'
+		class='select_project'
 		name="orders_projects.[% loop.count - 1 %].project_id">
 		<option value="">-- select --</option>
 		[%- FOR project IN projects %]
@@ -646,13 +651,13 @@ Projekt/ID </label>
 		[%- project.name -%]</option>
 		[%- END %]
 	</select> [%- SET orderproject_count = (loop.count - 1) -%] [%- FOR
-	projectoption IN orderproject.projectoptions %]<input type="hidden"
+	projectoption IN orderproject.projectoptions %]<input class="json" type="hidden"
 		name="orders_projects.[% orderproject_count %].projectoptions.[% loop.count - 1 %].projectkey_id"
-		value="[% projectoption.projectkey_id %]"> <label> [%
-	projectoption.pkey %] </label> <input
+		value="[% projectoption.projectkey_id %]"> <label  class="json"> [%
+	projectoption.pkey %] </label> <input  class="json" 
 		name="orders_projects.[% orderproject_count %].projectoptions.[% loop.count - 1 %].value"
 		value="[% projectoption.value %]" type="text" />[%- END %] [%- IF
-	orderproject.ordersprojects_id -%] <label> Löschen </label> <input
+	orderproject.ordersprojects_id -%] <label class="json" > Löschen </label> <input class="json" 
 		name="orders_projects.[% loop.count - 1 %].DELETED" type="checkbox"
 		value="1" />[%- END -%] [%- END -%]</li>
 </ul>
