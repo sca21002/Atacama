@@ -154,11 +154,24 @@
              var active_li = $(this).parent();     
              var active_select = $(this);
              var option_val = $(this).val(); 
-             var count = $("ul#project li").size();          
-             //console.debug(active_select);                           
-             //console.debug(option_val);   
-             //console.debug(active_li);            
-             active_li.children('.json').remove();      
+             var count = $("ul#project li").size();         
+
+             //Position innerhalb der Liste ermitteln, falls Liste größer als 1
+             if (count > 1) {
+                 var next_li = active_li.next();
+                 var prev_li = active_li.prev();
+
+                 if (next_li.attr("name") !== undefined){
+                      count = next_li.attr("name") - 1;
+                 }
+                 else {
+                     count = parseInt(prev_li.attr("name")) +1;
+                     }
+                 console.log("count"+count);
+            
+             } 
+
+              active_li.children('.json').remove();      
 
              $.ajax({
                  type: "GET",
@@ -175,10 +188,14 @@
                 		if (result.json_data.projectoptions != '' && option_val != '' ) {          
                   		$.each(result.json_data.projectoptions, function(key, val) {       
 	                 				  active_li.append($(" <label class='json'> "+val.pkey+" </label> <input class='json' name='orders_projects."+count+".projectoptions.0.value' value='' type='text' /> <input class='json' name='orders_projects."+count+".projectoptions.0.projectkey_id' value='"+val.projectkey_id+"' type='hidden' />"));                 				   
-	                 				  });             	          
-     				}        
+	                 				  });  
+                 		} 
+
+                		             
 					}
              });
+
+            
          });        
 
          //Publikation      
@@ -365,75 +382,29 @@
 <div id="bindeeinheit" style="display: none;"></div>
 
 
-[% title = "Auftrag ${order_href.order_id} bearbeiten"; %]
-[%
-   menu_links = [
-      { url   = c.uri_for_action('/order/list')
-        title = 'Liste der Auftr&auml;ge' 
-        icon = 'contact'
-        class = 'prevent'
-      }
-       { url   = c.uri_for_action('/order/edit' [order_href.order_id])
-        title = title
-        icon = 'pencil'
-        class = 'prevent'
-        state = 'active'
-      }
-      { url   = c.uri_for_action('/order/delete', [order_href.order_id])
-        title = 'Auftrag löschen'
-        icon = 'trash' 
-        level = '2'
-      }
-        { url = c.uri_for_action('/order/print', [order_href.order_id])
-      	title = 'Laufzettel drucken'
-      	icon = 'print'
-      	class = 'prevent'
-      	level = '2'
-      }
-      { url = c.uri_for_action('/order/print_patchcode_t', [order_href.order_id])
-      	title = 'Patchcode T drucken'
-      	icon = 'print'
-      	class = 'prevent'
-      	level = '2'
-      }
-      {	url =  c.uri_for_action('/remedi/remedi', [order_href.order_id] )
-        title = 'mit Remedi bearbeiten'
-        icon = 'extlink'
-        class = 'prevent'
-        level = '2'
-      }
-      {	url = c.uri_for_action('/sourcefile/sourcefile', [order_href.order_id] )
-        title = 'Scandateien suchen'
-        icon = 'search'
-        class = 'prevent'
-        level = '2'
-      }
-      { url   =  c.uri_for_action('/order/add')
-        title = 'Auftrag anlegen'
-        icon = 'plus' 
-        class = 'prevent'
-      }
-    
-      { url = c.uri_for_action('/job/scoreboard/list')
-      	title = 'Laufender Job'
-      	icon = 'circle-triangle-e'
-      	class = 'prevent'
-      }
-      { url = c.uri_for_action('/job/queue/list')
-        title = 'Job-Warteschlange'
-        icon = 'info'
-        class = 'prevent'
-       }
-      { url = c.uri_for_action('/job/error/list')
-      	title = 'Fehlerhafte Jobs'
-      	icon = 'alert'
-      	class = 'prevent'
-      }
-
-      
-    ];
-    
- %]
+[% title = "Auftrag ${order_href.order_id} bearbeiten"; %] [% menu_links
+= [ { url = c.uri_for_action('/order/list') title = 'Liste der
+Auftr&auml;ge' icon = 'contact' class = 'prevent' } { url =
+c.uri_for_action('/order/edit' [order_href.order_id]) title = title icon
+= 'pencil' class = 'prevent' state = 'active' } { url =
+c.uri_for_action('/order/delete', [order_href.order_id]) title =
+'Auftrag löschen' icon = 'trash' level = '2' } { url =
+c.uri_for_action('/order/print', [order_href.order_id]) title =
+'Laufzettel drucken' icon = 'print' class = 'prevent' level = '2' } {
+url = c.uri_for_action('/order/print_patchcode_t',
+[order_href.order_id]) title = 'Patchcode T drucken' icon = 'print'
+class = 'prevent' level = '2' } { url =
+c.uri_for_action('/remedi/remedi', [order_href.order_id] ) title = 'mit
+Remedi bearbeiten' icon = 'extlink' class = 'prevent' level = '2' } {
+url = c.uri_for_action('/sourcefile/sourcefile', [order_href.order_id] )
+title = 'Scandateien suchen' icon = 'search' class = 'prevent' level =
+'2' } { url = c.uri_for_action('/order/add') title = 'Auftrag anlegen'
+icon = 'plus' class = 'prevent' } { url =
+c.uri_for_action('/job/scoreboard/list') title = 'Laufender Job' icon =
+'circle-triangle-e' class = 'prevent' } { url =
+c.uri_for_action('/job/queue/list') title = 'Job-Warteschlange' icon =
+'info' class = 'prevent' } { url = c.uri_for_action('/job/error/list')
+title = 'Fehlerhafte Jobs' icon = 'alert' class = 'prevent' } ]; %]
 
 
 
@@ -459,10 +430,11 @@ order_href.modification_date.hms %]</fieldset>
 
 <fieldset>
 <div class="left">Titel:</div>
-<div id="titel">[% order_href.titel.titel_isbd %] 
-<a href="[% c.uri_for("/titel/${order_href.order_id}/edit") %]" id="edit_signature" class="ui-state-default ui-corner-all">
-<span class="ui-icon ui-icon-pencil"></span>Titel bearbeiten</a>
-</div>
+<div id="titel">[% order_href.titel.titel_isbd %] <a
+	href="[% c.uri_for("
+	/titel/${order_href.order_id}/edit") %]" id="edit_signature"
+	class="ui-state-default ui-corner-all"> <span
+	class="ui-icon ui-icon-pencil"></span>Titel bearbeiten</a></div>
 </fieldset>
 
 
@@ -599,7 +571,8 @@ Scanner </label>
 >
 		[%- resolution.value -%]</option>
 		[%- END %]
-	</select><br /> <label for="scope"> Bereich </label> <input id="scope"
+	</select><br />
+	<label for="scope"> Bereich </label> <input id="scope"
 		name="scanparameters.[% loop.count - 1 %].scope"
 		value="[% scanparameter.scope %]" type="text" />[%- SET
 	scanparameter_count = loop.count - 1 -%] [%- FOR scanoption IN
@@ -639,7 +612,7 @@ Scanner </label>
 Projekt/ID </label>
 <ul id="project">
 	[%- FOR orderproject IN order_href.orders_projects %]
-	<li><input type="hidden"
+	<li name="[% loop.count - 1 %]"><input type="hidden"
 		name="orders_projects.[% loop.count - 1 %].ordersprojects_id"
 		value="[% orderproject.ordersprojects_id %]"> <select
 		class='select_project'
@@ -651,13 +624,15 @@ Projekt/ID </label>
 		[%- project.name -%]</option>
 		[%- END %]
 	</select> [%- SET orderproject_count = (loop.count - 1) -%] [%- FOR
-	projectoption IN orderproject.projectoptions %]<input class="json" type="hidden"
+	projectoption IN orderproject.projectoptions %]<input class="json"
+		type="hidden"
 		name="orders_projects.[% orderproject_count %].projectoptions.[% loop.count - 1 %].projectkey_id"
-		value="[% projectoption.projectkey_id %]"> <label  class="json"> [%
-	projectoption.pkey %] </label> <input  class="json" 
+		value="[% projectoption.projectkey_id %]"> <label class="json">
+	[% projectoption.pkey %] </label> <input class="json"
 		name="orders_projects.[% orderproject_count %].projectoptions.[% loop.count - 1 %].value"
 		value="[% projectoption.value %]" type="text" />[%- END %] [%- IF
-	orderproject.ordersprojects_id -%] <label class="json" > Löschen </label> <input class="json" 
+	orderproject.ordersprojects_id -%] <label class="json"> Löschen
+	</label> <input class="json"
 		name="orders_projects.[% loop.count - 1 %].DELETED" type="checkbox"
 		value="1" />[%- END -%] [%- END -%]</li>
 </ul>
@@ -690,8 +665,8 @@ Publikation </label>
 		value="[% publicationoption.value %]" type="text" />[%- IF
 	publicationoption.pkey == "PID" %]<a
 		href=http://bvbm1.bib-bvb.de/webclient/DeliveryManager?pid=[%
-		publicationoption.value %]&custom_att_2=simple_viewer target='_blank'> Online </a>
-	[%- END -%] [%- END -%] [%- IF publication.publication_id -%] <label>
+		publicationoption.value %]&custom_att_2=simple_viewer target='_blank'>
+	Online </a> [%- END -%] [%- END -%] [%- IF publication.publication_id -%] <label>
 	Löschen </label> <input name="publications.[% loop.count - 1 %].DELETED"
 		type="checkbox" value="1" />[%- END -%]</li>
 	[%- END -%]
@@ -700,6 +675,6 @@ Publikation </label>
 	images/add.png') %]' alt='neues Publikationsfeld einfuegen' /></a></div>
 
 <hr />
-<input class="send" id="order_submit" name="save" type="submit" disabled="true" value="Speichern">
-</form>
+<input class="send" id="order_submit" name="save" type="submit"
+	disabled="true" value="Speichern"></form>
 </div>
