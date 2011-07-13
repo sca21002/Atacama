@@ -49,7 +49,7 @@ sub save {
         }
         if ($row and $param->{DELETED}) {
             $row->delete;
-            return;
+            next;
         }
         my %integer_type = (smallint => 1,tinyint => 1,integer => 1,mediumint => 1); 
         next unless (%$param);
