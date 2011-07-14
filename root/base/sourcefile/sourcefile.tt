@@ -1,10 +1,4 @@
-<script type="text/javascript">
-    $(document).ready(function(){
-    	var min_height = $('#nav_area').height();
-    	$('#content').height(min_height);
 
-    });
-</script>
 [% edit_link = "Auftrag ${order.order_id} bearbeiten"; %]
 [%
    menu_links = [

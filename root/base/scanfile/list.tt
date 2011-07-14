@@ -1,35 +1,24 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-    <link rel="stylesheet" type="text/css" media="screen" href="[% c.uri_for_static('css/ui-lightness/jquery-ui-1.8.11.custom.css') %]" />
-    <link rel="stylesheet" type="text/css" media="screen" href="[% c.uri_for_static('css/jqGrid/ui.jqgrid.css') %]" />
 
-
-    <script type="text/javascript" src="[% c.uri_for_static('js/ext/jquery/jquery-1.5.min.js') %]"></script> 
-    <script type="text/javascript" src="[% c.uri_for_static('js/ext/plugins/jquery/jqGrid/i18n/grid.locale-de.js') %]"></script> 
-    <script type="text/javascript" src="[% c.uri_for_static('js/ext/plugins/jquery/jqGrid/jquery.jqGrid.min.js') %]"></script> 
-   
 <script type="text/javascript">
 $(document).ready(function() {
 jQuery("#scanfiles").jqGrid({
     url:"[% json_url %]",
     datatype: "json",
-    colNames:['Dateiname', 'Laufwerk', 'Format', 'Farbe', 'Auflösung', 'Bildgröße [px]', 'Seitenformat [cm]', 'Dateigröße [MB]'],
+    colNames:['Datei', 'Ort', 'Format', 'Farbe', 'DPI', 'Bildgröße [px]', 'Seitenformat [cm]', 'Dateigr.[MB]'],
     colModel:[
-        {name:'filename',index:'filename', width:150},
-        {name:'volume',index:'volume', width:80},
-        {name:'format',index:'format', width:80},
-        {name:'colortype',index:'colortype', width:80},
-        {name:'resolution',index:'resolution', width:80},
-        {name:'imagesize',index:'imagesize', width:150},
-        {name:'papersize',index:'papersize', width:150},
-        {name:'filesize',index:'filesize', width:80},
+        {name:'filename',index:'filename', width:140},
+        {name:'volume',index:'volume', width:70},
+        {name:'format',index:'format', width:70},
+        {name:'colortype',index:'colortype', width:60},
+        {name:'resolution',index:'resolution', width:40},
+        {name:'imagesize',index:'imagesize', width:140},
+        {name:'papersize',index:'papersize', width:140},
+        {name:'filesize',index:'filesize', width:100},
     ],
     rowNum:15,
     rownumbers: true,
     height: "100%",
-    width: "785",
+    width: "752",
     rowList:[10,20,30,40,50,60,70,80,90,100],
     pager: '#pager_scanfiles',
     sortname: 'id',
@@ -40,9 +29,6 @@ jQuery("#scanfiles").jqGrid({
 jQuery("#scanfiles").jqGrid('navGrid','#pager_scanfiles',{edit:false,add:false,del:false,search:false});
 });
 </script>
-   
-</head>
-<body>
 
 
 [% title = "Scan-Dateien zu Auftrag ${order.order_id}" %]
@@ -108,5 +94,3 @@ jQuery("#scanfiles").jqGrid('navGrid','#pager_scanfiles',{edit:false,add:false,d
 <table id="scanfiles"></table>
 <div id="pager_scanfiles">
 </div> 
-</body>
-</html>

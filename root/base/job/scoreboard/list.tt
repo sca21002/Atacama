@@ -1,14 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-    <link rel="stylesheet" type="text/css" media="screen" href="[% c.uri_for_static('css/ui-lightness/jquery-ui-1.8.11.custom.css') %]" />
-    <link rel="stylesheet" type="text/css" media="screen" href="[% c.uri_for_static('css/jqGrid/ui.jqgrid.css') %]" />
-
-    <script type="text/javascript" src="[% c.uri_for_static('js/ext/jquery/jquery-1.5.min.js') %]"></script> 
-    <script type="text/javascript" src="[% c.uri_for_static('js/ext/plugins/jquery/jqGrid/i18n/grid.locale-de.js') %]"></script> 
-    <script type="text/javascript" src="[% c.uri_for_static('js/ext/plugins/jquery/jqGrid/jquery.jqGrid.min.js') %]"></script> 
-
 <script type="text/javascript">    
 function showCatlink (cellvalue, options, rowObject)
 {
@@ -17,18 +6,12 @@ function showCatlink (cellvalue, options, rowObject)
 
 }
 
-</script>
-
-<script type="text/javascript">
 $(document).ready(function() {
-
-	  var min_height = $('#nav_area').height();
-	  $('#content').height(min_height);
 
 jQuery("#jobs").jqGrid({
     url:"[% json_url %]",
     datatype: "json",
-    colNames:['pid', 'order_id', 'funcname', 'started', 'done', 'runtime',
+    colNames:['PID', 'Auftrag', 'Funcname', 'Start', 'Ende', 'Dauer',
 //            'copy_files', 'digifooter', 'mets', 'csv',
 //            'source_format', 'source_pdf_name', 'additional_args'
                 
@@ -51,7 +34,7 @@ jQuery("#jobs").jqGrid({
     rowNum:15,
     rownumbers: true,
     height: '100%',
-	width : '756',
+	width : '752',
     rowList:[10,20,30,40,50,60,70,80,90,100],
     pager: '#pager_jobs',
     sortname: 'id',
@@ -62,9 +45,6 @@ jQuery("#jobs").jqGrid({
 jQuery("#jobs").jqGrid('navGrid','#pager_jobs',{edit:false,add:false,del:false});
 });
 </script>
-    
-</head>
-<body>
 
 
 [%

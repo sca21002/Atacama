@@ -1,13 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-    <link rel="stylesheet" type="text/css" media="screen" href="[% c.uri_for_static('css/ui-lightness/jquery-ui-1.8.1111111111111111111111.custom.css') %]" />
-    <link rel="stylesheet" type="text/css" media="screen" href="[% c.uri_for_static('css/jqGrid/ui.jqgrid.css') %]" />
-    <script type="text/javascript" src="[% c.uri_for_static('js/ext/jquery/jquery-1.5.min.js') %]"></script> 
-    <script type="text/javascript" src="[% c.uri_for_static('js/ext/plugins/jquery/jqGrid/i18n/grid.locale-de.js') %]"></script> 
-    <script type="text/javascript" src="[% c.uri_for_static('js/ext/plugins/jquery/jqGrid/jquery.jqGrid.min.js') %]"></script> 
-    
+
 <script type="text/javascript">    
 function showCatlink (cellvalue, options, rowObject)
 {
@@ -15,10 +6,7 @@ function showCatlink (cellvalue, options, rowObject)
     return "<a href='" + idUrl + "'>" + cellvalue + "</a>";
 
 }
-</script>
 
-
-<script type="text/javascript">
 $(document).ready(function() {
 jQuery("#orders").jqGrid({
     url:"[% json_url %]",
@@ -40,8 +28,7 @@ jQuery("#orders").jqGrid({
 jQuery("#projects").jqGrid('navGrid','#pager_orders',{edit:false,add:false,del:false});
 });
 </script>
-</head>
-<body>
+
 
 [% title = "Projekte" %]
 
@@ -65,6 +52,3 @@ jQuery("#projects").jqGrid('navGrid','#pager_orders',{edit:false,add:false,del:f
  %]
 <table id="orders"></table>
 <div id="pager_orders"></div>
-
-</body>
-</html>
