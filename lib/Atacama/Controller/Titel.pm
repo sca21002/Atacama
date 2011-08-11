@@ -82,13 +82,21 @@ sub get_title : Private {
     
     # $c->log->debug('In get_title');
     my $signatur = $c->stash->{signatur};
+    my $mediennr = $c->stash->{mediennr};
     my $titel = $c->stash->{titel};
-    return unless $signatur;
+    return unless $mediennr || $signatur;
 
     my @titel;
-    my $buch = $c->model('SisisDB::D01buch')->search({
-        d01ort => $signatur
-    })->first;
+	my $buch;
+	if ( $mediennr ) {
+		$buch = $c->model('SisisDB::D01buch')->search({
+			d01gsi => $mediennr
+		})->first;
+	} else {
+		$buch = $c->model('SisisDB::D01buch')->search({
+			d01ort => $signatur
+		})->first;
+	}
     
     foreach my $titel_sisis (@{$buch->get_titel}) {
         my $titel_new = $titel->get_new_result_as_href({});

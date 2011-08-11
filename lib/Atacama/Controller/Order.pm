@@ -135,9 +135,11 @@ sub put : Chained('orders') {
     $c->log->debug(Dumper($c->req->params));
     my $order_params = $self->list_to_hash($c, $c->req->params);
     $c->stash->{signatur} = $order_params->{titel}{signatur};
+    $c->stash->{mediennr} = $order_params->{titel}{mediennr};
     $c->stash->{titel} = $c->model('AtacamaDB::Titel');
     $c->forward('/titel/get_title');
     my $titel = $c->stash->{titel_data};
+	# TODO: abfangen, wenn titel_data undefined!
     $c->log->debug('titel_data ' . Dumper($titel));
     if (scalar @$titel == 1) {
         delete $titel->[0]->{titel_isbd};
