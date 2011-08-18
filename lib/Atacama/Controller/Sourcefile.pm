@@ -47,7 +47,10 @@ sub sourcefile : Chained('/order/order') PathPart('sourcefile') Args(0) {
         }
         my $job = TheSchwartz::Job->new (
             funcname => 'Atacama::Worker::Sourcefile',
-            arg => { order_id => $order->order_id },
+            arg => {
+                order_id => $order->order_id,
+                scanfile_format => $form->params->{scanfile_format},
+            },
         );
         $c->model('TheSchwartzDB')->insert($job);
         $order->update({status_id => 25});

@@ -67,7 +67,8 @@ Suche nach Scandateien und PDF-Dateien zu Auftrag
 <form id="scanfiles" name="[% form.name %]"
     action="[% c.req.uri %]"
     method="post">
-[% form.field('delete_scanfiles').render %]    
+[% form.field('delete_scanfiles').render %]
+[% form.field('scanfile_format').render %]
 [% form.field('submit').render %]
 </form>
 

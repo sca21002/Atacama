@@ -52,12 +52,14 @@ sub work {
         or $log->logcroak("Datenbankverbindung gescheitert");    
     my $order = $atacama_schema->resultset('Order')->find($order_id)
         or $log->logcroak("Kein Auftrag zu $order_id gefunden!");
-    $order->update({status_id => 23});    
+    $order->update({status_id => 23});
     my $sourcedir
         = first { -d } map {Path::Class::Dir->new($_, $order_id) } @sourcedirs
             or $log->logcroak('Verzeichnis mit Quelldateien nicht gefunden!');
     
-    foreach  ('TIFF', 'PDF') {
+    my $scanfile_format = $arg->{scanfile_format} || 'TIFF';
+    # $log->logdie("Scanfile Format: " . $scanfile_format);
+    foreach  ($scanfile_format, 'PDF') {
         $format = $_;
         $log->trace("Start-Format: " . $format);
         $sourcedir->recurse(
@@ -82,6 +84,10 @@ sub get_sourcefile {
     if ($format eq 'TIFF') {
         return unless $entry->basename =~ /^\w{3,4}\d{5}_\d{1,5}\.tif(?:f)?$/;
         save_scanfile($entry);   
+    }
+    elsif ($format eq 'JPEG') {
+        return unless $entry->basename =~ /^\w{3,4}\d{5}_\d{1,5}\.jpg$/;
+        save_scanfile($entry);   
     } 
     elsif ($format eq 'PDF') {
         return unless $entry->basename =~ /\.(pdf)$/;
@@ -95,7 +101,7 @@ sub save_scanfile{
     my $scanfile = shift;
     my $clause;
     
-    $log->info($scanfile);
+    $log->info('Scanfile: ' . $scanfile);
     eval {
         my $image = Remedi::Imagefile->new(
             library_union_id => 'bvb',

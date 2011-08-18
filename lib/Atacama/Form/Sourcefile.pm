@@ -14,6 +14,15 @@ has_field 'delete_scanfiles' => (
     label => 'zuvor Scandateien in der Datenbank löschen' 
 );
 
+has_field 'scanfile_format' => (
+    type => 'Select', label => 'Format der Scandateien',
+    default => 'TIFF',
+    options => [
+        {value => 'TIFF',  label => 'TIFF (*.tiff, *.tif)' },
+        {value => 'JPEG', label => 'JPEG (*.jpg)'},
+    ],
+);
+
 has_field 'submit' => ( type => 'Submit', value => 'Starten' );
 
 no HTML::FormHandler::Moose;
