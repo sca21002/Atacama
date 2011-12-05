@@ -1,4 +1,4 @@
-<div class="alpha60 ui-corner-all" id="footer">			
+<div class="alpha60" id="footer">			
 <div id="powered">
 <a href="http://www.catalystframework.org" target="_blank">
 <img src="[% c.uri_for_static('images/catalyst.png') %]" alt="Powered by Catalyst" title="Powered by Catalyst" width="90" /></a>

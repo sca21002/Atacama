@@ -1,5 +1,5 @@
 body {
-    background-image: url("images/ayzbr1j.png");
+    background-image: url("images/textur.jpg");
     color: #333333;
     font-family: Tahoma,Helvetica,sans-serif;
     font-size: 97%;
@@ -18,36 +18,31 @@ legend {
 #header {
     background-image: url("images/atacama_logo.png");
     background-repeat: no-repeat;
-    height: 58px;
-    margin: 12px auto -23px;
+    margin: 12px ;
     padding: 10px;
-    position: relative;
-    right: -354px;
-    top: 12px;
-    width: 270px;
+  
 }
 #content_container {
-    margin: 8px auto 0;
+    margin: 1%;
     overflow: auto;
     padding-top: 0;
-    width: 960px;
     z-index: 99;
 }
 #nav_area {
     display: block;
     float: left;
-    width: 137px;
+    width: 174px;
 }
 #content {
-    float: right;
     overflow: hidden;
-    padding: 0 0 10px 10px;
-    width: 761px;
+    padding: 10px;
+    margin-left: 185px;
+    min-width: 16em;
 }
 #footer {
     margin: 14px auto;
-    padding: 1px 7px 8px 10px;
-    width: 943px;
+    margin-top: 14px;
+      padding: 1px 7px 8px 10px;
 }
 .row {
     margin-top: 0.2em;
@@ -118,7 +113,7 @@ form#login_form {
     height: 0;
 }
 .strong {
-    color: #2FB6C3;
+    color: #999;
     font-weight: bold;
 }
 ul#navigation {
@@ -179,8 +174,7 @@ input[type="text"], input[type="submit"], input[type="password"], select, textar
     color: #333333;
     font-family: Tahoma,Helvetica,sans-serif;
     font-size: 97%;
-    margin-bottom: 1px;
-    padding: 1px;
+    margin: 2px;
 }
 fieldset {
     border: medium none;
@@ -248,15 +242,16 @@ img {
 }
 p#name {
     font-size: 70%;
-    padding: 6px 0px 0px 0px;
+    padding: 6px 0 0;
     width: 453px;
 }
 h1, h1.main {
     border-bottom: 1px dashed #CCCCCC;
-    color: #2FB6C3;
+    color: #999999;
     font-weight: normal;
-    margin: 9px 0 18px -10px;
+    margin: 1px 0 18px -10px;
     padding: 2px 3px 3px 14px;
+    width: 100%;
 }
 table.dotted_border td {
     border-bottom: 1px dotted #2FB6C3;
@@ -297,38 +292,10 @@ hr {
     border-style: none dashed dashed;
     border-width: medium 1px 1px;
     margin-left: -12px;
+    width: 103%;
 }
 .alpha60 {
     background: none repeat scroll 0 0 rgba(255, 255, 255, 0.55);
-}
-ul#colorchooser {
-    left: -31px;
-    list-style-type: none;
-    position: absolute;
-    top: -10px;
-}
-ul#colorchooser li {
-    display: block;
-    float: left;
-    margin: 3px;
-    padding: 4px;
-    width: 20px;
-}
-ul#colorchooser li:hover {
-    cursor: pointer;
-}
-#color1 {
-    background-color: #e0dae4;
-    color: #e0dae4;
-}
-#color2 {
-	background-color: #b8b8b8;
-    color: #b8b8b8;
-   
-}
-#color3 {
-     background-color: #d3e0e0;
-    color: #d3e0e0;
 }
 #lama {
     float: left;
@@ -338,6 +305,6 @@ ul#colorchooser li:hover {
     color: white;
     font-size: 2em;
     font-weight: bold;
-    margin-left: -236px;
-    margin-top: 10px;
+     margin-top: 10px;
+     margin-left: 254px;
 }

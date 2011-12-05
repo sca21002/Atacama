@@ -48,10 +48,10 @@
 .ui-widget .ui-widget { font-size: 1em; }
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: Tahoma, Arial,sans-serif; font-size: 1em; }
 .ui-widget-content { border: 0px dashed #ccc; background-color: white;color: #222222; }
-.ui-widget-content a { color: #2FB6C3; font-weight: normal;  }
-.ui-widget-content a:hover { color: #2FB6C3;  text-decoration: none;  }
+.ui-widget-content a { color: #999999; font-weight: normal;  }
+.ui-widget-content a:hover { color: #999999;  text-decoration: none;  }
 .ui-widget-header { border: 0px dashed #ccc; color: #222222; font-weight: bold; }
-.ui-widget-header a { color: #2FB6C3; }
+.ui-widget-header a { color: #999999; }
 
 /* Interaction states
 ----------------------------------*/

@@ -5,11 +5,7 @@
 [%   debug("Applying HTML page layout wrappers to $template.name\n") %]
 
 [% PROCESS site/header.tt %]
-<ul id="colorchooser" >
-<li class="ui-corner-all alpha60"><a id="color1">11</a></li>
-<li  class="ui-corner-all alpha60"><a id="color2">22</a></li>
-<li   class="ui-corner-all alpha60"><a id="color3">33</a></li>
-</ul>
+
 <div id="header">
 [% IF c.model('AtacamaDB').connect_info.dsn.search('test') %]
 <div id="test">Testdatenbank</div>
