@@ -120,9 +120,8 @@
                 		if (result.json_data.projectoptions != '' && option_val != '' ) {          
                   		$.each(result.json_data.projectoptions, function(key, val) {       
                   			
-                  					  projectoptions = "<label class='json'> "+val.pkey+
-                  					  			" </label> <input class='json' "+
-                  					  			"name='orders_projects."+count+".projectoptions."+projectoptions_count+".value' "+
+                  					  projectoptions = "<label class='json'> "+val.pkey+" </label> "+
+                  					  			"<input class='json' name='orders_projects."+count+".projectoptions."+projectoptions_count+".value' "+
                   					  			"type='text' /> <input class='p_option json' "+
                   					  			"name='orders_projects."+count+".projectoptions."+projectoptions_count+".projectkey_id' "+
                   					  			"value='"+val.projectkey_id+"' type='hidden' />";
@@ -138,10 +137,10 @@
         $('a#add_project').live("click", function(){            
            var count = $("ul#project li").size();
        
-           project = '<li  name="' + count +'">  <input class="json" ' + 
-           'type="hidden" name="orders_projects.' + count +'.ordersprojects_id" value="">' +  
-           '<select class="select_project" name="orders_projects.' + count +
-           '.project_id">	<option value="">-- select --</option> [%- FOR project IN projects %]'+	
+           project = '<li  name="' + count +'">  ' +
+           '<input type="hidden" value=" " name="orders_projects.' + count +'.ordersprojects_id">' +
+           '<select class="select_project" name="orders_projects.' + count +'.project_id">'+	
+           '<option value="">-- select --</option> [%- FOR project IN projects %]'+	
            '<option value="[% project.project_id %]" [%-  IF project.project_id==orderproject.project_id -%]'+
            'selected="selected"[%-  END -%]>[%- project.name -%]</option>[%- END %]</select>';
            
@@ -532,8 +531,7 @@ title = 'Fehlerhafte Jobs' icon = 'alert' class = 'prevent' } ]; %]
 <fieldset>
 	<div class="left">Titel:</div>
 	<div id="titel">
-		[% order_href.titel.titel_isbd %] <a href="[% c.uri_for("
-			/titel/${order_href.order_id}/edit") %]" id="edit_signature"
+		[% order_href.titel.titel_isbd %] <a href="[% c.uri_for("/titel/${order_href.order_id}/edit") %]" id="edit_signature"
 			class="ui-state-default ui-corner-all"> <span
 			class="ui-icon ui-icon-pencil"></span>Titel bearbeiten</a>
 	</div>

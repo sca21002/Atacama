@@ -9,6 +9,8 @@ use warnings;
 use Moose;
 use MooseX::NonMoose;
 use namespace::autoclean;
+
+
 extends 'DBIx::Class::Core';
 
 __PACKAGE__->load_components("InflateColumn::DateTime");
@@ -90,6 +92,7 @@ sub projectoptions {
     my $self = shift;
     
     return unless $self->project;
+   
     my @projectoptions;
     my @projectkeys = $self->project->projectkeys;
     foreach my $projectkey (@projectkeys) {
@@ -117,12 +120,21 @@ sub save_projectoptions {
     }
     die "projectoptions should be an array, but I found a " . (ref $params)
         unless ref $params eq 'ARRAY';
+        
+     
     foreach my $projectoption (@$params) {
+      	
         die "no projectkey_id" unless  exists $projectoption->{projectkey_id};
         my $projectkey_id = $projectoption->{projectkey_id};
         die "projectkey_id" . Dumper($projectkey_id) . "don't belong to this project " . Dumper($params)        
             unless exists $projectkeys_info->{$projectkey_id};
         die "no value" unless  exists $projectoption->{value};
+        
+        #if ($projectoption eq 'ordersprojects_id' && $projectoption->{value} eq 'undef')
+        if ( $projectoption->{value} eq 'undef') {
+        	die "no ordersprojects_id" ;
+        }
+        
         my $rs = $self->search_related(
             'projectvalues',
             { projectkey_id => $projectkey_id }

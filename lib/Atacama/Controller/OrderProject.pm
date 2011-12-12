@@ -40,11 +40,11 @@ sub json : Chained('ordersprojects') {
     my $json_data;
     my $ordersprojects = $c->stash->{ordersprojects};
     
-    $c->log->debug(Dumper($c->req->query_params));
+    #$c->log->debug(Dumper($c->req->query_params));
     $json_data = $ordersprojects->get_new_result_as_href({
         project_id => $c->req->query_params->{project_id},                                            
     });
-    $c->log->debug(Dumper($json_data));    
+    #$c->log->debug(Dumper($json_data));    
     $c->stash(
         json_data => $json_data,
         current_view => 'JSON'
