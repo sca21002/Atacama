@@ -7,7 +7,7 @@
    menu_links = [
 
       { url   =  c.uri_for('/project/list') 
-        title = 'Liste der Projekte'
+        title = 'Projekte'
         icon = 'contact' 
       }
 

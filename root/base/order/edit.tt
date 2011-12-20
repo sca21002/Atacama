@@ -149,7 +149,7 @@
 
        });
 
-       //TODO: Löschen von Projekten ajaxifizieren! Dann kein Fehler mehr beim gleichzeitigen Ändern und Löschen von Projekten
+       //TODO: Löschen von Projekten ajaxifizieren! 
         
         //Änderungen bei einem bestehenden Projekt
         $('select.select_project').live("change", function(){		
@@ -282,9 +282,31 @@
          //Publikation      
          $('a#add_publication').live("click", function(){             
             var count = $("ul#publication li").size();
-            $('<li  name="' + count +'"><input type="hidden" name="publications.' + count +
-            		'.publication_id" value=""> <select class="select_publication" name="publications.' + count 
-            		+'.platform_id">	<option value="">-- select --</option> 	[%- FOR platform IN platforms %] <option value="[% platform.platform_id %]" [%-  IF platform.platform_id==publication.platform_id -%]  selected="selected"[%-  END -%]> [%- platform.name -%]</option> [%- END -%]</select>').appendTo('ul#publication'); 
+ 			console.log (count);          
+ 			
+ 			
+ 			
+ 			/*
+ 			<li name="1">
+			<input class="json" type="hidden" value="1024" name="publications.1.publication_id">
+			<select class="select_publication" name="publications.1.platform_id">
+			<option value="">-- select --</option>
+			<option selected="selected" value="1">DigiTool</option>
+			<option value="2">ESA</option>
+			</select>
+			<input class="json" type="hidden" value="1" name="publications.1.publicationoptions.0.platformoptionkey_id">
+			<label class="json"> PID </label>
+			<input class="json" type="text" value="321" name="publications.1.publicationoptions.0.value">
+*/
+            
+            new_project = '<li  name="' + count +'"><input type="hidden" name="publications.' + count +
+    		'.publication_id" > <select class="select_publication" name="publications.' + count 
+    		+'.platform_id">	<option value="">-- select --</option> 	[%- FOR platform IN platforms %] '+ 
+    		'<option value="[% platform.platform_id %]" [%-  IF platform.platform_id==publication.platform_id -%]  ' +
+    		'selected="selected"[%-  END -%]> [%- platform.name -%]</option> [%- END -%]</select>';
+            
+            
+            $(new_project).appendTo('ul#publication'); 
             $.scrollTo( 'label#publication_label', 500, {axis:'y'} );     
         });
 
@@ -296,18 +318,9 @@
              var li_all = $("ul#publication li").size();                             
              //console.debug(active_li);       
              
-            //Position innerhalb der Liste ermitteln, falls Liste größer als 1
-            if (li_all > 1) {
-                var next_li = active_li.next();
-                var prev_li = active_li.prev();
-
-                if (next_li.attr("name") !== undefined){
-                     var count = next_li.attr("name") - 1;
-                }
-                else {
-                    count = parseInt(prev_li.attr("name")) +1;
-                    }
-            } 
+ 
+            //Position in der Liste
+            count = $(active_li).attr("name");
 
              active_li.children('.json').remove();  
              $.ajax({
@@ -319,16 +332,22 @@
                  success: function(result){    
                                               			
              	    //console.debug(result);
-            	 		var publication_id = result.json_data.publication_id;
+            	 	var publication_id = result.json_data.publication_id;
        	      	  	active_li.children('.json').remove();
        	      	  	
-                		//Options 
-                		if (result.json_data.publicationoptions != '' && option_val != '' ) {          
-                  		$.each(result.json_data.publicationoptions, function(key, val) {       
-	                 				  active_li.append($("<input class='json' name='publications."+count+".publicationoptions.0.platformoptionkey_id' value='"+val.platformoptionkey_id+"' type='hidden' /><label class='json'> "+val.pkey+" </label><input class='json' name='publications."+count+".publicationoptions.0.value' value='' type='text' />"));                 				   
-	                 				  });  
+                	//Options 
+                	if (result.json_data.publicationoptions != '' && option_val != '' ) {          
+                  		$.each(result.json_data.publicationoptions, function(key, val) {     
+                  			
+                  			project_option = "<input class='json' name='publications."+count+".publicationoptions.0.platformoptionkey_id' "+
+                  						"value='"+val.platformoptionkey_id+"' type='hidden' /><label class='json'> "+val.pkey+
+                  						" </label><input class='json' name='publications."+count+".publicationoptions.0.value' value='' type='text' />";
+                  						
+	                 		active_li.append($(project_option));                 				   
+	                 				  
+                  		});  
      				}
-					}
+				}
              });
          }); 
 
@@ -466,6 +485,9 @@
              getSignature(signatur);
               
          });
+		
+		
+		
                
 
     });
@@ -480,9 +502,10 @@
 <div id="bindeeinheit" style="display: none;"></div>
 
 
-[% title = "Auftrag ${order_href.order_id} bearbeiten"; %] [% menu_links
-= [ { url = c.uri_for_action('/order/list') title = 'Liste der
-Auftr&auml;ge' icon = 'contact' class = 'prevent' } { url =
+[% title = "Auftrag ${order_href.order_id} bearbeiten"; %] 
+
+[% menu_links
+= [ { url = c.uri_for_action('/order/list') title = 'Auftr&auml;ge' icon = 'contact' class = 'prevent' } { url =
 c.uri_for_action('/order/edit' [order_href.order_id]) title = title icon
 = 'pencil' class = 'prevent' state = 'active' } { url =
 c.uri_for_action('/order/delete', [order_href.order_id]) title =
@@ -573,17 +596,17 @@ title = 'Fehlerhafte Jobs' icon = 'alert' class = 'prevent' } ]; %]
 		<div class="row">
 			<label for="autor_uw"> Aufsatzautor: </label> <input class="breit"
 				id="autor_uw" name="titel.autor_uw"
-				value="[% order_href.titel.autor_uw %]" type="text" size="80" />
+				value="[% order_href.titel.autor_uw %]" type="text"  />
 		</div>
 		<div class="row">
 			<label for="titel_uw"> Aufsatztitel: </label> <input class="breit"
 				id="titel_uw" name="titel.titel_uw"
-				value="[% order_href.titel.titel_uw %]" type="text" size="80" />
+				value="[% order_href.titel.titel_uw %]" type="text"  />
 		</div>
 
 		<div class="row">
 			<label for="pages"> Seiten: </label> <input name="titel.pages"
-				value="[% order_href.titel.pages %]" type="text" size="40" />
+				value="[% order_href.titel.pages %]" type="text"  />
 		</div>
 	</div>
 
@@ -632,11 +655,11 @@ title = 'Fehlerhafte Jobs' icon = 'alert' class = 'prevent' } ]; %]
 	<div class="row">
 		<label for="control"> geprüft von: </label> <input class="breit"
 			id="control" name="control" type="text"
-			value="[% order_href.control %]" size="80" />
+			value="[% order_href.control %]"  />
 	</div>
 	<div class="row">
 		<label for="remark" class="block"> Bemerkung: </label>
-		<textarea class="breit" id="remark" name="remark" cols="80" rows="4">
+		<textarea class="breit" id="remark" name="remark"  rows="4">
         [%- order_href.remark -%]
     </textarea>
 	</div>

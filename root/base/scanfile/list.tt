@@ -28,6 +28,11 @@ jQuery("#scanfiles").jqGrid({
     caption:"Scandateien zum Auftrag [% order.order_id %]"
 });
 jQuery("#scanfiles").jqGrid('navGrid','#pager_scanfiles',{edit:false,add:false,del:false,search:false});
+
+$(window).bind('resize', function() {
+    $("#scanfiles").setGridWidth($('#content').width());
+}).trigger('resize');
+
 });
 </script>
 
@@ -37,7 +42,7 @@ jQuery("#scanfiles").jqGrid('navGrid','#pager_scanfiles',{edit:false,add:false,d
 [%
    menu_links = [
       { url   = c.uri_for_action('/order/list')
-        title = 'Liste der Auftr&auml;ge' 
+        title = 'Auftr&auml;ge' 
         icon = 'contact'   }
       { url   = c.uri_for_action('/order/edit' [order.order_id])
         title = edit_link

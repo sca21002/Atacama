@@ -3,7 +3,7 @@
 [%
    menu_links = [
       { url   = c.uri_for_action('/order/list')
-        title = 'Liste der Auftr&auml;ge' 
+        title = 'Auftr&auml;ge' 
         icon = 'contact'        
       }
        { url   = c.uri_for_action('/order/edit' [order.order_id])

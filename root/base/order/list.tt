@@ -157,6 +157,8 @@
 		var filters = '{\"groupOp\":\"AND\",\"rules\":[' + fields + ']}';
     	return filters;
 	}
+	
+
 
 	
 
@@ -212,7 +214,6 @@
 											rowNum : "20",
 											height : "100%",
 											autowidth: true,
-											width : '100%',
 											rowList : [ 10, 20, 30, 40, 50, 60,
 													70, 80, 90, 100 ],
 											pager : '#pager_orders',
@@ -250,6 +251,9 @@
 							grid[0].clearToolbar();
 							} }); 
 						
+						
+						jQuery("#gs_titel_isbd").attr("placeholder", "Titel eingeben, um zu suchen");
+						
 
 						if (typeof gridprefs !== 'undefined'){
 							$('#gs_order_id').val(gridprefs.filter.order_id);
@@ -281,6 +285,20 @@
 								"datatype": "json" });
 							$('#orders').trigger("reloadGrid");
 						}
+						
+						
+						
+						$(window).bind('resize', function() {
+							
+							content_width = $('#content').width(); 
+							add_space = (content_width / 100) * 3;
+							space = content_width + add_space;
+							
+							
+							
+						    $("#orders").setGridWidth(space);
+						}).trigger('resize');
+
 				
 					});
 </script>
@@ -289,7 +307,7 @@
 [%
    menu_links = [
       { url   = c.uri_for_action('/order/list')
-        title = 'Liste der Auftr&auml;ge' 
+        title = 'Auftr&auml;ge' 
         icon = 'contact'
         state= 'active'
       }

@@ -129,13 +129,9 @@ sub save_projectoptions {
         die "projectkey_id" . Dumper($projectkey_id) . "don't belong to this project " . Dumper($params)        
             unless exists $projectkeys_info->{$projectkey_id};
         die "no value" unless  exists $projectoption->{value};
-        
-        #if ($projectoption eq 'ordersprojects_id' && $projectoption->{value} eq 'undef')
-        if ( $projectoption->{value} eq 'undef') {
-        	die "no ordersprojects_id" ;
-        }
-        
-        my $rs = $self->search_related(
+     
+     
+           my $rs = $self->search_related(
             'projectvalues',
             { projectkey_id => $projectkey_id }
         );

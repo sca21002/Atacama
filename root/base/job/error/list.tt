@@ -34,6 +34,13 @@ jQuery("#errors").jqGrid({
     caption:"Jobs mit Fehler"
 });
 jQuery("#errors").jqGrid('navGrid','#pager_errors',{edit:false,add:false,del:false});
+
+$(window).bind('resize', function() {
+    $("#errors").setGridWidth($('#content').width());
+}).trigger('resize');
+
+
+
 });
 </script>
 
@@ -42,7 +49,7 @@ jQuery("#errors").jqGrid('navGrid','#pager_errors',{edit:false,add:false,del:fal
 [%
    menu_links = [
       { url   = c.uri_for_action('/order/list')
-        title = 'Liste der Auftr&auml;ge' 
+        title = 'Auftr&auml;ge' 
         icon = 'contact'
       }
       { url   = c.uri_for_action('/order/delete', [order_href.order_id])

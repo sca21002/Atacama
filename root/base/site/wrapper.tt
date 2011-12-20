@@ -8,6 +8,7 @@
 
 <div id="header">
 [% IF c.model('AtacamaDB').connect_info.dsn.search('test') %]
+
 <div id="test">Testdatenbank</div>
 [% END %]
 </div>

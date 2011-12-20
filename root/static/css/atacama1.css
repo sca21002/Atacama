@@ -7,6 +7,12 @@ body {
 	padding: 0;
 }
 
+#test {
+	color: white;
+	font-weight: bold;
+	 margin-top: 21px;
+}
+
 h2 {
 	color: black;
 	padding-left: 0;
@@ -21,13 +27,14 @@ legend {
 #header {
 	background-image: url("images/atacama_logo.png");
 	background-repeat: no-repeat;
-	margin: 12px;
-	padding: 10px;
+	margin: 1% 1% -1px;
+	background-position: bottom right;
+	padding: 2px;
+	height: 50px;
 }
 
 #content_container {
-	margin: 1%;
-	overflow: auto;
+	margin: 0 1% 1% 1%;
 	padding-top: 0;
 	z-index: 99;
 }
@@ -36,19 +43,23 @@ legend {
 	display: block;
 	float: left;
 	width: 174px;
+	margin: 0 0 20px;
+	padding: 0;
+}
+
+#gbox_orders {
+	margin-left: -2%;
 }
 
 #content {
-    margin-left: 203px;
-    min-width: 16em;
-    overflow: hidden;
-    padding: 10px 2%;
-     border: 1px dashed #E4E4E4;
+	margin-left: 200px;
+	padding: 10px 2%;
+	min-width: 10em;
 }
 
 #footer {
-	margin: 14px auto;
-	margin-top: 14px;
+	clear: both;
+	margin: 1%;
 	padding: 1px 7px 8px 10px;
 	border: 1px dashed #ddd;
 }
@@ -114,16 +125,16 @@ form#login_form {
 
 #signatur_link,#edit_link,#book_selected,#edit_signature {
 	font-size: 0.8em;
-	padding: 3px 6px 3px 19px;   
-    overflow: hidden;
-    position: relative;
-    text-decoration: none;
-    
-    }
+	padding: 3px 6px 3px 19px;
+	overflow: hidden;
+	position: relative;
+	text-decoration: none;
+}
 
-#signatur_link:hover, #edit_link:hover, #book_selected:hover, #edit_signature:hover {
-    border: 1px solid #999;
-    color: inherit;
+#signatur_link:hover,#edit_link:hover,#book_selected:hover,#edit_signature:hover
+	{
+	border: 1px solid #999;
+	color: inherit;
 }
 
 .set {
@@ -134,9 +145,9 @@ form#login_form {
 	float: none;
 }
 
-#gbox_orders,#gbox_scanfiles,#gbox_errors,#gbox_queue,#gbox_jobs {
-	margin-left: -10px;
-	padding: 0 8px;
+::-webkit-input-placeholder,:-moz-placeholder,placeholder   !important {
+	color: #ddd;
+	font-style: italic;
 }
 
 .block {
@@ -194,16 +205,15 @@ ul#navigation li a:visited {
 	color: #222222 !important;
 }
 
-ul#navigation li:hover { 
-	border: 1px solid #C2C2C2;
+ul#navigation li:hover {
+	background-color: white;
 }
 
 ul#navigation li.ui-state-active {
-	background-color: DarkGray;
 	background-image: url("images/nav_bg_active.png");
 	background-position: -20px center;
 	background-repeat: no-repeat;
-	border: 1px solid #C2C2C2;
+	border: 1px solid white;
 }
 
 ul#navigation_level2 li.ui-state-active {
@@ -229,7 +239,7 @@ fieldset {
 }
 
 .breit {
-	width: 618px;
+	width: 73%;
 }
 
 input[type="submit"] {
@@ -309,20 +319,20 @@ p#name {
 }
 
 h1,h1.main {
-    border-bottom: 1px dashed #E4E4E4;
-    color: #999999;
-    font-weight: normal;
-    margin: 1px 0 18px -3%;
-    padding: 2px 3px 3px 3%;
-    width: 102%;
+	border-bottom: 1px dashed #E4E4E4;
+	color: #999999;
+	font-weight: normal;
+	margin: 1px 0 18px -3%;
+	padding: 2px 3px 3px 3%;
+	width: 102%;
 }
 
 table.dotted_border td {
-	border-bottom: 1px dotted #2FB6C3;
+	border-bottom: 1px dashed #E4E4E4;
 }
 
 table.dotted_border td:first-child {
-	border-right: 1px dashed #2FB6C3;
+	border-right: 1px dashed #E4E4E4;
 	height: 100%;
 	padding: 0 3px 0 7px;
 	width: 133px;
@@ -354,31 +364,19 @@ td>a {
 }
 
 hr {
-	-moz-border-bottom-colors: none;
-	-moz-border-image: none;
-	-moz-border-left-colors: none;
-	-moz-border-right-colors: none;
-	-moz-border-top-colors: none;
-	border-color: -moz-use-text-color #E4E4E4 #E4E4E4;
+	border-color: #E4E4E4;
 	border-style: none dashed dashed;
 	border-width: medium 1px 1px;
-	   margin-left: -4%;
-    width: 107%;
+	margin-left: -4%;
+	width: 107%;
 }
 
 .alpha60 {
-	background: none repeat scroll 0 0 rgba(255, 255, 255, 1);
+	/*background: none repeat scroll 0 0 rgba(255, 255, 255, 0.6);*/
+	background-color: transparent;
 }
 
 #lama {
 	float: left;
 	margin-right: 10px;
-}
-
-#test {
-	color: white;
-	font-size: 2em;
-	font-weight: bold;
-	margin-top: 10px;
-	margin-left: 254px;
 }

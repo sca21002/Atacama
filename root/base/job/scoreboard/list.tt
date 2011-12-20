@@ -44,6 +44,11 @@ jQuery("#jobs").jqGrid({
     caption:"Jobs"
 });
 jQuery("#jobs").jqGrid('navGrid','#pager_jobs',{edit:false,add:false,del:false});
+
+$(window).bind('resize', function() {
+    $("#jobs").setGridWidth($('#content').width());
+}).trigger('resize');
+
 });
 </script>
 
@@ -51,7 +56,7 @@ jQuery("#jobs").jqGrid('navGrid','#pager_jobs',{edit:false,add:false,del:false})
 [%
    menu_links = [
       { url   = c.uri_for_action('/order/list')
-        title = 'Liste der Auftr&auml;ge' 
+        title = 'Auftr&auml;ge' 
         icon = 'contact'
       }
      

@@ -5,7 +5,7 @@ package Atacama::Schema::Result::Publication;
 
 use strict;
 use warnings;
-
+use Data::Dumper;
 use Moose;
 use MooseX::NonMoose;
 use namespace::autoclean;
@@ -118,12 +118,13 @@ sub save_publicationoptions {
     my $self = shift;
     my $params = shift;
     
+
     my @platformoptionkeys = $self->platform->platformoptionkeys;
     my $platformoptionkeys_info;
     foreach my $platformoptionkey (@platformoptionkeys) {
         $platformoptionkeys_info->{$platformoptionkey->platformoptionkey_id} = 1;     
     }
-    die "platformoptions should be an array, but I found a " . (ref $params)
+   die "platformoptions should be an array, but I found a " . (ref $params)
         unless ref $params eq 'ARRAY';
     foreach my $platformoption (@$params) {
         die "no platformoptionkey_id" unless  exists $platformoption->{platformoptionkey_id};

@@ -38,13 +38,18 @@ jQuery("#queue").jqGrid({
     caption:"Queue"
 });
 jQuery("#queue").jqGrid('navGrid','#pager_queue',{edit:false,add:false,del:false});
+
+$(window).bind('resize', function() {
+    $("#queue").setGridWidth($('#content').width());
+}).trigger('resize');
+
 });
 </script>
 
 [%
    menu_links = [
       { url   = c.uri_for_action('/order/list')
-        title = 'Liste der Auftr&auml;ge' 
+        title = 'Auftr&auml;ge' 
         icon = 'contact'
       }
       { url   =  c.uri_for_action('/order/add')
