@@ -26,21 +26,32 @@ my $params = {
                      },
           'orders_projects' => [
                                  {
+                                   'ordersprojects_id' => '4658',
+                                   'project_id' => '11'
+                                 },
+                                 {
                                    'projectoptions' => [
                                                          {
                                                            'projectkey_id' => '1',
-                                                           'value' => ''
+                                                           'value' => 'test'
                                                          }
                                                        ],
                                    'project_id' => '1',
-                                   'ordersprojects_id' => '2188'
-                                 },
-                                 {
-                                   'ordersprojects_id' => '4658',
-                                   'project_id' => '11'
+                                   'ordersprojects_id' => ''
                                  }
+
                                ],
-          'scanparameters' => [
+
+
+
+
+
+
+
+
+
+
+'scanparameters' => [
                                 {
                                   'format_id' => '2',
                                   'scope' => 'Text',
@@ -193,6 +204,7 @@ my $params = {
 my $config = Config::ZOMG->new(
     name => 'Atacama',
     path => File::Spec->catfile($FindBin::Bin,'..','..'),
+);
 my $config_hash = $config->load;
 my @connect = @{$config_hash->{'Model::AtacamaDB'}{connect_info}};  
 

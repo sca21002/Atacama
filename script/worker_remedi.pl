@@ -5,6 +5,7 @@ use FindBin;
 use lib "$FindBin::Bin/../lib";
 use  Log::Log4perl qw(:easy);
 use File::Spec;
+use File::Path qw(remove_tree);
 use Config::ZOMG;
 use DBI;
 use Data::Dumper;
@@ -52,6 +53,7 @@ my $client = TheSchwartz->new( databases => [{ driver => $driver }],
 my $current_time = $client->get_server_time($driver);
 my $dt = DateTime->from_epoch(epoch => $current_time);
 TRACE("Zeit: " . $dt->set_time_zone('Europe/Berlin')->strftime('%d.%m.%Y %T'));
+remove_tree('/tmp/theschwartz');
 $client->set_scoreboard('/tmp');
 INFO("Scoreboard: " . $client->scoreboard); 
 $client->can_do('Atacama::Worker::Remedi');

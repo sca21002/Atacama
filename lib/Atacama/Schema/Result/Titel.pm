@@ -215,8 +215,13 @@ sub titel_isbd {
     $titel_isbd .= ' : ' if $self->verlagsort && $self->verlag;
     $titel_isbd .= $self->verlag if $self->verlag;
     if ($self->bandangabe) {
-        $titel_isbd .= '/' . $self->bandangabe;
-	$titel_isbd .= ' (' . $self->erschjahr . ')' if $self->erschjahr;
+        # $titel_isbd .= '/' . $self->bandangabe;
+        if ($self->erschjahr) {
+            $titel_isbd .=                
+                    ($self->erschjahr =~ /^\s*\(/ )
+                        ? ' ' . $self->erschjahr
+                        : ' (' . $self->erschjahr . ')'
+        }
     } else {
       $titel_isbd .= ', ' if ($self->verlagsort || $self->verlag) && $self->erschjahr;
       $titel_isbd .= $self->erschjahr if $self->erschjahr;

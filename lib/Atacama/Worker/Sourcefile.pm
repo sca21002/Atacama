@@ -82,15 +82,15 @@ sub get_sourcefile {
     return if $entry->is_dir;
     # return if $entry->basename lt 'ubr03390'; 
     if ($format eq 'TIFF') {
-        return unless $entry->basename =~ /^\w{3,4}\d{5}_\d{1,5}\.tif(?:f)?$/;
+        return unless $entry->basename =~ /^\w{3,4}\d{5}_\d{1,5}\.tif(?:f)?$/i;
         save_scanfile($entry);   
     }
     elsif ($format eq 'JPEG') {
-        return unless $entry->basename =~ /^\w{3,4}\d{5}_\d{1,5}\.jpg$/;
+        return unless $entry->basename =~ /^\w{3,4}\d{5}_\d{1,5}\.jpg$/i;
         save_scanfile($entry);   
     } 
     elsif ($format eq 'PDF') {
-        return unless $entry->basename =~ /\.(pdf)$/;
+        return unless $entry->basename =~ /\.(pdf)$/i;
         save_pdffile($entry)
     }
     else { $log->logcroak("Unbekanntes Format $format"); }
