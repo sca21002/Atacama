@@ -123,6 +123,12 @@ form#login_form {
 	padding: 20px;
 }
 
+#submit_top {
+	float: right;
+	margin-top: -77px;
+	}
+
+
 #signatur_link,#edit_link,#book_selected,#edit_signature {
 	font-size: 0.8em;
 	padding: 3px 6px 3px 19px;

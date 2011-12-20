@@ -5,7 +5,7 @@
 </div>
 <p id="name">
 	<img id="lama" src="[% c.uri_for_static('css/images/AtacamaLama25.png') %]" alt="" title=""  />
-	Atacama (アタカマ) v. [% c.VERSION %], letzte &Auml;nderung 31.03.2011, &copy; Universit&auml;tsbibliothek Regensburg DB: [% c.model('AtacamaDB').connect_info.dsn %]</p>                         
+	Atacama (アタカマ) v. [% c.VERSION %], letzte &Auml;nderung 20.12.2011, &copy; Universit&auml;tsbibliothek Regensburg DB: [% c.model('AtacamaDB').connect_info.dsn %]</p>                         
 </div>
 </div>
 </body>
