@@ -191,6 +191,12 @@ __PACKAGE__->has_many(
     { "foreign.order_id" => "self.order_id" }
 );
 
+__PACKAGE__->has_many(
+    "remarks",
+    "Atacama::Schema::Result::Remark",
+    { "foreign.order_id" => "self.order_id" }
+);
+
 __PACKAGE__->might_have(
     "titel",
     "Atacama::Schema::Result::Titel",

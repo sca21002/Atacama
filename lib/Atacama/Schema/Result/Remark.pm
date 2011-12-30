@@ -126,6 +126,17 @@ __PACKAGE__->set_primary_key("remark_id");
 # Created by DBIx::Class::Schema::Loader v0.07015 @ 2011-12-30 14:03:29
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:zm2Vs9JJT2TY287QJ1CXjw
 
+__PACKAGE__->belongs_to(
+    "ord",
+    "Atacama::Schema::Result::Order",
+    { "foreign.order_id" => "self.order_id" }
+);
+
+__PACKAGE__->belongs_to(
+    "status",
+    "Atacama::Schema::Result::Status",
+    { "foreign.status_id" => "self.status_id" },
+);
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;
