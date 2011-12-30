@@ -23,7 +23,7 @@ atacama_create.pl [options] model|view|controller name [helper] [options]
 
  Examples:
    atacama_create.pl controller My::Controller
-   atacama_create.pl -mechanize controller My::Controller
+   atacama_create.pl --mechanize controller My::Controller
    atacama_create.pl view My::View
    atacama_create.pl view HTML TT
    atacama_create.pl model My::Model
