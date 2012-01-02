@@ -41,7 +41,8 @@ sub list : Chained('orders') PathPart('list') Args(0) {
 
     # $c->log->debug('LIST: ');
     # $c->log->debug('Filter stash: ' . $c->session->{order}{list}{filters});
-
+    $c->log->debug(Dumper($c->user->login));
+    $c->log->debug($c->user->name);
     $c->stash(
         projects => [
             $c->model('AtacamaDB::Project')->search(
@@ -207,12 +208,25 @@ sub save : Private {
             delete $order_params->{titel}{order_id};
             $c->log->debug('order_params ' . Dumper($order_params->{titel}));
         }
+        if ( exists $order_params->{remark} ) {
+            if ( $order_params->{remark} ) {
+                $order_params->{remarks} = [{
+                    login => $c->user->login,
+                    status_id => defined $order_params->{status_id}
+                                 ? $order_params->{status_id}
+                                 : $order->status_id,
+                    content => $order_params->{remark},
+                }];
+            }
+            delete $order_params->{remark};                            
+        }
         $order->save($order_params);
     }
     #$c->log->debug(Dumper($order->properties));
     $c->stash(
         %{$order->properties},      
-        template => 'order/edit.tt',   
+        template => 'order/edit.tt', 
+        json_url_remarks => $c->uri_for_action('remark/json', [$order->order_id]),  
     );
     
 }

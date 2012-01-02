@@ -1,9 +1,33 @@
 <script type="text/javascript">
-    	var formChanged = false;
 
     	$(document).ready(function() {
+            jQuery("#remarks").jqGrid({
+                url:"[% json_url_remarks %]",
+                datatype: "json",
+                colNames:['Datum', 'Login', 'Status', 'Bemerkung'],
+                colModel:[
+                    {name:'date',index:'date', width:60},
+                    {name:'login',index:'login', width:30},
+                    {name:'status',index:'status', width:50},
+                    {name:'content',index:'content', width:300},
+                ],
+                rowNum:15,
+                rownumbers: true,
+                height: "100%",
+                width: "100%",
+                autowidth: true,
+                rowList:[10,20,30,40,50,60,70,80,90,100],
+                pager: '#pager_remarks',
+                sortname: 'date',
+                viewrecords: true,
+                sortorder: "desc",
+                caption:"Bemerkungen"
+            });
+            jQuery("#remarks").jqGrid('navGrid','#pager_remarks',{edit:false,add:false,del:false,search:false});        
 
-        	//Aenderungen ueberwachen
+            var formChanged = false;
+
+            //Aenderungen ueberwachen
     	     $('#order_form input[type=text], #order_form textarea').each(function (i) {
     	          $(this).data('initial_value', $(this).val());
     	     });
@@ -660,12 +684,16 @@ title = 'Fehlerhafte Jobs' icon = 'alert' class = 'prevent' } ]; %]
 			value="[% order_href.control %]"  />
 	</div>
 	<div class="row">
-		<label for="remark" class="block"> Bemerkung: </label>
-		<textarea class="breit" id="remark" name="remark"  rows="4">
+	<label for="remark" class="block"> Bemerkung: </label>
+	<textarea class="breit" id="remark" name="remark"  rows="1">
         [%- order_href.remark -%]
-    </textarea>
-	</div>
-
+        </textarea>
+        </div>
+        <div>
+        <table id="remarks"></table>
+        <div id="pager_remarks"></div>
+        </div>
+	
 	<div class="row">
 		<label> Verbreitungsrecht: </label> <select name="copyright_id">
 			<option value="">-- select --</option> [%- FOR copyright IN

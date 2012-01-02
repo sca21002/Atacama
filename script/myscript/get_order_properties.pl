@@ -23,7 +23,7 @@ my $order_rs = $schema_atacama->resultset('Order')->search(
     {
         #status_id => [ 1, 3 ], #[ 8, 9, 10 ],         	 # 1 = angelegt; 8 = fertig z.Veröff, 9 = veröfftl.
                                             # 10 = aus Excel
-        'orders_projects.project_id' => 30,  # MD2
+        'orders_projects.project_id' => 1,  # MD2
     },
     {
         join => 'orders_projects',

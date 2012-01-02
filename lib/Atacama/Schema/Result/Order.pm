@@ -82,11 +82,6 @@ __PACKAGE__->table("orders");
   is_nullable: 1
   size: 255
 
-=head2 remark
-
-  data_type: 'text'
-  is_nullable: 1
-
 =head2 copyright_id
 
   data_type: 'tinyint'
@@ -127,8 +122,6 @@ __PACKAGE__->add_columns(
   { data_type => "varchar", is_nullable => 1, size => 255 },
   "pages",
   { data_type => "varchar", is_nullable => 1, size => 255 },
-  "remark",
-  { data_type => "text", is_nullable => 1 },
   "copyright_id",
   { data_type => "tinyint", extra => { unsigned => 1 }, is_nullable => 1 },
 );

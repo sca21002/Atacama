@@ -7,10 +7,12 @@
 [% PROCESS site/header.tt %]
 
 <div id="header">
+<div id="test">
 [% IF c.model('AtacamaDB').connect_info.dsn.search('test') %]
-
-<div id="test">Testdatenbank</div>
+Testdatenbank
 [% END %]
+User: [% c.user.name %] Login: [% c.user.login %]
+</div>
 </div>
 
 

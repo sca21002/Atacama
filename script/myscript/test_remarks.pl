@@ -22,6 +22,7 @@ my $schema_atacama = Atacama::Schema->connect(
     @{$config_hash->{'Model::AtacamaDB'}{connect_info}}
 );
 
-my $order = $schema_atacama->resultset('Order')->find('ubr02862');
-carp "Gefunden: " . $order->modification_date;
-$order->save($params);
+my $remark = $schema_atacama->resultset('Remark')->create({order_id => 'ubr02863', login => 'sca21002'});
+# print Dumper($remark);
+carp "Gefunden: " . $remark->login;
+

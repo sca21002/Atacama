@@ -136,6 +136,7 @@ __PACKAGE__->belongs_to(
     "status",
     "Atacama::Schema::Result::Status",
     { "foreign.status_id" => "self.status_id" },
+    { join_type => 'left' }
 );
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
