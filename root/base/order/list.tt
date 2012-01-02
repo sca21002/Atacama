@@ -60,7 +60,7 @@
 
 
    function showCatlink(cellvalue, options, rowObject) {
-		var idUrl = "/order/" + options.rowId + "/edit";
+		var idUrl = "[% c.uri_for('/order/') %]" + options.rowId + "/edit";
 		return "<a href='" + idUrl + "'>" + cellvalue + "</a>";
 
 		data : {},
