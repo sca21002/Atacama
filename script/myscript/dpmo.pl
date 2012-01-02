@@ -78,6 +78,7 @@ my $schema_atacama = Atacama::Schema->connect(
 );
 
 my $order = $schema_atacama->resultset('Order')->find($order_id);
+LOGDIE("Kein Auftrag $order_id in der Datenbank gefunden") unless $order; 
        
 my $order_project = $order->orders_projects->search({project_id => 62})->single;
 my $projectoption;
