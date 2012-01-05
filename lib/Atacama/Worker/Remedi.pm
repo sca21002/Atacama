@@ -15,6 +15,8 @@ use File::Copy;
 use Carp;
 use Config::ZOMG;
 use CAM::PDF;
+use File::Copy;
+use DateTime;
 
 my $log_file_name;
 
@@ -32,11 +34,53 @@ sub work {
     my $atacama_config = get_atacama_config()
         or croak ("Lesen der Atacama-Konfigurationsdatei fehlgeschlagen");   
     my $order_id = $arg->{order_id} or croak ("Keine Auftragsnummer");
-    my $work_dir = $atacama_config->{'Atacama::Worker::Remedi'}{work_dir}
-        or croak("Kein Arbeitsverzeichnis"); 
-    my $workdir = Path::Class::Dir->new($work_dir, $order_id);
-    $workdir->mkpath() or croak("Konnte Arbeitsverzeichnis $workdir nicht anlegen")
-	unless -e $workdir;
+    my $work_base = $atacama_config->{'Atacama::Worker::Remedi'}{work_dir}
+        or croak("Kein Arbeitsverzeichnis");
+    $workdir = Path::Class::Dir->new($work_base, $order_id);
+    if (-e $workdir) {
+        my $csv_file_basename = $order_id . '.csv';
+        my $csv_file = Path::Class::File->new($workdir, $csv_file_basename);
+        my $csv_saved = 0;
+        my $csv_savedir = Path::Class::Dir->new($work_base, 'csv_save');
+        if (-e $csv_file) {
+            $csv_savedir->mkpath()
+                or croak("Konnte CSV-Save-Verz. $csv_savedir nicht anlegen")
+                    unless -e $csv_savedir;
+            File::Copy::move($csv_file->stringify, $csv_savedir->stringify)
+                or croak(
+                    "Konnte $csv_file nicht nach $csv_savedir verschieben."
+                );
+            $csv_saved = 1;
+        }
+        $workdir->rmtree({keep_root => 1, error => \my $err});
+        if (@$err) {
+            my $err_str;
+            for my $diag (@$err) {
+                my ($file, $message) = %$diag;
+                if ($file eq '') {
+                    $err_str .= "general error: $message\n";
+                }
+                else {
+                    $err_str .= "problem unlinking $file: $message\n";
+                }
+            }
+            croak("Konnte $workdir nicht loeschen: $errstr"); 
+        }
+        if ($csv_saved) {
+            my $csv_file_saved
+                = Path::Class::File->new($csv_savedir, $csv_file_basename);
+            my $now = DateTime->now->strftime("%Y-%m-%d-%H-%M");
+            my $csv_saved_target 
+                = Path::Class::File->new(
+                    $workdir, $order_id . '_' . $now . '.csv'
+                ); 
+            File::Copy::copy($csv_file_saved->stringify, $csv_saved_target->stringify)
+                or croak("Konnte $csv_file_saved nicht nach $csv_saved_target kopieren"); 
+        }
+    } else {
+        $workdir->mkpath()
+            or croak("Konnte Arbeitsverzeichnis $workdir nicht anlegen")
+    }
     $log_file_name = File::Spec->catfile($workdir, 'remedi.log');
     unlink $log_file_name if -e $log_file_name;
     my $remedi_configfile = $arg->{configfile}
