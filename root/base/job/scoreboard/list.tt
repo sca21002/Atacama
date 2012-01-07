@@ -1,7 +1,7 @@
 <script type="text/javascript">    
 function showCatlink (cellvalue, options, rowObject)
 {
-    var idUrl = "/job/scoreboard/" +  options.rowId  +   "/show";
+    var idUrl = "[% c.uri_for('/job/scoreboard/') %]" +  options.rowId  +   "/show";
     return "<a href=\"" + idUrl + "\">" + cellvalue + "</a>";
 
 }

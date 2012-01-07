@@ -1,7 +1,7 @@
 
 <script type="text/javascript">
 	function showCatlink(cellvalue, options, rowObject) {
-		var idUrl = "/project/" + options.rowId + "/edit";
+		var idUrl = "[% c.uri_for('/project/') %]" + options.rowId + "/edit";
 		return "<a href='" + idUrl + "'>" + cellvalue + "</a>";
 
 	}
