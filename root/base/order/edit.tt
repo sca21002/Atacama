@@ -534,9 +534,11 @@ title = 'Fehlerhafte Jobs' icon = 'alert' class = 'prevent' } ]; %]
     <input class="send" id="order_submit" name="save" type="submit"
            disabled="true" value="Speichern">
   </div>
+[% IF c.config.stage == 'testing' %]
   <fieldset>
     <div class="left">Umlaute:</div> [% umlaute %] 
   </fieldset>
+[% END %]
   <fieldset>
     <div class="left">Auftragsnummer:</div>
     [% order_href.order_id %] [% IF order_href.scanfiles_count %]

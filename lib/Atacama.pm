@@ -29,6 +29,9 @@ extends 'Catalyst';
 our $VERSION = '0.02';
 $VERSION = eval $VERSION;
 
+has 'stage' => ( is => 'rw' ); 
+
+
 # Configure the application.
 #
 # Note that settings in atacama.conf (or other external
