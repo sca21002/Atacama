@@ -23,8 +23,10 @@ sub work {
 
 
     my @sourcedirs = (
+        '/rzblx8_DATA1/digitalisierung/auftraege/',
         '/rzblx8_DATA2/digitalisierung/auftraege/',
-        '/rzblx8_DATA3/digitalisierung/auftraege/'
+        '/rzblx8_DATA3/digitalisierung/auftraege/',
+        '/mnt/rzblx9/data/digitalisierung/auftraege/',
     );
     croak('Falscher Aufruf von ',__PACKAGE__ ,"::work() mit Klasse: $class")
         unless $class eq __PACKAGE__;

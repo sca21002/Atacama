@@ -13,7 +13,7 @@ use lib "$FindBin::Bin/../../lib";
 use Atacama::Schema;
 use Net::FTP;
 
-my @head_row_standard = qw(Dateiname Seite Datum Nummer Jahrgang);
+
 my @Wochentage = qw(Montag Dienstag Mittwoch Donnerstag Freitag Samstag Sonntag);
 my $ftp_server = 'rzblx7.uni-regensburg.de';
 my $ftp_user   = 'dpmo';
@@ -22,13 +22,41 @@ my $ftp_password = 'dpmo';
 my $image_dir = 'jpeg';
 my $xml_dir = 'xml';
 
-my $csv_filename;
+my ($csv_filename, $titel);
 
 GetOptions(
-    "csv=s"    => \$csv_filename,       
+    "csv=s"    => \$csv_filename,
+    "titel=s"  => \$titel,
 );
 
-LOGDIE("Usage dpmo.pl --csv <csv-datei>") unless $csv_filename;
+LOGDIE("Usage dpmo.pl --csv <csv-datei> --titel <Titel der Zeitung>\n"
+    . 'titel = "Marburger Zeitung"' . "\n"
+    . "oder\n"
+    . 'titel = "Siebenbuergisch-deutsches Tageblatt"' . "\n"    
+) unless ($csv_filename and $titel and
+    ($titel eq "Marburger Zeitung"
+     or $titel eq "Siebenbuergisch-deutsches Tageblatt"
+    )
+);
+
+my @head_row_standard = $titel eq "Marburger Zeitung"
+    ? qw(Dateiname Seite Datum Nummer Jahrgang)
+    : qw(Dateiname Seite Datum Nummer)
+    ;
+
+my ($project_id, $ftp_dir);       
+if  ($titel eq "Marburger Zeitung") {
+    $project_id = 62;
+    $ftp_dir = 'marburger_zeitung'
+}
+elsif ($titel eq "Siebenbuergisch-deutsches Tageblatt") {
+    $project_id = 67;
+    $ftp_dir = 'siebenbuergisch_deutsches_tagblatt';
+}
+else { LOGDIE("Keine project_id zu $titel"); }
+
+
+
 LOGDIE("CSV-Datei $csv_filename nicht gefunden") unless -f $csv_filename;
 
 my $csv_file = Path::Class::File->new($csv_filename);
@@ -79,8 +107,8 @@ my $schema_atacama = Atacama::Schema->connect(
 
 my $order = $schema_atacama->resultset('Order')->find($order_id);
 LOGDIE("Kein Auftrag $order_id in der Datenbank gefunden") unless $order; 
-       
-my $order_project = $order->orders_projects->search({project_id => 62})->single;
+
+my $order_project = $order->orders_projects->search({project_id => $project_id})->single;
 my $projectoption;
 my @projectkeys = $order_project->project->projectkeys->all;
 foreach my $projectkey (@projectkeys) {
@@ -91,6 +119,7 @@ foreach my $projectkey (@projectkeys) {
     $projectoption->{$projectkey->pkey} = $projectvalue && $projectvalue->value || '';
     TRACE($projectkey->pkey . " => " . $projectoption->{$projectkey->pkey});
 }       
+
 
 LOGDIE('Jahresangabe fehlt') unless $projectoption->{Jahr};
 my $year =  $projectoption->{Jahr};
@@ -132,21 +161,25 @@ my $strp = new DateTime::Format::Strptime(
     on_error    => 'croak',
 );
 
+my $line_nr;
 foreach my $row (@rows) {
+    $line_nr++;
     my ($scan_filename, $page, $date, $issue, $volume_number) = @$row;
-    LOGDIE("Ungueltiger Dateiename " . ($scan_filename||'<leer>')  
+    LOGDIE("Zeile $line_nr: Ungueltiger Dateiename " . ($scan_filename||'<leer>')  
            .  ' in Zeile: ' . (join ' ', @$row))
          unless ($scan_filename =~ /^${order_id}_\d{3,5}$/); 
   
-    $volume ||= $volume_number;
-    LOGDIE('Falscher Jahrgang ' . $volume_number)
-        unless $volume eq $volume_number;
+    if ($titel eq "Marburger Zeitung") {
+        $volume ||= $volume_number;
+        LOGDIE("Zeile $line_nr: Falscher Jahrgang " . $volume_number . ' erwartet: ' .  $volume)
+            unless $volume eq $volume_number;
+    }        
     if ( !defined($issue_index) or $issues[$issue_index]->{issue} ne $issue) {
         unless (defined($issue_index)) {
             $issue_index = 0;
         } else {
             if ( $issues[$issue_index]->{issue} =~ /^\d+$/ && $issue =~ /^\d+$/ ) {
-               LOGDIE('Falsche Nummerierung ' . $issues[$issue_index]->{issue} . ' --> ' . $issue
+               LOGDIE("Zeile: $line_nr: Falsche Nummerierung " . $issues[$issue_index]->{issue} . ' --> ' . $issue
                    . ' in Zeile: ' . (join ' ', @$row)
                )
                unless  $issue - $issues[$issue_index]->{issue} == 1;
@@ -159,7 +192,7 @@ foreach my $row (@rows) {
         if ($issue_index > 0) {
             my $dt_prev = $issues[$issue_index-1]->{dt};
             if (DateTime->compare( $dt_prev, $dt) > 0 ) {
-                LOGDIE('Falsches Datum: ' . $date . ' ist früher als '
+                LOGDIE("Zeile $line_nr: Falsches Datum: " . $date . ' ist früher als '
                     . $issues[$issue_index-1]->{date}
                     . ' in Zeile: ' . (join ' ', @$row)     
                 );  
@@ -170,7 +203,7 @@ foreach my $row (@rows) {
         $issues[$issue_index]->{dt} = $dt;
         $page_index = 0;
     } else {
-        LOGDIE('Falsches Datum ' . $date . ' fuer Ausgabe '
+        LOGDIE("Zeile $line_nr: Falsches Datum " . $date . ' fuer Ausgabe '
                . $issues[$issue_index]->{issue} . ' vom '
                . $issues[$issue_index]->{date}
         ) unless $issues[$issue_index]->{date}  eq $date;       
@@ -181,7 +214,7 @@ foreach my $row (@rows) {
     $page_index++;
 }
 
-INFO('Band: ' . $volume);
+INFO('Band: ' . $volume) if $titel eq "Marburger Zeitung";
 
 my $i;
 foreach my $issue (@issues) {
@@ -223,10 +256,13 @@ INFO('Connected to ' . $ftp_server);
 
 $ftp->login($ftp_user, $ftp_password)
       or LOGDIE "Cannot login ", $ftp->message;
-INFO('Logged in as ' . $ftp_user);     
-      
-$ftp->cwd(dir('DIFMOE', 'marburger_zeitung'))
-    or LOGDIE ("Can't cwd " . dir('DIFMOE', 'marburger_zeitung')->as_foreign('Unix'), ' ' . $ftp->message);
+INFO('Logged in as ' . $ftp_user);
+
+
+
+
+$ftp->cwd(dir('DIFMOE', $ftp_dir))
+    or LOGDIE ("Can't cwd " . dir('DIFMOE', $ftp_dir)->as_foreign('Unix'), ' ' . $ftp->message);
 
 my @dirs = $ftp->ls('data');
 

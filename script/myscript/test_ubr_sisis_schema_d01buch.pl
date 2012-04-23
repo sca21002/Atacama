@@ -35,9 +35,9 @@ my $schema_atacama = Atacama::Schema->connect(
 );
 
 
-
+my $signatur = '00/QR 820 W644 S1';
 #my $signatur = '167/ST 250 P30 D582';
-my $signatur = '999/Art.533';
+#my $signatur = '999/Art.533';
 my $buch_rs
     = $schema_sisis
         ->resultset('D01buch')->search({d01ort => $signatur },
@@ -62,10 +62,10 @@ unless ($buch) {
     
 }
 say $buch->d01gsi;
+say $buch->d01ort;
+#my @titel = $buch->get_titel;
 
-my @titel = $buch->get_titel;
-
-say Dumper(@titel);
+#say Dumper(@titel);
 
 #my @titel_katalog = $buch->get_titel;
 #foreach my $titel_katalog (@titel_katalog)  {

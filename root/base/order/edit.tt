@@ -557,6 +557,9 @@ title = 'Fehlerhafte Jobs' icon = 'alert' class = 'prevent' } ]; %]
 		disabled="true" value="Speichern">
 		</div>
 <fieldset>
+ <div class="left">Umlaute:</div> [% umlaute %] 
+</fieldset>
+<fieldset>
 	<div class="left">Auftragsnummer:</div>
 	[% order_href.order_id %] [% IF order_href.scanfiles_count %]
 	(Scandateien: <a href="[% c.uri_for("/order/${order_href.order_id}/scanfiles/list") %]">

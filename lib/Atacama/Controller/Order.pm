@@ -3,7 +3,7 @@ use Moose;
 use namespace::autoclean;
 use Data::Dumper;
 use JSON;
-# use utf8;
+use utf8;
 
 BEGIN {extends 'Catalyst::Controller'; }
 
@@ -225,6 +225,7 @@ sub save : Private {
     #$c->log->debug(Dumper($order->properties));
     $c->stash(
         %{$order->properties},      
+        umlaute => 'ÄÜÖäüÖß',
         template => 'order/edit.tt', 
         json_url_remarks => $c->uri_for_action('remark/json', [$order->order_id]),  
     );
