@@ -1,526 +1,504 @@
 <script type="text/javascript">
 
-    	$(document).ready(function() {
-            jQuery("#remarks").jqGrid({
-                url:"[% json_url_remarks %]",
-                datatype: "json",
-                colNames:['Datum', 'Login', 'Status', 'Bemerkung'],
-                colModel:[
-                    {name:'date',index:'date', width:60},
-                    {name:'login',index:'login', width:30},
-                    {name:'status',index:'status', width:50},
-                    {name:'content',index:'content', width:300},
-                ],
-                rowNum:15,
-                rownumbers: true,
-                height: "100%",
-                width: "100%",
-                autowidth: true,
-                rowList:[10,20,30,40,50,60,70,80,90,100],
-                pager: '#pager_remarks',
-                sortname: 'date',
-                viewrecords: true,
-                sortorder: "desc",
-                caption:"Bemerkungen"
-            });
-            jQuery("#remarks").jqGrid('navGrid','#pager_remarks',{edit:false,add:false,del:false,search:false});        
+  $(document).ready(function() {
+    jQuery("#remarks").jqGrid({
+      url:"[% json_url_remarks %]",
+      datatype: "json",
+      colNames:['Datum', 'Login', 'Status', 'Bemerkung'],
+      colModel:[
+        {name:'date',index:'date', width:60},
+        {name:'login',index:'login', width:30},
+        {name:'status',index:'status', width:50},
+        {name:'content',index:'content', width:300},
+      ],
+      rowNum:15,
+      rownumbers: true,
+      height: "100%",
+      width: "100%",
+      autowidth: true,
+      rowList:[10,20,30,40,50,60,70,80,90,100],
+      pager: '#pager_remarks',
+      sortname: 'date',
+      viewrecords: true,
+      sortorder: "desc",
+      caption:"Bemerkungen"
+    });
+    jQuery("#remarks").jqGrid('navGrid','#pager_remarks',{edit:false,add:false,del:false,search:false});        
 
-            var formChanged = false;
+    var formChanged = false;
 
-            //Aenderungen ueberwachen
-    	     $('#order_form input[type=text], #order_form textarea').each(function (i) {
-    	          $(this).data('initial_value', $(this).val());
-    	     });
+    //Aenderungen ueberwachen
+    $('#order_form input[type=text], #order_form textarea').each(function (i) {
+      $(this).data('initial_value', $(this).val());
+    });
 
-    	     $('#order_form input[type=text], #order_form textarea').keyup(function() {
-    	          if ($(this).val() != $(this).data('initial_value')) {
-    	               handleFormChanged();
-    	          }
-    	     });
+    $('#order_form input[type=text], #order_form textarea').keyup(function() {
+      if ($(this).val() != $(this).data('initial_value')) {
+        handleFormChanged();
+      }
+    });
     	     
-    	     $('#order_form').bind('change paste', function() {
-    	          handleFormChanged();
-    	     });
+    $('#order_form').bind('change paste', function() {
+      handleFormChanged();
+    });
 
-    	     $('a.prevent').bind("click", function () {
-    	          return confirmNavigation();
-    	     });
+    $('a.prevent').bind("click", function () {
+      return confirmNavigation();
+    });
     	
 
-    	function handleFormChanged() {
-    	     $('input.send').attr("disabled", false).css("color", "#333333");
-    	     formChanged = true;
-    	}
+    function handleFormChanged() {
+      $('input.send').attr("disabled", false).css("color", "#333333");
+      formChanged = true;
+    }
 
-    	function confirmNavigation() {
-    	     if (formChanged) {
-    	          return confirm('Sind Sie sicher? Ihre Änderungen werden nicht gespeichert!');
-    	     } else {
-    	          return true;
-    	     }
-    	}
+    function confirmNavigation() {
+      if (formChanged) {
+        return confirm('Sind Sie sicher? Ihre Änderungen werden nicht gespeichert!');
+      } else {
+        return true;
+      }
+    }
 
 
-        function handleProjectChange(position) {
+    function handleProjectChange(position) {
             
-            var active_li = $(position).parent();   
-            //console.debug(active_li);
-            //console.debug(position);  
-            var active_select = $(position);
-            var option_val = $(position).val(); 
-            var li_all = $("ul#project li").size(); 
+      var active_li = $(position).parent();   
+      //console.debug(active_li);
+      //console.debug(position);  
+      var active_select = $(position);
+      var option_val = $(position).val(); 
+      var li_all = $("ul#project li").size(); 
 
-            //Position in der Liste
-            count = $(active_li).attr("name");
-                       
-            
-            /***
-            <input type="hidden" value="8124" name="orders_projects.1.ordersprojects_id">
-			<select class="select_project" name="orders_projects.1.project_id">
-			<input class="json" type="hidden" value="6" name="orders_projects.1.projectoptions.0.projectkey_id">
-			<label class="json"> Band </label>
-			<input class="json" type="text" value="" name="orders_projects.1.projectoptions.0.value">
-			<label class="json"> Löschen </label>
-			<input class="json" type="checkbox" value="1" name="orders_projects.1.DELETED">
-			</li>
-			***/
-
-             active_li.children('.json').remove();  
+      //Position in der Liste
+      count = $(active_li).attr("name");
+      active_li.children('.json').remove();  
 			
 			
-			//Passende Options zum Projekt holen
-            $.ajax({
-                type: "GET",
-                url: "[% c.uri_for_action('/orderproject/json') %]",
-                dataType: "json",
-                data: "project_id="+option_val,
-                cache: false,
-                error: function(){ alert ("Fehler"); },                                    
-                success: function(result){    
+      //Passende Options zum Projekt holen
+      $.ajax({
+        type: "GET",
+        url: "[% c.uri_for_action('/orderproject/json') %]",
+        dataType: "json",
+        data: "project_id="+option_val,
+        cache: false,
+        error: function(){ alert ("Fehler"); },                                    
+        success: function(result){    
                                              			
-  
-                	projectoptions_count = result.json_data.projectoptions.length -1;
-                
+
+          var projectoptions = new String;      
                
-               		//Options 
-               		if (result.json_data.projectoptions != '' && option_val != '' ) {          
-                 		$.each(result.json_data.projectoptions, function(key, val) {       
-                 			
-                 					  projectoptions = "<label class='json'> "+val.pkey+
-                 					  			" </label> <input class='json' "+
-                 					  			"name='orders_projects."+count+".projectoptions."+projectoptions_count+".value' "+
-                 					  			"type='text' /> <input class='p_option json' "+
-                 					  			"name='orders_projects."+count+".projectoptions."+projectoptions_count+".projectkey_id' "+
-                 					  			"value='"+val.projectkey_id+"' type='hidden' />";
-                 		         				  active_li.append($(projectoptions));                 				   
-	                 				  });  
-                		}                 		             
-					}
-            });
+          //Options 
+          if (result.json_data.projectoptions != '' && option_val != '' ) {          
+            $.each(result.json_data.projectoptions, function(key, val) {      
+                              			
+              projectoptions += "<label class='json'> "+val.pkey+
+                " </label> <input class='json' "+
+                "name='orders_projects."+count+".projectoptions."+key+".value' "+
+                "type='text' /> <input class='p_option json' "+
+                "name='orders_projects."+count+".projectoptions."+key+
+                ".projectkey_id' "+
+                "value='"+val.projectkey_id+"' type='hidden' />";
+                              				   
+            });  
+            
+            active_li.append($(projectoptions)); 
+          }                 		             
+        }
+      });
 			
 			
 		
 			
-			//Dann orders_projects.+count+.ordersprojects_id holen, dann erst Projectoptions speichern
+      //Dann orders_projects.+count+.ordersprojects_id holen, dann erst Projectoptions speichern
 
-      }
+    }
         
-        
-        $('input.p_option').blur(function() {
-        	 $.ajax({
-                 type: "POST",
-                 url: "[% c.uri_for_action('/orderproject/json') %]",
-                 dataType: "json",
-                 data: "project_id="+option_val,
-                 cache: false,
-                 error: function(){ alert ("Fehler"); },                                    
-                 success: function(result){    
+    /*    
+    $('input.p_option').blur(function() {
+      $.ajax({
+        type: "POST",
+        url: "[% c.uri_for_action('/orderproject/json') %]",
+        dataType: "json",
+        data: "project_id="+option_val,
+        cache: false,
+        error: function(){ alert ("Fehler"); },                                    
+        success: function(result){    
                                               			
    
-                 	projectoptions_count = result.json_data.projectoptions.length -1;
+          projectoptions_count = result.json_data.projectoptions.length -1;
                  
                 
-                		//Options 
-                		if (result.json_data.projectoptions != '' && option_val != '' ) {          
-                  		$.each(result.json_data.projectoptions, function(key, val) {       
+          //Options 
+          if (result.json_data.projectoptions != '' && option_val != '' ) {          
+            $.each(result.json_data.projectoptions, function(key, val) {       
+                    console.log(key, "key2")
                   			
-                  					  projectoptions = "<label class='json'> "+val.pkey+" </label> "+
-                  					  			"<input class='json' name='orders_projects."+count+".projectoptions."+projectoptions_count+".value' "+
-                  					  			"type='text' /> <input class='p_option json' "+
-                  					  			"name='orders_projects."+count+".projectoptions."+projectoptions_count+".projectkey_id' "+
-                  					  			"value='"+val.projectkey_id+"' type='hidden' />";
-                  		         				  active_li.append($(projectoptions));                 				   
- 	                 				  });  
-                 		}                 		             
- 					}
-             });
-        });
+              projectoptions = "<label class='json'> "+val.pkey+" </label> "+
+                "<input class='json' name='orders_projects."+count+".projectoptions."
+                +projectoptions_count+".value' "+
+                "type='text' /> <input class='p_option json' "+
+                "name='orders_projects."+count+".projectoptions."+projectoptions_count
+                +".projectkey_id' "+
+                "value='"+val.projectkey_id+"' type='hidden' />";
+              active_li.append($(projectoptions));                 				   
+            });  
+          }                 		             
+        }
+      });
+    });
         
-        
-        //neues Projekt         
-        $('a#add_project').live("click", function(){            
-           var count = $("ul#project li").size();
+   */     
+    //neues Projekt ohne Optionen        
+    $('a#add_project').live("click", function(){            
+      var count = $("ul#project li").size();
        
-           project = '<li  name="' + count +'">  ' +
-           '<input type="hidden" value=" " name="orders_projects.' + count +'.ordersprojects_id">' +
-           '<select class="select_project" name="orders_projects.' + count +'.project_id">'+	
-           '<option value="">-- select --</option> [%- FOR project IN projects %]'+	
-           '<option value="[% project.project_id %]" [%-  IF project.project_id==orderproject.project_id -%]'+
-           'selected="selected"[%-  END -%]>[%- project.name -%]</option>[%- END %]</select>';
+      project = '<li  name="' + count +'">  ' +
+        '<input type="hidden" value=" " name="orders_projects.' + count +'.ordersprojects_id">' +
+        '<select class="select_project" name="orders_projects.' + count +'.project_id">'+	
+        '<option value="">-- select --</option> [%- FOR project IN projects %]'+	
+        '<option value="[% project.project_id %]" [%-  IF project.project_id==orderproject.project_id -%]'+
+        'selected="selected"[%-  END -%]>[%- project.name -%]</option>[%- END %]</select>';
            
-           $(project).appendTo('ul#project'); 
-           $.scrollTo( 'label#project_label', 500, {axis:'y'} );
+      $(project).appendTo('ul#project'); 
+      $.scrollTo( 'label#project_label', 500, {axis:'y'} );
 
-       });
+    });
 
-       //TODO: Löschen von Projekten ajaxifizieren! 
+    //TODO: Löschen von Projekten ajaxifizieren! 
         
-        //Änderungen bei einem bestehenden Projekt
-        $('select.select_project').live("change", function(){		
-            handleProjectChange($(this));                        
-        });       
+    //Änderungen bei einem bestehenden Projekt
+    $('select.select_project').live("change", function(){		
+      handleProjectChange($(this));                        
+    });       
         
 
-    	//Seiten nur bei Artikel anzeigen
-        if ($('#documenttype').val() != '2') {
-			$("#article_only").hide();
-		}
-        else {
-        	$("#article_only").show();
-	}
+    //Seiten nur bei Artikel anzeigen
+    if ($('#documenttype').val() != '2') {
+      $("#article_only").hide();
+    }
+    else {
+      $("#article_only").show();
+    }
         
         
-        $('#documenttype').click(function(){
-            if ($('#documenttype').val() == '2') {
-                $("#article_only").fadeIn(500);
-            }
-            else {
-                $("#article_only").hide();
-            }
-        });
+    $('#documenttype').click(function(){
+      if ($('#documenttype').val() == '2') {
+        $("#article_only").fadeIn(500);
+      }
+      else {
+        $("#article_only").hide();
+      }
+    });
 
 
-        $('a.form_submit').click(function(){
-        	$("form#order_form").submit();
-        });
+    $('a.form_submit').click(function(){
+      $("form#order_form").submit();
+    });
 
 
-        //Scanner      
-         $('a#add_scanner').live("click", function(){
-            var count = $("ul#scanner li").size();
-            $('<li  name="' + count +'"><input type="hidden" name="scanparameters.' + 
-            		count +'.scanparameter_id"	value="[% scanparameter.scanparameter_id %]"> <select class="select_scanner" name="scanparameters.' + 
-            		count +'.scanner_id">	<option value="">-- select --</option>	[%- FOR scanner IN scanners %]	<option value="[% scanner.scanner_id %]" [%-  IF scanner.scanner_id==scanparameter.scanner_id -%] selected="selected"[%-  END -%]>	[%- scanner.name -%]</option>[%- END %]	</select>').appendTo('ul#scanner'); 
-           	$.scrollTo( 'label#scan_label', 500, {axis:'y'} );
-         });
+    //Scanner      
+    $('a#add_scanner').live("click", function(){
+      var count = $("ul#scanner li").size();
+      $('<li  name="' + count +'"><input type="hidden" name="scanparameters.' + 
+        count +'.scanparameter_id"	value="[% scanparameter.scanparameter_id %]"> <select class="select_scanner" name="scanparameters.' + 
+        count +'.scanner_id">	<option value="">-- select --</option>	[%- FOR scanner IN scanners %]	<option value="[% scanner.scanner_id %]" [%-  IF scanner.scanner_id==scanparameter.scanner_id -%] selected="selected"[%-  END -%]>	[%- scanner.name -%]</option>[%- END %]	</select>').appendTo('ul#scanner'); 
+      $.scrollTo( 'label#scan_label', 500, {axis:'y'} );
+    });
                   	
-        $('select.select_scanner').live("change", function(){
-                var active_li = $(this).parent();     
-                var active_select = $(this);
-                var option_val = $(this).val();  //Scanner-ID
-                var li_all = $("ul#project li").size(); 
+    $('select.select_scanner').live("change", function(){
+      var active_li = $(this).parent();     
+      var active_select = $(this);
+      var option_val = $(this).val();  //Scanner-ID
+      var li_all = $("ul#project li").size(); 
 
-                //Position innerhalb der Liste ermitteln, falls Liste größer als 1
-                if (li_all > 1) {
-                    var next_li = active_li.next();
-                    var prev_li = active_li.prev();
+      //Position innerhalb der Liste ermitteln, falls Liste größer als 1
+      if (li_all > 1) {
+        var next_li = active_li.next();
+        var prev_li = active_li.prev();
 
-                    if (next_li.attr("name") !== undefined){
-                         var count = next_li.attr("name") - 1;
-                    }
-                    else {
-                        count = parseInt(prev_li.attr("name")) +1;
-                        }
-                } 
+        if (next_li.attr("name") !== undefined){
+          var count = next_li.attr("name") - 1;
+        }
+        else {
+          count = parseInt(prev_li.attr("name")) +1;
+        }
+      } 
 
-                 active_li.children('.json').remove();      
+      active_li.children('.json').remove();      
               
-                $.ajax({
-                    type: "GET",
-                    url: "http://rzbvm006.uni-regensburg.de:3000/scanparameter/json?scanner_id=" + option_val,
-                    dataType: "json",
-                    cache: false,
-                    error: function(){
-                    alert ("Fehler");
-                 		 },
-                                    
-                    success: function(json){
-             
-                        var $pq = $("<span>" + json.quote + "</span>");
-                        alert ("erfolgreich: " + $pq);
-                        $pq.hide();
-                        if ($("ul#scanner").children().size() > 0) 
-                            $("ul#scanner").append(" &middot; ");
-                        $("ul#scanner li").append($pq);
-                        $pq.fadeIn();
-                    }
-                 		 },                                    
-                    success: function(result){            
-                   	    var scanner_id = result.json_data.scanner_id;
+      $.ajax({
+        type: "GET",
+        url: "[% c.uri_for_action('/scanparameter/json') %]?scanner_id=" + option_val,
+        dataType: "json",
+        cache: false,
+        error: function(){ alert ("Fehler"); },                                    
+        success: function(result){            
+          var scanner_id = result.json_data.scanner_id;
           	      	 
           	      	  	
-                   		//Format
-                   		if (result.json_data.formats[0].format_id != '' && option_val != '' ) {          
-                   			active_li.append($("<option value=''>-- select --</option>"));  
-                   		$.each(result.json_data.formats, function(key, val) {       
-	                 				  active_li.append($("<option value='" + val.format_id +"'>" + val.name + "</option>"));                 				   
-	                 				  });  
-  	                    active_select.nextAll().wrapAll("<select class='json' name='scanparameters." + count + ".format_id' size='1'>");
-        				}
+          //Format
+          if (result.json_data.formats[0].format_id != '' && option_val != '' ) {          
+            active_li.append($("<option value=''>-- select --</option>"));  
+            $.each(result.json_data.formats, function(key, val) {       
+              active_li.append($("<option value='" + val.format_id +"'>" + val.name + "</option>"));                 				   
+            });  
+            active_select.nextAll().wrapAll("<select class='json' name='scanparameters." + count + ".format_id' size='1'>");
+          }
 
-						//Resolution     
-			       	    if (result.json_data.resolutions != '' && option_val != ''){    	
-			       			active_li.append($("<option value=''>-- select --</option>"));  	
+          //Resolution     
+          if (result.json_data.resolutions != '' && option_val != ''){    	
+            active_li.append($("<option value=''>-- select --</option>"));  	
 			       			
-                 		$.each(result.json_data.resolutions, function(key, val) {       
-                 			console.debug (val.value);
-                 			$('<option>').attr({ value: val.resolution_id}).html(val.value).appendTo(active_li);
-                 			//funktioniert hier nicht
-                 			//active_li.append($("<option value='" + val.resolution_id +">" + val.value + "</option>"));                 				   
-                 				  });  
-                 		active_select.next().nextAll().wrapAll("<select class='json' name='scanparameters." + count + ".resolution_id' size='1'>");
-			       	    }
+            $.each(result.json_data.resolutions, function(key, val) {       
+              console.debug (val.value);
+              $('<option>').attr({ value: val.resolution_id}).html(val.value).appendTo(active_li);
+              //funktioniert hier nicht
+              //active_li.append($("<option value='" + val.resolution_id +">" + val.value + "</option>"));                 				   
+            });  
+            active_select.next().nextAll().wrapAll("<select class='json' name='scanparameters." + count + ".resolution_id' size='1'>");
+          }
 	
-                   	    //Scanoptions/Glasplatte
-                   	    if (result.json_data.scanoptions != '' && option_val != ''){
-                   			active_li.append($("<option value=''>-- select --</option>"));  
-						$.each(result.json_data.scanoptions[0].options, function(key, val) {       
-                 			active_li.append($("<option value=" + val.value_id + " >" + val.name + "</option>"));                 				   
-                 				  });  
-						var zahlo = ($("option.options")).length;
-						active_select.next().next().nextAll().wrapAll("<select class='json' id='scanner_options' name='scanparameters." + count +  ".scanoptions." + zahlo + ".value_id'  size='1'>");        
-                   	    }   		
+          //Scanoptions/Glasplatte
+          if (result.json_data.scanoptions != '' && option_val != ''){
+            active_li.append($("<option value=''>-- select --</option>"));  
+            $.each(result.json_data.scanoptions[0].options, function(key, val) {       
+              active_li.append($("<option value=" + val.value_id + " >" + val.name + "</option>"));                 				   
+            });  
+            var zahlo = ($("option.options")).length;
+            active_select.next().next().nextAll().wrapAll("<select class='json' id='scanner_options' name='scanparameters." + count +  ".scanoptions." + zahlo + ".value_id'  size='1'>");        
+          }   		
 
-            			//Range
-						if (option_val != ''){
-                    	active_li.append('<br /><label class="json" for="scope"> Bereich&nbsp;</label><input class="json" id="scope" name="scanparameters.' + count + '.scope" value="" type="text" />');
-						}  		
-					}
-                });
-            });       
+          //Range
+          if (option_val != ''){
+            active_li.append('<br /><label class="json" for="scope"> Bereich&nbsp;</label><input class="json" id="scope" name="scanparameters.' + count + '.scope" value="" type="text" />');
+          }  		
+        }
+      });
+    });       
      
 
 
          
 
-         //Publikation      
-         $('a#add_publication').live("click", function(){             
-            var count = $("ul#publication li").size();
- 			console.log (count);          
+    //Publikation      
+    $('a#add_publication').live("click", function(){             
+      var count = $("ul#publication li").size();
+      console.log (count);          
  			
  			
  			
- 			/*
- 			<li name="1">
-			<input class="json" type="hidden" value="1024" name="publications.1.publication_id">
-			<select class="select_publication" name="publications.1.platform_id">
-			<option value="">-- select --</option>
-			<option selected="selected" value="1">DigiTool</option>
-			<option value="2">ESA</option>
-			</select>
-			<input class="json" type="hidden" value="1" name="publications.1.publicationoptions.0.platformoptionkey_id">
-			<label class="json"> PID </label>
-			<input class="json" type="text" value="321" name="publications.1.publicationoptions.0.value">
-*/
+      /*
+      <li name="1">
+      <input class="json" type="hidden" value="1024" name="publications.1.publication_id">
+      <select class="select_publication" name="publications.1.platform_id">
+      <option value="">-- select --</option>
+      <option selected="selected" value="1">DigiTool</option>
+      <option value="2">ESA</option>
+      </select>
+      <input class="json" type="hidden" value="1" name="publications.1.publicationoptions.0.platformoptionkey_id">
+      <label class="json"> PID </label>
+      <input class="json" type="text" value="321" name="publications.1.publicationoptions.0.value">
+       */
             
-            new_project = '<li  name="' + count +'"><input type="hidden" name="publications.' + count +
-    		'.publication_id" > <select class="select_publication" name="publications.' + count 
-    		+'.platform_id">	<option value="">-- select --</option> 	[%- FOR platform IN platforms %] '+ 
-    		'<option value="[% platform.platform_id %]" [%-  IF platform.platform_id==publication.platform_id -%]  ' +
-    		'selected="selected"[%-  END -%]> [%- platform.name -%]</option> [%- END -%]</select>';
+      new_project = '<li  name="' + count +'"><input type="hidden" name="publications.' + count +
+        '.publication_id" > <select class="select_publication" name="publications.' + count 
+        +'.platform_id">	<option value="">-- select --</option> 	[%- FOR platform IN platforms %] '+ 
+        '<option value="[% platform.platform_id %]" [%-  IF platform.platform_id==publication.platform_id -%]  ' +
+        'selected="selected"[%-  END -%]> [%- platform.name -%]</option> [%- END -%]</select>';
             
             
-            $(new_project).appendTo('ul#publication'); 
-            $.scrollTo( 'label#publication_label', 500, {axis:'y'} );     
-        });
+      $(new_project).appendTo('ul#publication'); 
+      $.scrollTo( 'label#publication_label', 500, {axis:'y'} );     
+    });
 
 
-         $('select.select_publication').live("change", function(){
-             var active_li = $(this).parent();     
-             var active_select = $(this);
-             var option_val = $(this).val();  
-             var li_all = $("ul#publication li").size();                             
-             //console.debug(active_li);       
+    $('select.select_publication').live("change", function(){
+      var active_li = $(this).parent();     
+      var active_select = $(this);
+      var option_val = $(this).val();  
+      var li_all = $("ul#publication li").size();                             
+      //console.debug(active_li);       
              
  
-            //Position in der Liste
-            count = $(active_li).attr("name");
+      //Position in der Liste
+      count = $(active_li).attr("name");
 
-             active_li.children('.json').remove();  
-             $.ajax({
-                 type: "GET",
-                 url: "[% c.uri_for_action('/publication/json') %]?platform_id=" + option_val,
-                 dataType: "json",
-                 cache: false,
-                 error: function(){  alert ("Fehler");},                                    
-                 success: function(result){    
+      active_li.children('.json').remove();  
+      $.ajax({
+        type: "GET",
+        url: "[% c.uri_for_action('/publication/json') %]?platform_id=" + option_val,
+        dataType: "json",
+        cache: false,
+        error: function(){  alert ("Fehler");},                                    
+        success: function(result){    
                                               			
-             	    //console.debug(result);
-            	 	var publication_id = result.json_data.publication_id;
-       	      	  	active_li.children('.json').remove();
+          //console.debug(result);
+          var publication_id = result.json_data.publication_id;
+          active_li.children('.json').remove();
        	      	  	
-                	//Options 
-                	if (result.json_data.publicationoptions != '' && option_val != '' ) {          
-                  		$.each(result.json_data.publicationoptions, function(key, val) {     
+          //Options 
+          if (result.json_data.publicationoptions != '' && option_val != '' ) {          
+            $.each(result.json_data.publicationoptions, function(key, val) {     
                   			
-                  			project_option = "<input class='json' name='publications."+count+".publicationoptions.0.platformoptionkey_id' "+
-                  						"value='"+val.platformoptionkey_id+"' type='hidden' /><label class='json'> "+val.pkey+
-                  						" </label><input class='json' name='publications."+count+".publicationoptions.0.value' value='' type='text' />";
+              project_option = "<input class='json' name='publications."+count+".publicationoptions.0.platformoptionkey_id' "+
+                "value='"+val.platformoptionkey_id+"' type='hidden' /><label class='json'> "+val.pkey+
+                " </label><input class='json' name='publications."+count+".publicationoptions.0.value' value='' type='text' />";
                   						
-	                 		active_li.append($(project_option));                 				   
+              active_li.append($(project_option));                 				   
 	                 				  
-                  		});  
-     				}
-				}
-             });
-         }); 
+            });  
+          }
+        }
+      });
+    }); 
 
 
-         function insertSignature (array_key, result) {
-        	 handleFormChanged();
+    function insertSignature (array_key, result) {
+      handleFormChanged();
 
-        		$("input#bvnr").hide();
-				$('#span_bvnr, input#bvnr').remove();
+      $("input#bvnr").hide();
+      $('#span_bvnr, input#bvnr').remove();
 
-				if (result.json_data[array_key].bvnr == undefined) { 
-					$("<span/>").attr({id:'span_bvnr'}).text("keine BV-Nr.").appendTo('label[for="bvnr"]');
-					}
-				else {
-					$("<span/>").attr({id:'span_bvnr'}).text(result.json_data[array_key].bvnr).appendTo('label[for="bvnr"]');
-					$('<input>').attr({
-					    type: 'hidden',
-					    id: 'bvnr',
-					    name: 'titel.bvnr',
-					    value: result.json_data[array_key].bvnr
-					}).appendTo('form#order_form');
-				}
+      if (result.json_data[array_key].bvnr == undefined) { 
+        $("<span/>").attr({id:'span_bvnr'}).text("keine BV-Nr.").appendTo('label[for="bvnr"]');
+      }
+      else {
+        $("<span/>").attr({id:'span_bvnr'}).text(result.json_data[array_key].bvnr).appendTo('label[for="bvnr"]');
+        $('<input>').attr({
+          type: 'hidden',
+          id: 'bvnr',
+          name: 'titel.bvnr',
+          value: result.json_data[array_key].bvnr
+        }).appendTo('form#order_form');
+      }
 
-				$("input#katkey").hide();
-				$('#span_katkey, input#katkey').remove();
-				$("<span/>").attr({id:'span_katkey'}).text(result.json_data[array_key].katkey).appendTo('label[for="katkey"]');
-				$('<input>').attr({
-				    type: 'hidden',
-				    id: 'katkey',
-				    name: 'titel.katkey',
-				    value: result.json_data[array_key].katkey
-				}).appendTo('form#order_form');
+      $("input#katkey").hide();
+      $('#span_katkey, input#katkey').remove();
+      $("<span/>").attr({id:'span_katkey'}).text(result.json_data[array_key].katkey).appendTo('label[for="katkey"]');
+      $('<input>').attr({
+        type: 'hidden',
+        id: 'katkey',
+        name: 'titel.katkey',
+        value: result.json_data[array_key].katkey
+      }).appendTo('form#order_form');
 				
-				$("input#mediennr").hide();
-				$('#span_mediennr').remove();
-				$('input#mediennr').remove();
-				$("<span/>").attr({id:'span_mediennr'}).text(result.json_data[array_key].mediennr).appendTo('label[for="mediennr"]');
-				$('<input>').attr({
-				    type: 'hidden',
-				    id: 'mediennr',
-				    name: 'titel.mediennr',
-				    value: result.json_data[array_key].mediennr
-				}).appendTo('form#order_form');
+      $("input#mediennr").hide();
+      $('#span_mediennr').remove();
+      $('input#mediennr').remove();
+      $("<span/>").attr({id:'span_mediennr'}).text(result.json_data[array_key].mediennr).appendTo('label[for="mediennr"]');
+      $('<input>').attr({
+        type: 'hidden',
+        id: 'mediennr',
+        name: 'titel.mediennr',
+        value: result.json_data[array_key].mediennr
+      }).appendTo('form#order_form');
 				
-				$("select#library").val(result.json_data[array_key].library_id);
-				var bibliothek = $("select#library option:selected").text();
-				$("select#library").hide();
-				$('#span_library').remove();
-				$('input#library').remove();
-				$("<span/>").attr({id:'span_library'}).text(bibliothek).appendTo('label[for="library"]');
-				$('<input>').attr({
-				    type: 'hidden',
-				    id: 'library',
-				    name: 'titel.library_id',
-				    value: result.json_data[array_key].library_id
-				}).appendTo('form#order_form');
-				$("#titel").text(result.json_data[array_key].titel_isbd);
+      $("select#library").val(result.json_data[array_key].library_id);
+      var bibliothek = $("select#library option:selected").text();
+      $("select#library").hide();
+      $('#span_library').remove();
+      $('input#library').remove();
+      $("<span/>").attr({id:'span_library'}).text(bibliothek).appendTo('label[for="library"]');
+      $('<input>').attr({
+        type: 'hidden',
+        id: 'library',
+        name: 'titel.library_id',
+        value: result.json_data[array_key].library_id
+      }).appendTo('form#order_form');
+      $("#titel").text(result.json_data[array_key].titel_isbd);
 				
-         }
+    }
 
-		//Signaturen abrufen
-		  function getSignature(signature) {
+    //Signaturen abrufen
+    function getSignature(signature) {
 
-                 //Leerzeichen aus der Signatur entfernen
-                 //signature = signature.replace(/ /g,'');
+      //Leerzeichen aus der Signatur entfernen
+      //signature = signature.replace(/ /g,'');
                  
-                  $.ajax({
-                     type: "GET",
-                     url: "[% c.uri_for_action('/titel/json') %]?signatur=" + signature,
-                     dataType: "json",
-                     cache: false,
-                     error: function(){  alert ("Diese Signatur existiert nicht.");    },                                    
-                     success: function(result){    
+      $.ajax({
+        type: "GET",
+        url: "[% c.uri_for_action('/titel/json') %]?signatur=" + signature,
+        dataType: "json",
+        cache: false,
+        error: function(){  alert ("Diese Signatur existiert nicht.");    },                                    
+        success: function(result){    
                  
-                    	 if (typeof result.json_data[1] != 'undefined') {
-                    		  //mehrere Treffer/Bindeeinheit
-                    		  $("#bindeeinheit").append('<p>Bitte wählen Sie den passenden Treffer aus:</p>'); 
-                    		  var i = 0;
-                    	  	  $.each(result.json_data, function(key, val) {    
-                        	  	i ++;                    		  	
-              		   			$("#bindeeinheit").append('<li id="'+i+'">'+val.titel_isbd+'<br/><strong>BV-Nr.: </strong>' + val.bvnr
-              		   					+'<br/><br/> <a href="#" id="book_selected" class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-search"></span>Auswählen</a></li>');
-							});
+          if (typeof result.json_data[1] != 'undefined') {
+            //mehrere Treffer/Bindeeinheit
+            $("#bindeeinheit").append('<p>Bitte wählen Sie den passenden Treffer aus:</p>'); 
+            var i = 0;
+            $.each(result.json_data, function(key, val) {    
+              i ++;                    		  	
+              $("#bindeeinheit").append('<li id="'+i+'">'+val.titel_isbd+'<br/><strong>BV-Nr.: </strong>' + val.bvnr
+                +'<br/><br/> <a href="#" id="book_selected" class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-search"></span>Auswählen</a></li>');
+            });
                     	  	  
-                    	  	$("a#book_selected").click( function () {
-                          	  	//Zellen fuellen und sperren				
-								var array_key = ($(this).parent().attr("id"))-1;	
-								if (array_key == -1) array_key = 0;
+            $("a#book_selected").click( function () {
+              //Zellen fuellen und sperren				
+              var array_key = ($(this).parent().attr("id"))-1;	
+              if (array_key == -1) array_key = 0;
 							
-								insertSignature (array_key, result);
-								$("#bindeeinheit").dialog("close");
-							});
+              insertSignature (array_key, result);
+              $("#bindeeinheit").dialog("close");
+            });
 	                    	
-                    		$("#bindeeinheit li").wrapAll('<ul id="bindeeinheit">');
+            $("#bindeeinheit li").wrapAll('<ul id="bindeeinheit">');
            		     
 	               			                  
-                    		$("#bindeeinheit").dialog({ 
-                        		 modal: true, 
-                        		 title: "Mehrere Treffer: Bindeeinheit", 
-                        		 width: 700,                       		 
-                        		 close: function() { $('#bindeeinheit li, #bindeeinheit p').remove();	}	                 			         
-				                });
+            $("#bindeeinheit").dialog({ 
+              modal: true, 
+              title: "Mehrere Treffer: Bindeeinheit", 
+              width: 700,                       		 
+              close: function() { $('#bindeeinheit li, #bindeeinheit p').remove();	}	                 			         
+            });
                             
-             		     }
-                    	 else {
-                        	 //nur 1 Treffer
-                    		insertSignature(0, result);
-				      	 }
- 					}
-                 });
+          }
+          else {
+            //nur 1 Treffer
+            insertSignature(0, result);
+          }
+        }
+      });
 
 
-                      $("#loading").bind("ajaxSend", function(){
-                	   $(this).show();
-                	 }).bind("ajaxComplete", function(){
-                	   $(this).hide();
-                	 });
-       }   
+      $("#loading").bind("ajaxSend", function(){
+        $(this).show();
+      }).bind("ajaxComplete", function(){
+        $(this).hide();
+      });
+    }   
 	
-		//Signaturensuche durch Enter
-		$('input#signatur').keyup(function(e) {
-		    if (e.keyCode == 13) {
-		       	jQuery('a#signatur_link').focus().click();	
-		    }
-		});
+    //Signaturensuche durch Enter
+    $('input#signatur').keyup(function(e) {
+      if (e.keyCode == 13) {
+        jQuery('a#signatur_link').focus().click();	
+      }
+    });
 
-		//Enter-Taste sperren im Signatur-Feld
-		$('input#signatur').keypress(function(event) { return event.keyCode != 13; });
+    //Enter-Taste sperren im Signatur-Feld
+    $('input#signatur').keypress(function(event) { return event.keyCode != 13; });
 
 					
 
-		//Signaturensuche Button
-        $('a#signatur_link').click( function(){
-             var signatur = $("input#signatur").val();
-             getSignature(signatur);
+    //Signaturensuche Button
+    $('a#signatur_link').click( function(){
+      var signatur = $("input#signatur").val();
+      getSignature(signatur);
               
-         });
+    });
 		
 		
 		
                
 
-    });
---></script>
+  });
+  --></script>
 
 <div id="loading" style="display: none;">
-	<img src="[% c.uri_for_static('images/ajax-loader.gif') %]" alt="Laden"
-		title="Laden" />
-	<div id="grey_bg"></div>
+  <img src="[% c.uri_for_static('images/ajax-loader.gif') %]" alt="Laden"
+       title="Laden" />
+  <div id="grey_bg"></div>
 </div>
 
 <div id="bindeeinheit" style="display: none;"></div>
@@ -552,296 +530,304 @@ c.uri_for_action('/job/queue/list') title = 'Job-Warteschlange' icon =
 title = 'Fehlerhafte Jobs' icon = 'alert' class = 'prevent' } ]; %]
 
 <form id="order_form" action="" method="post">
-<div id="submit_top">
-<input class="send" id="order_submit" name="save" type="submit"
-		disabled="true" value="Speichern">
-		</div>
-<fieldset>
- <div class="left">Umlaute:</div> [% umlaute %] 
+  <div id="submit_top">
+    <input class="send" id="order_submit" name="save" type="submit"
+           disabled="true" value="Speichern">
+  </div>
+  <fieldset>
+    <div class="left">Umlaute:</div> [% umlaute %] 
+  </fieldset>
+  <fieldset>
+    <div class="left">Auftragsnummer:</div>
+    [% order_href.order_id %] [% IF order_href.scanfiles_count %]
+    (Scandateien: <a href="[% c.uri_for("/order/${order_href.order_id}/scanfiles/list") %]">
+                     [% order_href.scanfiles_count %] </a> ) [% END %] [% IF
+    order_href.pdffiles_count %] ( PDF-Dateien: 
+    <a href="[% c.uri_for("/order/${order_href.order_id}/pdffiles/list") %]">
+        [% order_href.pdffiles_count %] </a> ) [% END %]
+  </fieldset>
+
+  [% IF order_href.creation_date.hms %]
+  <fieldset>
+    <div class="left">angelegt:</div>
+    [% order_href.creation_date.dmy('.') %] #
+    [% order_href.creation_date.hms %] <br />
+    <div class="left">ge&auml;ndert:</div>
+    [% order_href.modification_date.dmy('.') %] 
+    [% order_href.modification_date.hms %]
+  </fieldset>
+  [% END %]
+
+
+  <fieldset>
+    <div class="left">Titel:</div>
+    <div id="titel">
+      [% order_href.titel.titel_isbd %] 
+      <a href="[% c.uri_for("/titel/${order_href.order_id}/edit") %]" id="edit_signature"
+          class="ui-state-default ui-corner-all"> <span
+          class="ui-icon ui-icon-pencil"></span>Titel bearbeiten</a>
+    </div>
+  </fieldset>
+
+
+
+
+
+  <div class="row">
+    <label for="status"> Status: </label> <select id="status"
+                                                  name="status_id">
+      <option value="">-- select --</option> 
+      [%- FOR status_value IN status %]
+      <option value="[% status_value.status_id -%]" 
+              [%-  IF status_value.status_id==order_href.status_id -%]
+              selected="selected"[%-  END -%]
+              >
+              [%- status_value.name -%]</option> [%- END %]
+    </select>
+  </div>
+
+
+  <div class="row">
+    <label for="documenttype"> Medientyp: </label> <select
+      id="documenttype" name="documenttype_id">
+      <option value="">-- select --</option> 
+      [%- FOR documenttype IN documenttypes %]
+      <option value="[% documenttype.documenttype_id %]" 
+              [%-  IF  documenttype.documenttype_id==order_href.documenttype_id -%] 
+              selected="selected"
+              [%-  END -%]>
+              [%- documenttype.name -%]</option> [%- END %]
+    </select>
+  </div>
+
+  <div id="article_only">
+
+    <div class="row">
+      <label for="autor_uw"> Aufsatzautor: </label> <input class="breit"
+                                                           id="autor_uw" name="titel.autor_uw"
+                                                           value="[% order_href.titel.autor_uw %]" type="text"  />
+    </div>
+    <div class="row">
+      <label for="titel_uw"> Aufsatztitel: </label> <input class="breit"
+                                                           id="titel_uw" name="titel.titel_uw"
+                                                           value="[% order_href.titel.titel_uw %]" type="text"  />
+    </div>
+
+    <div class="row">
+      <label for="pages"> Seiten: </label> <input name="titel.pages"
+                                                  value="[% order_href.titel.pages %]" type="text"  />
+    </div>
+  </div>
+
+  <hr />
+  <div class="set">
+    <label class="block" for="signatur"> Signatur: </label>
+    <div class="innen">
+      <input id="signatur" name="titel.signatur" type="text"
+             value="[% order_href.titel.signatur %]" size="25" /> <a href="#"
+             id="signatur_link" class="ui-state-default ui-corner-all"> <span
+          class="ui-icon ui-icon-search"></span>Abrufen</a>
+
+      <fieldset>
+        <label for="library">Bibliothek: </label> 
+        <select id="library"  name="titel.library_id">
+          <option value="">-- select --</option> 
+          [%- FOR library IN libraries %]
+          <option value="[% library.library_id %]" 
+                  [%-  IF library.library_id==order_href.titel.library_id -%]
+                  selected="selected"[%-  END -%] >
+                  [%- library.name -%]</option> [%- END %]
+        </select> <br /> <label for="bvnr"> BV-Nr.: </label>
+        <input id="bvnr" name="titel.bvnr" type="text" value="[% order_href.titel.bvnr %]"
+        size="13" /> 
+        <label for="katkey"> Katkey: </label> 
+        <input id="katkey" name="titel.katkey" type="text"
+           value="[% order_href.titel.katkey %]" size="9" /> <label
+           for="mediennr"> Mediennr.: </label> <input id="mediennr"
+           name="titel.mediennr" type="text"
+           value="[% order_href.titel.mediennr %]" size="15" />
+    </div>
+  </div>
 </fieldset>
-<fieldset>
-	<div class="left">Auftragsnummer:</div>
-	[% order_href.order_id %] [% IF order_href.scanfiles_count %]
-	(Scandateien: <a href="[% c.uri_for("/order/${order_href.order_id}/scanfiles/list") %]">
-		[% order_href.scanfiles_count %] </a> ) [% END %] [% IF
-	order_href.pdffiles_count %] ( PDF-Dateien: <a href="[% c.uri_for("/order/${order_href.order_id}/pdffiles/list") %]">
-		[% order_href.pdffiles_count %] </a> ) [% END %]
-</fieldset>
-
-[% IF order_href.creation_date.hms %]
-<fieldset>
-	<div class="left">angelegt:</div>
-	[% order_href.creation_date.dmy('.') %] [% order_href.creation_date.hms
-	%] <br />
-	<div class="left">ge&auml;ndert:</div>
-	[% order_href.modification_date.dmy('.') %] [%
-	order_href.modification_date.hms %]
-</fieldset>
-[% END %]
-
-
-<fieldset>
-	<div class="left">Titel:</div>
-	<div id="titel">
-		[% order_href.titel.titel_isbd %] <a href="[% c.uri_for("/titel/${order_href.order_id}/edit") %]" id="edit_signature"
-			class="ui-state-default ui-corner-all"> <span
-			class="ui-icon ui-icon-pencil"></span>Titel bearbeiten</a>
-	</div>
-</fieldset>
 
 
 
 
-
-	<div class="row">
-		<label for="status"> Status: </label> <select id="status"
-			name="status_id">
-			<option value="">-- select --</option> [%- FOR status_value IN status
-			%]
-			<option value="[% status_value.status_id -%]" [%-  IF
-				status_value.status_id==
-				order_href.status_id -%]
- selected="selected"[%-  END -%]
->
-				[%- status_value.name -%]</option> [%- END %]
-		</select>
-	</div>
-
-
-	<div class="row">
-		<label for="documenttype"> Medientyp: </label> <select
-			id="documenttype" name="documenttype_id">
-			<option value="">-- select --</option> [%- FOR documenttype IN
-			documenttypes %]
-			<option value="[% documenttype.documenttype_id %]" [%-  IF
-				documenttype.documenttype_id==order_href.documenttype_id
-				-%] selected="selected"[%-  END -%]>[%- documenttype.name
-				-%]</option> [%- END %]
-		</select>
-	</div>
-
-	<div id="article_only">
-
-		<div class="row">
-			<label for="autor_uw"> Aufsatzautor: </label> <input class="breit"
-				id="autor_uw" name="titel.autor_uw"
-				value="[% order_href.titel.autor_uw %]" type="text"  />
-		</div>
-		<div class="row">
-			<label for="titel_uw"> Aufsatztitel: </label> <input class="breit"
-				id="titel_uw" name="titel.titel_uw"
-				value="[% order_href.titel.titel_uw %]" type="text"  />
-		</div>
-
-		<div class="row">
-			<label for="pages"> Seiten: </label> <input name="titel.pages"
-				value="[% order_href.titel.pages %]" type="text"  />
-		</div>
-	</div>
-
-	<hr />
-	<div class="set">
-		<label class="block" for="signatur"> Signatur: </label>
-		<div class="innen">
-			<input id="signatur" name="titel.signatur" type="text"
-				value="[% order_href.titel.signatur %]" size="25" /> <a href="#"
-				id="signatur_link" class="ui-state-default ui-corner-all"> <span
-				class="ui-icon ui-icon-search"></span>Abrufen</a>
-
-			<fieldset>
-				<label for="library">Bibliothek: </label> <select id="library"
-					name="titel.library_id">
-					<option value="">-- select --</option> [%- FOR library IN libraries
-					%]
-					<option value="[% library.library_id %]" [%-  IF
-						library.library_id==
-						order_href.titel.library_id -%]
- selected="selected"[%-  END -%]
->
-						[%- library.name -%]</option> [%- END %]
-				</select> <br /> <label for="bvnr"> BV-Nr.: </label> <input id="bvnr"
-					name="titel.bvnr" type="text" value="[% order_href.titel.bvnr %]"
-					size="13" /> <label for="katkey"> Katkey: </label> <input
-					id="katkey" name="titel.katkey" type="text"
-					value="[% order_href.titel.katkey %]" size="9" /> <label
-					for="mediennr"> Mediennr.: </label> <input id="mediennr"
-					name="titel.mediennr" type="text"
-					value="[% order_href.titel.mediennr %]" size="15" />
-		</div>
-	</div>
-	</fieldset>
-
-
-
-
-	<div class="row">
-		<label for="ocr"> Mit OCR: </label> <input id="ocr" name="ocr"
-			type="checkbox" value="1" [%-  IF order.ocr==
-			1 -%]
- checked="checked" [%-  END -%]
-/>
-	</div>
-	<div class="row">
-		<label for="control"> geprüft von: </label> <input class="breit"
-			id="control" name="control" type="text"
-			value="[% order_href.control %]"  />
-	</div>
-	<div class="row">
-	<label for="remark" class="block"> Bemerkung: </label>
-	<textarea class="breit" id="remark" name="remark"  rows="1">
+<div class="row">
+  <label for="ocr"> Mit OCR: </label> 
+  <input id="ocr" name="ocr" type="checkbox" value="1" 
+ [%-  IF order.ocr==1 -%] 
+ checked="checked" [%-  END -%]  />
+</div>
+<div class="row">
+  <label for="control"> geprüft von: </label> 
+  <input class="breit" id="control" name="control" type="text"
+                                                     value="[% order_href.control %]"  />
+</div>
+<div class="row">
+  <label for="remark" class="block"> Bemerkung: </label>
+  <textarea class="breit" id="remark" name="remark"  rows="1">
         [%- order_href.remark -%]
-        </textarea>
-        </div>
-        <div>
-        <table id="remarks"></table>
-        <div id="pager_remarks"></div>
-        </div>
-	
-	<div class="row">
-		<label> Verbreitungsrecht: </label> <select name="copyright_id">
-			<option value="">-- select --</option> [%- FOR copyright IN
-			copyrights %]
-			<option value="[% copyright.copyright_id %]" [%-  IF
-				copyright.copyright_id==
-				order_href.copyright_id -%]
- 		selected="selected"[%-  END -%]>
-				[%- copyright.name -%]</option> [%- END %]
-		</select>
-	</div>
+  </textarea>
+</div>
+<div>
+  <table id="remarks"></table>
+  <div id="pager_remarks"></div>
+</div>
 
-	<hr />
-	<div class="set">
-		<label id="scan_label" class="strong"> Scanner </label>
-		<ul id="scanner">
-			[% FOR scanparameter IN order_href.scanparameters %]
-			<li name="[% loop.count - 1 %]"><input type="hidden"
-				name="scanparameters.[% loop.count - 1 %].scanparameter_id"
-				value="[% scanparameter.scanparameter_id %]"> <select
-				class="select_scanner"
-				name="scanparameters.[% loop.count - 1  %].scanner_id">
-					<option value="">-- select --</option> [%- FOR scanner IN scanners
-					%]
-					<option value="[% scanner.scanner_id %]" [%-  IF
-						scanner.scanner_id==
-						scanparameter.scanner_id -%] selected="selected"[%-  END -%]>
-						[%- scanner.name -%]</option> [%- END %]
-			</select> <span class="json" id="scanner[% loop.count - 1  %]"> <select
-					class="json" name="scanparameters.[% loop.count - 1 %].format_id">
-						<option value="">-- select --</option> [%- FOR format IN formats
-						%]
-						<option value="[% format.format_id %]" [%-  IF
-							format.format_id==scanparameter.format_id -%] selected="selected"[%-  END -%]>
-							[%- format.name -%]</option> [%- END %]
-				</select> <select class="json"
-					name="scanparameters.[% loop.count - 1 %].resolution_id">
-						<option value="">-- select --</option> [%- FOR resolution IN
-						resolutions %]
-						<option value="[% resolution.resolution_id %]" [%-  IF
-							resolution.resolution_id==
-							scanparameter.resolution_id -%]  selected="selected"[%-  END -%]>
-							[%- resolution.value -%]</option> [%- END %]
-				</select><br class="json" /> <label class="json" for="scope">
-						Bereich </label> <input class="json" id="scope"
-					name="scanparameters.[% loop.count - 1 %].scope"
-					value="[% scanparameter.scope %]" type="text" /> [%- SET
-					scanparameter_count = loop.count - 1 -%] [%- FOR scanoption IN
-					scanparameter.scanoptions %] <input class="json" type="hidden"
-					name="scanparameters.[% scanparameter_count %].scanoptions.[% loop.count - 1 %].scanoptionkey_id"
-					value="[% scanoption.scanoptionkey_id %]"> <select
-					class="json" id="scanner_options"
-					name="scanparameters.[% scanparameter_count %].scanoptions.[% loop.count - 1 %].value_id">
-						[%- FOR option IN scanoption.options %]
-						<option value="[% option.value_id %]" [%-  IF option.value_id==
-							scanoption.value_id -%]  selected="selected"[%-  END -%] >
-							[%- option.name -%]</option> [%- END %]
-				</select> [%- END %] [%- IF scanparameter.scanparameter_id -%] <label
-					class="json"> Löschen </label> <input class="json"
-					name="scanparameters.[% loop.count - 1 %].DELETED" type="checkbox"
-					value="1" />
-			</li> [%- END -%] [%- END -%]
-		</ul>
+<div class="row">
+  <label> Verbreitungsrecht: </label> <select name="copyright_id">
+    <option value="">-- select --</option> [%- FOR copyright IN
+    copyrights %]
+    <option value="[% copyright.copyright_id %]" [%-  IF
+            copyright.copyright_id==
+            order_href.copyright_id -%]
+            selected="selected"[%-  END -%]>
+            [%- copyright.name -%]</option> [%- END %]
+  </select>
+</div>
+
+<hr />
+<div class="set">
+  <label id="scan_label" class="strong"> Scanner </label>
+  <ul id="scanner">
+    [% FOR scanparameter IN order_href.scanparameters %]
+    <li name="[% loop.count - 1 %]"><input type="hidden"                                          name="scanparameters.[% loop.count - 1 %].scanparameter_id"
+                                           value="[% scanparameter.scanparameter_id %]"> <select
+                                           class="select_scanner"
+                                           name="scanparameters.[% loop.count - 1  %].scanner_id">
+        <option value="">-- select --</option> [%- FOR scanner IN scanners
+        %]
+        <option value="[% scanner.scanner_id %]" [%-  IF
+                scanner.scanner_id==
+                scanparameter.scanner_id -%] selected="selected"[%-  END -%]>
+                [%- scanner.name -%]</option> [%- END %]
+      </select> <span class="json" id="scanner[% loop.count - 1  %]"> <select
+          class="json" name="scanparameters.[% loop.count - 1 %].format_id">
+          <option value="">-- select --</option> [%- FOR format IN formats
+          %]
+          <option value="[% format.format_id %]" 
+                  
+                  [%-  IF format.format_id==scanparameter.format_id -%] 
+                  selected="selected"[%-  END -%]>
+                  [%- format.name -%]</option> [%- END %]
+        </select> <select class="json"
+                          name="scanparameters.[% loop.count - 1 %].resolution_id">
+          <option value="">-- select --</option> [%- FOR resolution IN
+          resolutions %]
+          <option value="[% resolution.resolution_id %]" 
+                  
+                   [%-  IF resolution.resolution_id==scanparameter.resolution_id -%]  
+                   selected="selected"[%-  END -%]>
+                  [%- resolution.value -%]</option> [%- END %]
+        </select><br class="json" /> <label class="json" for="scope">
+          Bereich </label> <input class="json" id="scope"
+                                name="scanparameters.[% loop.count - 1 %].scope"
+                                value="[% scanparameter.scope %]" type="text" /> 
+          
+          [%- SET  scanparameter_count = loop.count - 1 -%] 
+        
+        [%- FOR scanoption IN scanparameter.scanoptions %] 
+        <input class="json" type="hidden"
+                                            name="scanparameters.[% scanparameter_count %].scanoptions.[% loop.count - 1 %].scanoptionkey_id"
+                                            value="[% scanoption.scanoptionkey_id %]"> <select
+                                            class="json" id="scanner_options"
+                                            name="scanparameters.[% scanparameter_count %].scanoptions.[% loop.count - 1 %].value_id">
+          [%- FOR option IN scanoption.options %]
+          <option value="[% option.value_id %]" [%-  IF option.value_id==
+                  scanoption.value_id -%]  selected="selected"[%-  END -%] >
+                  [%- option.name -%]</option> [%- END %]
+        </select> [%- END %] [%- IF scanparameter.scanparameter_id -%] <label
+          class="json"> Löschen </label> <input class="json"
+          name="scanparameters.[% loop.count - 1 %].DELETED" type="checkbox"
+          value="1" />
+    </li> [%- END -%] [%- END -%]
+  </ul>
 
 
 
-		<a href='#' id='add_scanner'><img src='[% c.uri_for_static('
-			images/add.png') %]' alt='neuen Scanner einfuegen' />
-		</a>
-	</div>
+  <a href='#' id='add_scanner'>
+    <img src='[% c.uri_for_static('images/add.png') %]' alt='neuen Scanner einfuegen' />
+  </a>
+</div>
 
-	<hr />
-	<div class="set">
-		<label id="project_label" class="strong"> Projekt/ID </label>
-		<ul id="project">
-			[%- FOR orderproject IN order_href.orders_projects %]
-			<li name="[% loop.count - 1 %]"><input type="hidden"
-				name="orders_projects.[% loop.count - 1 %].ordersprojects_id"
-				value="[% orderproject.ordersprojects_id %]"> <select
-				class='select_project'
-				name="orders_projects.[% loop.count - 1 %].project_id">
-					<option value="">-- select --</option> [%- FOR project IN projects
-					%]
-					<option value="[% project.project_id %]" [%-  IF
-						project.project_id==
-						orderproject.project_id -%]  selected="selected"[%-  END -%]>
-						[%- project.name -%]</option> [%- END %]
-			</select> [%- SET orderproject_count = (loop.count - 1) -%] [%- FOR
-				projectoption IN orderproject.projectoptions %]<input class="json"
-				type="hidden"
-				name="orders_projects.[% orderproject_count %].projectoptions.[% loop.count - 1 %].projectkey_id"
-				value="[% projectoption.projectkey_id %]"> <label
-				class="json"> [% projectoption.pkey %] </label> <input class="json"
-				name="orders_projects.[% orderproject_count %].projectoptions.[% loop.count - 1 %].value"
-				value="[% projectoption.value %]" type="text" />[%- END %] [%- IF
-				orderproject.ordersprojects_id -%] <label class="json">
-					Löschen </label> <input class="json"
-				name="orders_projects.[% loop.count - 1 %].DELETED" type="checkbox"
-				value="1" />[%- END -%] [%- END -%]</li>
-		</ul>
-		<a href='#' id='add_project'><img src='[% c.uri_for_static('
-			images/add.png') %]' alt='neues Projektfeld einfuegen' />
-		</a>
-	</div>
-	<hr />
-	<div class="set">
-		<label id="publication_label" class="strong"> Publikation </label>
-		<ul id="publication">
-			[%- FOR publication IN order_href.publications %]
-			<li name="[% loop.count - 1 %]"><input class="json"
-				type="hidden"
-				name="publications.[% loop.count - 1 %].publication_id"
-				value="[% publication.publication_id %]"> <select
-				class="select_publication"
-				name="publications.[% loop.count - 1 %].platform_id">
-					<option value="">-- select --</option> [%- FOR platform IN
-					platforms %]
-					<option value="[% platform.platform_id %]" [%-  IF
-						platform.platform_id==
-						publication.platform_id -%]  selected="selected"[%-  END -%]>
-						[%- platform.name -%]</option> [%- END -%]
-			</select> [%- SET publication_count = loop.count - 1 -%] [%- FOR
-				publicationoption IN publication.publicationoptions %]<input
-				class="json" type="hidden"
-				name="publications.[% publication_count %].publicationoptions.[% loop.count - 1 %].platformoptionkey_id"
-				value="[% publicationoption.platformoptionkey_id %]"> <label
-				class="json"> [% publicationoption.pkey %] </label> <input
-				class="json"
-				name="publications.[% publication_count %].publicationoptions.[% loop.count - 1 %].value"
-				value="[% publicationoption.value %]" type="text" />[%- IF
-				publicationoption.pkey == "PID" %] <a class="json"
-				href=http://bvbm1.bib-bvb.de/webclient/DeliveryManager?pid=[%
-				publicationoption.value %]&custom_att_2=simple_viewer
-				target='_blank'>Online</a> [% END -%] [%- END -%] [%- IF
-				publication.publication_id -%] <label class="json"> Löschen
-			</label> <input class="json" name="publications.[% loop.count - 1 %].DELETED"
-				type="checkbox" value="1" />[%- END -%]</li> [%- END -%]
-		</ul>
-		<a href='#' id='add_publication'><img src='[% c.uri_for_static('
-			images/add.png') %]' alt='neues Publikationsfeld einfuegen' />
-		</a>
-	</div>
+<hr />
+<div class="set">
+  <label id="project_label" class="strong"> Projekt/ID </label>
+  <ul id="project">
+    [%- FOR orderproject IN order_href.orders_projects %]
+    <li name="[% loop.count - 1 %]">
+      <input type="hidden" name="orders_projects.[% loop.count - 1 %].ordersprojects_id"
+       value="[% orderproject.ordersprojects_id %]"> 
+      <select class='select_project' name="orders_projects.[% loop.count - 1 %].project_id">
+        <option value="">-- select --</option> 
+        [%- FOR project IN projects %]
+        <option value="[% project.project_id %]" 
+      [%-  IF project.project_id==orderproject.project_id -%]  selected="selected"[%-  END -%]>
+                [%- project.name -%]</option> [%- END %]
+      </select> [%- SET orderproject_count = (loop.count - 1) -%] 
+      [%- FOR projectoption IN orderproject.projectoptions %]<input class="json"
+                                                            type="hidden"
+                                                            name="orders_projects.[% orderproject_count %].projectoptions.[% loop.count - 1 %].projectkey_id"
+                                                            value="[% projectoption.projectkey_id %]"> <label
+                                                            class="json"> [% projectoption.pkey %] </label> <input class="json"
+                                                            name="orders_projects.[% orderproject_count %].projectoptions.[% loop.count - 1 %].value"
+                                                            value="[% projectoption.value %]" type="text" />[%- END %] 
+                                                            
+     [%- IF orderproject.ordersprojects_id -%] <label class="json">
+        Löschen </label> 
+     
+     <input class="json" name="orders_projects.[% loop.count - 1 %].DELETED" type="checkbox"
+                              value="1" />
+     [%- END -%] 
+     [%- END -%]</li>
+  </ul>
+  <a href='#' id='add_project'><img src='[% c.uri_for_static('images/add.png') %]' alt='neues Projektfeld einfuegen' />
+  </a>
+</div>
+<hr />
+<div class="set">
+  <label id="publication_label" class="strong"> Publikation </label>
+  <ul id="publication">
+    [%- FOR publication IN order_href.publications %]
+    <li name="[% loop.count - 1 %]"><input class="json"
+                                           type="hidden"
+                                           name="publications.[% loop.count - 1 %].publication_id"
+                                           value="[% publication.publication_id %]"> <select
+                                           class="select_publication"
+                                           name="publications.[% loop.count - 1 %].platform_id">
+        <option value="">-- select --</option> [%- FOR platform IN
+        platforms %]
+        <option value="[% platform.platform_id %]" 
+                
+        [%-  IF platform.platform_id==publication.platform_id -%]  selected="selected"[%-  END -%]>
+                [%- platform.name -%]</option> [%- END -%]
+      </select> [%- SET publication_count = loop.count - 1 -%] 
+      [%- FOR publicationoption IN publication.publicationoptions %]<input
+        class="json" type="hidden"
+        name="publications.[% publication_count %].publicationoptions.[% loop.count - 1 %].platformoptionkey_id"
+        value="[% publicationoption.platformoptionkey_id %]"> <label
+        class="json"> [% publicationoption.pkey %] </label> <input
+        class="json"
+        name="publications.[% publication_count %].publicationoptions.[% loop.count - 1 %].value"
+        value="[% publicationoption.value %]" type="text" />
+        
+        [%- IF publicationoption.pkey == "PID" %]
+      <a class="json" href=http://bvbm1.bib-bvb.de/webclient/DeliveryManager?pid=[%publicationoption.value %]&custom_att_2=simple_viewer target='_blank'>Online</a> 
+      [% END -%] 
+      [%- END -%]  
+                                            
+      [%- IF publication.publication_id -%] <label class="json"> Löschen
+      </label> <input class="json" name="publications.[% loop.count - 1 %].DELETED"
+                      type="checkbox" value="1" />[%- END -%]</li> [%- END -%]
+  </ul>
+  <a href='#' id='add_publication'>
+    <img src='[% c.uri_for_static('images/add.png') %]' alt='neues Publikationsfeld einfuegen' />
+  </a>
+</div>
 
-	<hr />
-	<input class="send" id="order_submit" name="save" type="submit"
-		disabled="true" value="Speichern">
+<hr />
+<input class="send" id="order_submit" name="save" type="submit"
+       disabled="true" value="Speichern">
 </form>
 </div>

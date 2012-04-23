@@ -33,7 +33,7 @@
 <p>Atacama verwaltet die Digitalisierungsaufträge der
 Universitätsbibliothek Regensburg.</p>
 
-<p>Von hier aus können Sie
+<p>Von hier aus können Sie 
 <ul>
 	<li>die <a href="[% c.uri_for_action('/order/list') %]">Liste
 	der Aufträge</a> ansehen.</li>
