@@ -11,8 +11,10 @@
 [% IF c.model('AtacamaDB').connect_info.dsn.search('test') %]
 Testdatenbank
 [% END %]
-User: [% c.user.name %] Login: [% c.user.login %] stage: [% c.config.stage %]
 
+[% IF c.user.name %]
+User: [% c.user.name %] Login: [% c.user.login %]
+[% END %]
 </div>
 </div>
 

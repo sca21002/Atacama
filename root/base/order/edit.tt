@@ -48,7 +48,7 @@
     	
 
     function handleFormChanged() {
-      $('input.send').attr("disabled", false).css("color", "#333333");
+      $('input.send').removeAttr("disabled");
       formChanged = true;
     }
 
@@ -60,6 +60,14 @@
       }
     }
 
+
+   $('#signatur_link, #edit_link, #book_selected, #edit_signature').button();
+   $('input#order_submit').button({
+            icons: {
+                primary: "ui-icon-disk"
+            },
+            text: true
+        });
 
     function handleProjectChange(position) {
             
@@ -532,7 +540,7 @@ title = 'Fehlerhafte Jobs' icon = 'alert' class = 'prevent' } ]; %]
 <form id="order_form" action="" method="post">
   <div id="submit_top">
     <input class="send" id="order_submit" name="save" type="submit"
-           disabled="true" value="Speichern">
+           disabled="disabled" value="Speichern">
   </div>
 [% IF c.config.stage == 'testing' %]
   <fieldset>
@@ -664,7 +672,7 @@ title = 'Fehlerhafte Jobs' icon = 'alert' class = 'prevent' } ]; %]
 <div class="row">
   <label for="control"> geprüft von: </label> 
   <input class="breit" id="control" name="control" type="text"
-                                                     value="[% order_href.control %]"  />
+    value="[% order_href.control %]"  />
 </div>
 <div class="row">
   <label for="remark" class="block"> Bemerkung: </label>

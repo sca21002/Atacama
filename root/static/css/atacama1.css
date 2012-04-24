@@ -132,9 +132,8 @@ form#login_form {
 #signatur_link,#edit_link,#book_selected,#edit_signature {
 	font-size: 0.8em;
 	padding: 3px 6px 3px 19px;
-	overflow: hidden;
 	position: relative;
-	text-decoration: none;
+	
 }
 
 #signatur_link:hover,#edit_link:hover,#book_selected:hover,#edit_signature:hover
@@ -255,9 +254,6 @@ input[type="submit"] {
 	padding: 4px;
 }
 
-#order_submit {
-	color: #CCCCCC;
-}
 
 form#order_form textarea {
 	margin-left: 9.3em;
