@@ -1,6 +1,9 @@
 <script type="text/javascript">
 
   $(document).ready(function() {
+    
+    
+    
     jQuery("#remarks").jqGrid({
       url:"[% json_url_remarks %]",
       datatype: "json",
@@ -12,7 +15,7 @@
         {name:'content',index:'content', width:300},
       ],
       rowNum:15,
-      rownumbers: true,
+      rownumbers: false,
       height: "100%",
       width: "100%",
       autowidth: true,
@@ -23,7 +26,18 @@
       sortorder: "desc",
       caption:"Bemerkungen"
     });
-    jQuery("#remarks").jqGrid('navGrid','#pager_remarks',{edit:false,add:false,del:false,search:false});        
+    jQuery("#remarks").jqGrid('navGrid','#pager_remarks',{
+      edit:false,add:false,del:false,search:false});      
+    
+     jQuery("#remarks").jqGrid({
+          gridComplete: function () {
+            console.log('complete');
+             if ($('.ui-paging-info').text() == "Keine Datensätze vorhanden") {
+              $('#remark_grid').css('display', 'none');
+          }
+          }
+        });  
+ 
 
     var formChanged = false;
 
@@ -496,7 +510,7 @@
               
     });
 		
-		
+
 		
                
 
@@ -674,17 +688,7 @@ title = 'Fehlerhafte Jobs' icon = 'alert' class = 'prevent' } ]; %]
   <input class="breit" id="control" name="control" type="text"
     value="[% order_href.control %]"  />
 </div>
-<div class="row">
-  <label for="remark" class="block"> Bemerkung: </label>
-  <textarea class="breit" id="remark" name="remark"  rows="1">
-        [%- order_href.remark -%]
-  </textarea>
-</div>
-<div>
-  <table id="remarks"></table>
-  <div id="pager_remarks"></div>
-</div>
-
+      
 <div class="row">
   <label> Verbreitungsrecht: </label> <select name="copyright_id">
     <option value="">-- select --</option> [%- FOR copyright IN
@@ -696,6 +700,18 @@ title = 'Fehlerhafte Jobs' icon = 'alert' class = 'prevent' } ]; %]
             [%- copyright.name -%]</option> [%- END %]
   </select>
 </div>
+      <hr />
+<div class="row">
+  <label for="remark" class="block"> Bemerkung: </label>
+  <textarea class="breit" id="remark" name="remark"  rows="1">
+        [%- order_href.remark -%]
+  </textarea>
+</div>
+<div id='remark_grid'>
+  <table id="remarks"></table>
+  <div id="pager_remarks"></div>
+</div>
+
 
 <hr />
 <div class="set">
@@ -841,3 +857,10 @@ title = 'Fehlerhafte Jobs' icon = 'alert' class = 'prevent' } ]; %]
        disabled="true" value="Speichern">
 </form>
 </div>
+
+  
+<script type="text/javascript">		   
+  if ($('.ui-paging-info').text() == "Keine Datensätze vorhanden") {
+  $('#remark_grid').css('display', 'none');
+}
+</script>

@@ -7,9 +7,8 @@ body {
 	padding: 0;
 }
 
-#test {
-	color: white;
-	font-weight: bold;
+div#status {
+font-size: 70%;
 	 margin-top: 21px;
 }
 
@@ -277,6 +276,10 @@ div.set ul {
 	padding: 0;
 }
 
+#remark_grid {
+  margin: 10px 0;
+}
+
 div.set ul li {
 	background-repeat: no-repeat;
 	margin: 8px 0;
@@ -317,7 +320,7 @@ img {
 p#name {
 	font-size: 70%;
 	padding: 6px 0 0;
-	width: 453px;
+
 }
 
 h1,h1.main {
@@ -366,11 +369,11 @@ td>a {
 }
 
 hr {
-	border-color: #E4E4E4;
+	border-color: #ddd;
 	border-style: none dashed dashed;
 	border-width: medium 1px 1px;
-	margin-left: -4%;
-	width: 107%;
+	margin-left: -3%;
+	width: 106%;
 }
 
 .alpha60 {

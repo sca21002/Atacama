@@ -1,5 +1,6 @@
 package Atacama::Controller::Root;
 use Moose;
+use Data::Dumper;
 use namespace::autoclean;
 
 BEGIN { extends 'Catalyst::Controller' }
@@ -28,7 +29,41 @@ The root page (/)
 
 sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
+
+  $c->stash(
+        projects => [
+            $c->model('AtacamaDB::Project')->search(
+                undef,
+                {order_by => 'name'}
+            )->all
+        ],      
+        status => [ $c->model('AtacamaDB::Status')->search(
+             undef, {
+                join => [qw/ orders /],
+                select => ['name', 'status_id', 
+                      {count => 'orders.order_id', -as => 'order_count'} ],
+                group_by => [qw/ status_id /]
+        })->all ],
+
+        orders => [$c->model('AtacamaDB::Order')->search(undef,
+          {
+                join     => [qw/ status /],
+                select   => [ 'status.name', 
+                      { count => 'order_id', -as => 'order_count' } ],
+                as => [qw/
+                  status_name
+                  order_count
+                /],
+                  group_by => 'status.status_id'
+          })->all]
+);
+
+
+
+
 }
+
+
 
 =head2 default
 
