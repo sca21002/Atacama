@@ -53,8 +53,8 @@ Aufträge: [% orders.list.size %]<br />
 <h1>orders</h1>
 [% FOREACH ord IN orders %]
 
-[% ord.status_name %]:<br />
-[% ord.order_count %]<br />
+[% ord.get_column('status_name') %]:<br />
+[% ord.get_column('order_count') %]<br />
 [% END %]
 
 
