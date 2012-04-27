@@ -85,4 +85,29 @@ sub _cross {
     return @result;
 }
 
+sub get_status_order_count {
+    my $self = shift;
+    my $params = shift;
+    
+    my $joins = [qw( status )];
+    my $where;
+        
+        
+    if ($params->{project_id}) {
+        push @$joins, 'orders_projects'; 
+        $where->{'orders_projects.project_id'} = $params->{project_id};  
+    }
+        
+    return $self->search(
+        $where,
+        {
+            join     => $joins,
+            select   => [ 'status.name', { count => 'me.order_id'} ],
+            as => [qw( status_name order_count ) ],
+            group_by => 'status.status_id',
+            result_class => 'DBIx::Class::ResultClass::HashRefInflator',
+        }
+    )->all;
+}
+
 1;

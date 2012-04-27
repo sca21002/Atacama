@@ -44,18 +44,7 @@ sub index :Chained('/login/required') PathPart('') {
                       {count => 'orders.order_id', -as => 'order_count'} ],
                 group_by => [qw/ status_id /]
         })->all ],
-
-        orders => [$c->model('AtacamaDB::Order')->search(undef,
-          {
-                join     => [qw/ status /],
-                select   => [ 'status.name', 
-                      { count => 'order_id', -as => 'order_count' } ],
-                as => [qw/
-                  status_name
-                  order_count
-                /],
-                  group_by => 'status.status_id'
-          })->all]
+        orders => [$c->model('AtacamaDB::Order')->get_status_order_count()]
 );
 
 
