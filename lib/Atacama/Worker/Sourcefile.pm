@@ -9,7 +9,7 @@ use List::Util qw(first);
 use Data::Dumper;
 use Path::Class;
 use Remedi::Imagefile;
-use Remedi::PDF_API2;
+use Remedi::PDF::API2;
 
 my $log_file_name;
 my $log;
@@ -151,7 +151,7 @@ sub save_pdffile{
         }
         $log->debug("Keine Auftragsnummer gefunden fuer $pdffile") unless $order_id;
         $order_id = lc $order_id;
-        my $pdf = Remedi::PDF_API2->new(
+        my $pdf = Remedi::PDF::API2->new(
             file => $pdffile,
         );
         $clause->{order_id} = $order_id;
