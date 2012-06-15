@@ -2,7 +2,12 @@
 
   $(document).ready(function() {
     
-    
+   $( "#tabs" ).tabs({
+			cookie: {
+				// store cookie for a day, without, it would be a session cookie
+				expires: 1
+			}
+		});
     
     jQuery("#remarks").jqGrid({
       url:"[% json_url_remarks %]",
@@ -31,7 +36,7 @@
     
      jQuery("#remarks").jqGrid({
           gridComplete: function () {
-            console.log('complete');
+            //console.log('complete');
              if ($('.ui-paging-info').text() == "Keine Datensätze vorhanden") {
               $('#remark_grid').css('display', 'none');
           }
@@ -62,7 +67,7 @@
     	
 
     function handleFormChanged() {
-      $('input.send').removeAttr("disabled");
+      $('input.send').removeAttr("disabled").removeClass("ui-state-disabled");
       formChanged = true;
     }
 
@@ -129,48 +134,10 @@
         }
       });
 			
-			
-		
-			
-      //Dann orders_projects.+count+.ordersprojects_id holen, dann erst Projectoptions speichern
 
     }
         
-    /*    
-    $('input.p_option').blur(function() {
-      $.ajax({
-        type: "POST",
-        url: "[% c.uri_for_action('/orderproject/json') %]",
-        dataType: "json",
-        data: "project_id="+option_val,
-        cache: false,
-        error: function(){ alert ("Fehler"); },                                    
-        success: function(result){    
-                                              			
-   
-          projectoptions_count = result.json_data.projectoptions.length -1;
-                 
-                
-          //Options 
-          if (result.json_data.projectoptions != '' && option_val != '' ) {          
-            $.each(result.json_data.projectoptions, function(key, val) {       
-                    console.log(key, "key2")
-                  			
-              projectoptions = "<label class='json'> "+val.pkey+" </label> "+
-                "<input class='json' name='orders_projects."+count+".projectoptions."
-                +projectoptions_count+".value' "+
-                "type='text' /> <input class='p_option json' "+
-                "name='orders_projects."+count+".projectoptions."+projectoptions_count
-                +".projectkey_id' "+
-                "value='"+val.projectkey_id+"' type='hidden' />";
-              active_li.append($(projectoptions));                 				   
-            });  
-          }                 		             
-        }
-      });
-    });
-        
-   */     
+ 
     //neues Projekt ohne Optionen        
     $('a#add_project').live("click", function(){            
       var count = $("ul#project li").size();
@@ -273,7 +240,7 @@
             active_li.append($("<option value=''>-- select --</option>"));  	
 			       			
             $.each(result.json_data.resolutions, function(key, val) {       
-              console.debug (val.value);
+             // console.debug (val.value);
               $('<option>').attr({ value: val.resolution_id}).html(val.value).appendTo(active_li);
               //funktioniert hier nicht
               //active_li.append($("<option value='" + val.resolution_id +">" + val.value + "</option>"));                 				   
@@ -306,7 +273,7 @@
     //Publikation      
     $('a#add_publication').live("click", function(){             
       var count = $("ul#publication li").size();
-      console.log (count);          
+     // console.log (count);          
  			
  			
  			
@@ -556,7 +523,20 @@ title = 'Fehlerhafte Jobs' icon = 'alert' class = 'prevent' } ]; %]
     <input class="send" id="order_submit" name="save" type="submit"
            disabled="disabled" value="Speichern">
   </div>
-[% IF c.config.stage == 'testing' %]
+
+  
+  <div id="tabs">
+	<ul>
+		<li><a href="#tab-1">Allgemein</a></li>
+		<li><a href="#tab-2">Scanner</a></li>
+		<li><a href="#tab-3">Projekt</a></li>
+    	<li><a href="#tab-4">Publikation</a></li>
+  
+  </ul>
+    
+    
+    <div id="tab-1">
+  [% IF c.config.stage == 'testing' %]
   <fieldset>
     <div class="left">Umlaute:</div> [% umlaute %] 
   </fieldset>
@@ -713,9 +693,11 @@ title = 'Fehlerhafte Jobs' icon = 'alert' class = 'prevent' } ]; %]
 </div>
 
 
-<hr />
-<div class="set">
-  <label id="scan_label" class="strong"> Scanner </label>
+
+    </div>
+    <div id="tab-2">
+ <div class="set">
+
   <ul id="scanner">
     [% FOR scanparameter IN order_href.scanparameters %]
     <li name="[% loop.count - 1 %]"><input type="hidden"                                          name="scanparameters.[% loop.count - 1 %].scanparameter_id"
@@ -774,12 +756,13 @@ title = 'Fehlerhafte Jobs' icon = 'alert' class = 'prevent' } ]; %]
 
   <a href='#' id='add_scanner'>
     <img src='[% c.uri_for_static('images/add.png') %]' alt='neuen Scanner einfuegen' />
-  </a>
+  neuer Scanner</a>
 </div>
 
-<hr />
-<div class="set">
-  <label id="project_label" class="strong"> Projekt/ID </label>
+    </div>
+    <div id="tab-3">
+      
+      <div class="set">
   <ul id="project">
     [%- FOR orderproject IN order_href.orders_projects %]
     <li name="[% loop.count - 1 %]">
@@ -808,12 +791,12 @@ title = 'Fehlerhafte Jobs' icon = 'alert' class = 'prevent' } ]; %]
      [%- END -%] 
      [%- END -%]</li>
   </ul>
-  <a href='#' id='add_project'><img src='[% c.uri_for_static('images/add.png') %]' alt='neues Projektfeld einfuegen' />
+  <a href='#' id='add_project'><img src='[% c.uri_for_static('images/add.png') %]' alt='neues Projektfeld einfuegen' /> neues Projekt 
   </a>
 </div>
-<hr />
+    </div>
+    <div id="tab-4">
 <div class="set">
-  <label id="publication_label" class="strong"> Publikation </label>
   <ul id="publication">
     [%- FOR publication IN order_href.publications %]
     <li name="[% loop.count - 1 %]"><input class="json"
@@ -849,15 +832,16 @@ title = 'Fehlerhafte Jobs' icon = 'alert' class = 'prevent' } ]; %]
   </ul>
   <a href='#' id='add_publication'>
     <img src='[% c.uri_for_static('images/add.png') %]' alt='neues Publikationsfeld einfuegen' />
-  </a>
+  neue Publikation</a>
 </div>
 
-<hr />
+    </div>
 <input class="send" id="order_submit" name="save" type="submit"
        disabled="true" value="Speichern">
 </form>
 </div>
 
+</div>
   
 <script type="text/javascript">		   
   if ($('.ui-paging-info').text() == "Keine Datensätze vorhanden") {

@@ -101,6 +101,10 @@ ul#bindeeinheit strong {
 	width: 6em;
 }
 
+a.visited {
+  color: #222222;
+}
+
 ul#bindeeinheit {
 	font-size: 0.9em;
 	padding-left: 13px;
@@ -182,10 +186,12 @@ ul#navigation li {
 	float: left;
 	margin: 9px 0 0;
 	padding: 7px 0 5px 3px;
+  background-color: white;
+  
 }
 
 ul#navigation_level2 li {
-	border: 0 none;
+	background-color: transparent;
 	display: block;
 	font-size: 13px;
 	margin: 5px 0 -1px -28px;
@@ -203,6 +209,16 @@ ul#navigation li a {
 	padding: 0 0 0 2px;
 	text-decoration: none;
 	width: 168px;
+ 
+}
+
+#chart_div {
+  margin-top: -15px;
+}
+
+
+ul#navigation li.ui-state-active a {
+  width: 191px;
 }
 
 ul#navigation li a:visited {
@@ -210,14 +226,21 @@ ul#navigation li a:visited {
 }
 
 ul#navigation li:hover {
-	background-color: white;
+  background-color: #eee;
+  
 }
 
 ul#navigation li.ui-state-active {
 	background-image: url("images/nav_bg_active.png");
-	background-position: -20px center;
+	background-position: 0px center;
 	background-repeat: no-repeat;
-	border: 1px solid white;
+	border: none !important;
+  background-color: transparent;
+}
+
+
+ul#navigation_level2 li {
+  border: none !important;
 }
 
 ul#navigation_level2 li.ui-state-active {
