@@ -36,7 +36,7 @@ sub work {
     my $arg = $job->arg or croak("Keine Job-Parameter gefunden");
     my $order_id = $arg->{order_id} or croak("Keine Auftragsnummer");
 
-    my $log_file_name = File::Spec->catfile(
+    $log_file_name = File::Spec->catfile(
         $FindBin::Bin, '..', 'log', 'sourcefile_' . $order_id
     ); 
     unlink $log_file_name if -e $log_file_name;
@@ -92,7 +92,9 @@ sub get_sourcefile {
         save_scanfile($entry);   
     } 
     elsif ($format eq 'PDF') {
-        return unless $entry->basename =~ /\.(pdf)$/i;
+        # skip single page pdfs
+        return if $entry->basename =~ /^\w{3,4}\d{5}_\d{3,5}\.pdf$/i;
+        return unless $entry->basename =~ /\.pdf$/i;
         save_pdffile($entry)
     }
     else { $log->logcroak("Unbekanntes Format $format"); }
