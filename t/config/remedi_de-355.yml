@@ -1,0 +1,16 @@
+library_union_id: bvb
+library_id: 355
+isil: DE-355
+regex_filestem_prefix: |
+  ubr\d{5}        # order_id
+regexp_filestem_var: |
+  _               # underscore
+  \d{1,5}         # filenr
+logo_file_prefix: UBRLogo_
+logo_path: /home/atacama/Remedi/lib/Remedi/logo/de-355
+logo_url: http://www.bibliothek.uni-regensburg.de/
+image_basepath: t/input_files/inArbeit/
+sRGB_profile: /home/atacama/Remedi/lib/Remedi/color/sRGB_Color_Space_Profile.icm
+tt_path: /home/atacama/Remedi/lib/Remedi/tt
+mets_path: /rzblx8_DATA1/digitalisierung/digitool/exchange/inArbeit
+creator: Universitätsbibliothek Regensburg

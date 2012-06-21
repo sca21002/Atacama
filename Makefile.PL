@@ -34,6 +34,7 @@ requires 'DBD::mysql';
 requires 'DBIx::Class::DateTime::Epoch';
 requires 'DBIx::Class::EncodedColumn';
 requires 'File::MMagic';
+requires 'File::Path';
 requires 'HTML::FormHandler';
 requires 'HTML::FormHandler::Model::DBIC';
 requires 'Image::ExifTool';                  # because of AtacamaWiki
@@ -43,6 +44,7 @@ requires 'YAML::XS';
 requires 'List::Util';
 requires 'Log::Log4perl';
 requires 'Moose';
+requires 'MooseX::ClassAttribute';
 requires 'MooseX::NonMoose';
 requires 'MooseX::Types::Path::Class';
 requires 'MooseX::Types::DateTime';
