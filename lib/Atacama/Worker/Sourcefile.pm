@@ -1,110 +1,103 @@
 package Atacama::Worker::Sourcefile;
-use strict;
-use warnings;
-use base 'TheSchwartz::Worker';
-use Scalar::Util qw(blessed);
-use Carp;
-use Log::Log4perl;
+use Moose;
+extends 'Atacama::Worker::Base';
 use List::Util qw(first);
-use Data::Dumper;
-use Path::Class;
+use MooseX::Types::Path::Class qw(File);
 use Remedi::Imagefile;
 use Remedi::PDF::API2;
+use Data::Dumper;
 
-my $log_file_name;
-my $log;
-my $atacama_schema;
-my $format;
+has '+log_config_basename' => (
+    default => 'log4perl_sourcefile.conf',
+);
+
+has '+log_basename' => (
+    default => 'sourcefile.log',                        
+);
+
+has 'scanfile_format' => (
+    is => 'rw',
+    isa => 'Str',
+    builder => '_build_scanfile_format',
+    lazy => 1,
+);    
 
 
-sub work {
-    my $class = shift;
-    my $job = shift;
+has 'format' => (
+    is => 'rw',
+    isa => 'Str',
+);
+    
 
 
-    my @sourcedirs = (
+has  'sourcedirs' => (
+    is => 'rw',
+    isa => 'ArrayRef[Str]',
+    default => sub { [                  
         '/rzblx8_DATA1/digitalisierung/auftraege/',
         '/rzblx8_DATA2/digitalisierung/auftraege/',
         '/rzblx8_DATA3/digitalisierung/auftraege/',
         '/mnt/rzblx9/data/digitalisierung/auftraege/',
-    );
-    croak('Falscher Aufruf von ',__PACKAGE__ ,"::work() mit Klasse: $class")
-        unless $class eq __PACKAGE__;
-    croak('Falscher Aufruf von ',__PACKAGE__ ,'::work():'
-            . ' kein Objekt vom Typ TheSchwartz::Job')
-        unless blessed($job) && $job->isa( 'TheSchwartz::Job' );
-    my $arg = $job->arg or croak("Keine Job-Parameter gefunden");
-    my $order_id = $arg->{order_id} or croak("Keine Auftragsnummer");
+    ] },
+);
 
-    $log_file_name = File::Spec->catfile(
-        $FindBin::Bin, '..', 'log', 'sourcefile_' . $order_id
-    ); 
-    unlink $log_file_name if -e $log_file_name;
-    my $log_configfile = File::Spec->catfile(
-        $FindBin::Bin, '..', 'log4perl_sourcefile.conf'
-    );
-    Log::Log4perl->init($log_configfile);
-    $log = Log::Log4perl->get_logger('Atacama::Worker::Sourcefile');
-    $log->info('Programm gestartet');        
-    my $atacama_config = get_atacama_config()
-      or $log->logcroak("Lesen der Atacama-Konfigurationsdatei fehlgeschlagen");       
-    my @dbic_connect_info
-        = @{ $atacama_config->{'Model::AtacamaDB'}{connect_info} };
-    $atacama_schema = Atacama::Schema->connect(@dbic_connect_info)
-        or $log->logcroak("Datenbankverbindung gescheitert");    
-    my $order = $atacama_schema->resultset('Order')->find($order_id)
-        or $log->logcroak("Kein Auftrag zu $order_id gefunden!");
-    $order->update({status_id => 23});
-    my $sourcedir
-        = first { -d } map {Path::Class::Dir->new($_, $order_id) } @sourcedirs
-            or $log->logcroak('Verzeichnis mit Quelldateien nicht gefunden!');
+has 'sourcedir' => (
+    is => 'rw',
+    isa => 'Maybe[Path::Class::Dir]',
+    builder => '_build_sourcedir',
+    lazy => 1,
+);
     
-    my $scanfile_format = $arg->{scanfile_format} || 'TIFF';
-    # $log->logdie("Scanfile Format: " . $scanfile_format);
-    foreach  ($scanfile_format, 'PDF') {
-        $format = $_;
-        $log->trace("Start-Format: " . $format);
-        $sourcedir->recurse(
-            callback => \&get_sourcefile,
-            depthfirst => 1,
-            preorder => 1
-        );
-    }
+sub  _build_scanfile_format {
+    my $self = shift;    
     
-    $job->completed();
-    $order->update({status_id => 27});
+    return $self->job->arg->{scanfile_format} || 'TIFF';
 }
 
-sub get_logfile_name { $log_file_name }
+sub _build_sourcedir {
+    my $self = shift;
+    
+    return first { -d } map { Path::Class::Dir->new( $_, $self->order_id ) }
+        @{$self->sourcedirs}
+    ;
+
+}
 
 sub get_sourcefile {
+    
+    my $self = shift;
     my $entry = shift;
-    $log->trace("Format: " . $format);    
+    
+    my $log = $self->log;
+    my $format = $self->format;
+    $log->trace("Format: " . $self->format);    
     $log->trace($entry . " gefunden");
     return if $entry->is_dir;
     # return if $entry->basename lt 'ubr03390'; 
     if ($format eq 'TIFF') {
         return unless $entry->basename =~ /^\w{3,4}\d{5}_\d{1,5}\.tif(?:f)?$/i;
-        save_scanfile($entry);   
+        $self->save_scanfile($entry);   
     }
     elsif ($format eq 'JPEG') {
         return unless $entry->basename =~ /^\w{3,4}\d{5}_\d{1,5}\.jpg$/i;
-        save_scanfile($entry);   
+        $self->save_scanfile($entry);   
     } 
     elsif ($format eq 'PDF') {
         # skip single page pdfs
         return if $entry->basename =~ /^\w{3,4}\d{5}_\d{3,5}\.pdf$/i;
         return unless $entry->basename =~ /\.pdf$/i;
-        save_pdffile($entry)
+        $self->save_pdffile($entry)
     }
     else { $log->logcroak("Unbekanntes Format $format"); }
 }
 
-
-sub save_scanfile{
+sub save_scanfile {
+    my $self = shift;
     my $scanfile = shift;
     my $clause;
     
+    my $log = $self->log;
+    my $atacama_schema = $self->atacama_schema;
     $log->info('Scanfile: ' . $scanfile);
     eval {
         my $image = Remedi::Imagefile->new(
@@ -140,9 +133,12 @@ sub save_scanfile{
 }
 
 sub save_pdffile{
+    my $self = shift;
     my $pdffile = shift;
     my $clause;
     
+    my $log = $self->log;
+    my $atacama_schema = $self->atacama_schema;
     $log->info("PDF-Datei: $pdffile");
     eval {
         my $index = -1;
@@ -179,15 +175,35 @@ sub save_pdffile{
         });
     }
 }
+    
 
-sub get_atacama_config {
-   
-    my $config = Config::ZOMG->new(
-        name => 'Atacama',
-        path => File::Spec->catfile($FindBin::Bin, '..'),
-    );
-    return $config->load;    
-}
+around 'work' => sub {
+    my $orig = shift;
+    my $self = shift;
+    
+    my $result = $self->$orig(@_);
+    my $log = $self->log;
+    $log->info('Programm gestartet');
+    $self->order->update({status_id => 22});
+    $log->logcroak('Verzeichnis mit Quelldateien nicht gefunden!')
+        unless $self->sourcedirs;
+    
+    foreach  ($self->scanfile_format, 'PDF') {
+        $self->format($_);
+        $self->log->trace("Start-Format: " . $self->format);
+        $self->sourcedir->recurse(
+            callback => sub { $self->get_sourcefile(@_) },  # Wow a CodeRef!
+            depthfirst => 1,
+            preorder => 1
+        );
+    }
+
+    
+    $self->job->completed();
+
+    $self->order->update({status_id => 27});
+    return 1;
+};
 
 
 1;

@@ -26,7 +26,7 @@ my $mets_module = new Test::MockModule('Remedi::Mets');
 my $csv_module = new Test::MockModule('Remedi::CSV');
         $csv_module->mock('make_csv', sub { print 'csv success' });
         
-my $input_dir = File::Spec->catfile($Bin, '..', 'input_files');
+my $input_dir = File::Spec->catfile($Bin, '..',  'input_files');
 Helper::prepare_input_files({
     input_dir =>  $input_dir,
     rmdir_dirs => [ qw( inArbeit ) ],
@@ -75,7 +75,7 @@ fixtures_ok [
 ], 'Installed some custom fixtures via the Populate fixture class';
 
 my $worker = Atacama::Worker::Remedi->new(
-    atacama_schema => Scanfile->result_source->schema
+    atacama_schema => Order->result_source->schema
 );
 $worker->work($job);
 
