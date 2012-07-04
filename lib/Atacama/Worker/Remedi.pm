@@ -154,7 +154,7 @@ sub work {
         %init_arg = (
             image_path => $order_id,
             title      => $titel->titel_isbd,
-            author     => $titel->autor_avs,
+            author     => $titel->autor_avs || '',
             configfile => $remedi_configfile,
 	    source_pdf_name => $source_pdf_name,
         );
