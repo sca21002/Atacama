@@ -177,6 +177,8 @@ sub copy_pdf {
         my $pagenums = '1-4,' . $doc->numPages;
         if (!$doc->deletePages($pagenums)) {
             $self->log->logdie("Failed to delete a page\n");
+        } else {
+            $self->log->info("4 Seiten vorne und 1 hinten im PDF gelöscht!");    
         }
         $doc->cleanoutput($dest);
     }
