@@ -142,7 +142,7 @@ sub _build_does_mets {
            && $self->job->arg->{mets};    
 }
 
-sub _builder_log_dir { $self->work_dir }
+sub _builder_log_dir { (shift)->work_dir }
 
 sub _build_remedi_config_file {
     my $self = shift;
