@@ -117,29 +117,29 @@ sub _build_csv_save_dir {
 sub _build_does_copy_files {
     my $self = shift;
     
-    return exists $self->job->arg->{copy_files}
-           && $self->job->arg->{copy_files};
+    return exists $self->job_arg->{copy_files}
+           && $self->job_arg->{copy_files};
 }
 
 sub _build_does_csv {
     my $self = shift;
     
-    return exists $self->job->arg->{csv}
-           && $self->job->arg->{csv};    
+    return exists $self->job_arg->{csv}
+           && $self->job_arg->{csv};    
 }
 
 sub _build_does_digifooter {
     my $self = shift;
     
-    return exists $self->job->arg->{digifooter}
-           && $self->job->arg->{digifooter};    
+    return exists $self->job_arg->{digifooter}
+           && $self->job_arg->{digifooter};    
 }
 
 sub _build_does_mets {
     my $self = shift;
     
-    return exists $self->job->arg->{mets}
-           && $self->job->arg->{mets};    
+    return exists $self->job_arg->{mets}
+           && $self->job_arg->{mets};    
 }
 
 sub _builder_log_dir { (shift)->work_dir }
@@ -147,7 +147,7 @@ sub _builder_log_dir { (shift)->work_dir }
 sub _build_remedi_config_file {
     my $self = shift;
     
-    my $remedi_config_file = $self->job->arg->{configfile}
+    my $remedi_config_file = $self->job_arg->{configfile}
         or $self->log->croak("Keine Remedi-Konfigurationsdatei");
     return $remedi_config_file;
 }
@@ -169,7 +169,7 @@ sub _build_scanfiles {
 sub copy_pdf {
     my $self = shift;
     
-    my $source = Path::Class::File->new( $self->job->arg->{source_pdf_name} );
+    my $source = Path::Class::File->new( $self->job_arg->{source_pdf_name} );
     my $dest   = Path::Class::File->new($self->work_dir, $self->order_id . '.pdf');  
     if ($source->basename =~ /^UBR\d{2}A\d{6}\.pdf/) {
         $self->log->info("EOD-PDF: " . $source);
@@ -275,10 +275,10 @@ sub start_digifooter {
         title      => $self->order->titel->titel_isbd || '',
         author     => $self->order->titel->autor_avs || '',
         configfile => $self->remedi_config_file,
-        source_pdf_name => $self->job->arg->{source_pdf_name},
+        source_pdf_name => $self->job_arg->{source_pdf_name},
     );
     foreach my $key (qw/resolution_correction source_format/) {
-        $init_arg{$key} = $self->job->arg->{$key} if $self->job->arg->{$key};
+        $init_arg{$key} = $self->job_arg->{$key} if $self->job_arg->{$key};
     }
     while (my($key, $val) = each %init_arg) { $self->log->info("$key => $val") } 
     Remedi::DigiFooter->new_with_config(%init_arg)->make_footer;    
@@ -319,6 +319,10 @@ around 'work' => sub {
     my $orig = shift;
     my $self = shift;
     
+    my $job = $_[0];
+    confess("Falscher Aufruf von Atacama::Worker::Remedi::work():"
+            . " kein Objekt vom Typ TheSchwartz::Job"       
+         ) unless blessed($job) && $job->isa( 'TheSchwartz::Job' );
     my $result = $self->$orig(@_);
     my $log_msg = $self->prepare_work_dir if $self->does_copy_files;
     my $log = $self->log;
@@ -328,7 +332,7 @@ around 'work' => sub {
 
     if ($self->does_copy_files) {    
         $self->copy_scanfiles;
-        $self->copy_pdf if $self->job->arg->{source_format} eq 'PDF';
+        $self->copy_pdf if $self->job_arg->{source_format} eq 'PDF';
     }
 
     if ($self->does_digifooter) {

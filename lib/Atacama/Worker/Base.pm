@@ -7,6 +7,9 @@ use Config::ZOMG;
 use Data::Dumper;
 use Log::Log4perl;
 use File::Path qw(make_path);
+use MooseX::NonMoose;
+  extends 'TheSchwartz::Worker';
+use Data::Dumper;
 
 has 'log_dir' => (
     is => 'ro',
@@ -81,9 +84,9 @@ has 'atacama_schema' => (
     lazy => 1,
 );
 
-has 'job' => (
+has 'job_arg' => (
     is => 'rw',
-    isa => 'TheSchwartz::Job',
+    isa => HashRef,
 );
 
 has 'order' => (
@@ -196,12 +199,14 @@ sub work {
     my $self = shift;
     my $job = shift;
     
-    $self->job($job);
-    $self->order_id($self->job->arg->{order_id});
-    $self->atacama_config_path($self->job->arg->{atacama_config_path});
+    #confess(Dumper($job->arg));
+    my $arg = $job->arg;
+    $self->order_id($job->arg->{order_id});
+    $self->job_arg($arg);
+    $self->atacama_config_path($self->job_arg->{atacama_config_path});
     $self->log_config_path(
-        exists $job->arg->{log_config_path}
-        || $job->arg->{atacama_config_path}
+        exists $self->job_arg->{log_config_path}
+        || $self->job_arg->{atacama_config_path}
     );
 
    
