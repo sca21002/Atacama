@@ -315,15 +315,18 @@ sub start_csv {
     
 }
 
-around 'work' => sub {
-    my $orig = shift;
-    my $self = shift;
+
+sub work {
+    my $class = shift;
+    my $job = shift;
     
-    my $job = $_[0];
+    Class::MOP::load_class($class);
+    my $self = $class->new();
+
     confess("Falscher Aufruf von Atacama::Worker::Remedi::work():"
             . " kein Objekt vom Typ TheSchwartz::Job"       
          ) unless blessed($job) && $job->isa( 'TheSchwartz::Job' );
-    my $result = $self->$orig(@_);
+
     my $log_msg = $self->prepare_work_dir if $self->does_copy_files;
     my $log = $self->log;
     $log->info('Programm gestartet');
@@ -347,7 +350,7 @@ around 'work' => sub {
         $self->start_csv;
     }
     
-    $self->job->completed();
+    $job->completed();
 
     $self->order->update({status_id => 26});
     return 1;

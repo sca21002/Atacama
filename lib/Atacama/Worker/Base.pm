@@ -198,19 +198,4 @@ sub _build_work_dir {
     return $work_dir;
 }
 
-sub work {
-    my $self = shift;
-    my $job = shift;
-    
-    $self->job($job);
-    $self->order_id($self->job->arg->{order_id});
-    $self->atacama_config_path($self->job->arg->{atacama_config_path});
-    $self->log_config_path(
-        exists $job->arg->{log_config_path}
-        || $job->arg->{atacama_config_path}
-    );
-
-   
-}
-
 1;
