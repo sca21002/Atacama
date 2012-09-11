@@ -1,103 +1,46 @@
 package Atacama::Worker::Sourcefile;
-use Moose;
-extends 'Atacama::Worker::Base';
+use base 'TheSchwartz::Worker';
+use Scalar::Util qw(blessed);
+use Carp;
 use List::Util qw(first);
 use MooseX::Types::Path::Class qw(File);
 use Remedi::Imagefile;
 use Remedi::PDF::API2;
 use Data::Dumper;
 
-has '+log_config_basename' => (
-    default => 'log4perl_sourcefile.conf',
-);
-
-has '+log_basename' => (
-    default => 'sourcefile.log',                        
-);
-
-has 'scanfile_format' => (
-    is => 'rw',
-    isa => 'Str',
-    builder => '_build_scanfile_format',
-    lazy => 1,
-);    
-
-
-has 'format' => (
-    is => 'rw',
-    isa => 'Str',
-);
-    
-
-
-has  'sourcedirs' => (
-    is => 'rw',
-    isa => 'ArrayRef[Str]',
-    default => sub { [                  
-        '/rzblx8_DATA1/digitalisierung/auftraege/',
-        '/rzblx8_DATA2/digitalisierung/auftraege/',
-        '/rzblx8_DATA3/digitalisierung/auftraege/',
-        '/mnt/rzblx9/data/digitalisierung/auftraege/',
-    ] },
-);
-
-has 'sourcedir' => (
-    is => 'rw',
-    isa => 'Maybe[Path::Class::Dir]',
-    builder => '_build_sourcedir',
-    lazy => 1,
-);
-    
-sub  _build_scanfile_format {
-    my $self = shift;    
-    
-    return $self->job->arg->{scanfile_format} || 'TIFF';
-}
-
-sub _build_sourcedir {
-    my $self = shift;
-    
-    return first { -d } map { Path::Class::Dir->new( $_, $self->order_id ) }
-        @{$self->sourcedirs}
-    ;
-
-}
-
 sub get_sourcefile {
     
-    my $self = shift;
     my $entry = shift;
     
-    my $log = $self->log;
-    my $format = $self->format;
-    $log->trace("Format: " . $self->format);    
+    my $log = $job->log;
+    my $format = $job->format;
+    $log->trace("Format: " . $job->format);    
     $log->trace($entry . " gefunden");
     return if $entry->is_dir;
     # return if $entry->basename lt 'ubr03390'; 
     if ($format eq 'TIFF') {
         return unless $entry->basename =~ /^\w{3,4}\d{5}_\d{1,5}\.tif(?:f)?$/i;
-        $self->save_scanfile($entry);   
+        save_scanfile($entry);   
     }
     elsif ($format eq 'JPEG') {
         return unless $entry->basename =~ /^\w{3,4}\d{5}_\d{1,5}\.jpg$/i;
-        $self->save_scanfile($entry);   
+        save_scanfile($entry);   
     } 
     elsif ($format eq 'PDF') {
         # skip single page pdfs
         return if $entry->basename =~ /^\w{3,4}\d{5}_\d{3,5}\.pdf$/i;
         return unless $entry->basename =~ /\.pdf$/i;
-        $self->save_pdffile($entry)
+        save_pdffile($entry)
     }
     else { $log->logcroak("Unbekanntes Format $format"); }
 }
 
 sub save_scanfile {
-    my $self = shift;
     my $scanfile = shift;
     my $clause;
     
-    my $log = $self->log;
-    my $atacama_schema = $self->atacama_schema;
+    my $log = $job->log;
+    my $atacama_schema = $job->atacama_schema;
     $log->info('Scanfile: ' . $scanfile);
     eval {
         my $image = Remedi::Imagefile->new(
@@ -133,11 +76,10 @@ sub save_scanfile {
 }
 
 sub save_pdffile{
-    my $self = shift;
     my $pdffile = shift;
     my $clause;
     
-    my $log = $self->log;
+    my $log = $job->log;
     my $atacama_schema = $self->atacama_schema;
     $log->info("PDF-Datei: $pdffile");
     eval {
@@ -177,31 +119,37 @@ sub save_pdffile{
 }
     
 
-around 'work' => sub {
-    my $orig = shift;
-    my $self = shift;
+sub work {
+    my $class = shift;
+    my $job_theschwartz = shift;
     
-    my $result = $self->$orig(@_);
+    croak("Falscher Aufruf von Atacama::Worker::Remedi::work()"
+            . " mit Klasse: $class"
+         ) unless $class eq 'Atacama::Worker::Remedi';
+    croak("Falscher Aufruf von Atacama::Worker::Remedi::work():"
+            . " kein Objekt vom Typ TheSchwartz::Job"       
+         ) unless blessed($job) && $job->isa( 'TheSchwartz::Job' );
+    my $job = Atacama::Worker::Job::Sourcefile->new($job_theschwartz);
     my $log = $self->log;
     $log->info('Programm gestartet');
-    $self->order->update({status_id => 22});
+    $job->order->update({status_id => 22});
     $log->logcroak('Verzeichnis mit Quelldateien nicht gefunden!')
-        unless $self->sourcedirs;
+        unless $job->sourcedirs;
     
-    foreach  ($self->scanfile_format, 'PDF') {
-        $self->format($_);
+    foreach  ($job->scanfile_format, 'PDF') {
+        $job->format($_);
         $self->log->trace("Start-Format: " . $self->format);
-        $self->sourcedir->recurse(
-            callback => sub { $self->get_sourcefile(@_) },  # Wow a CodeRef!
+        $job->sourcedir->recurse(
+            callback => sub { get_sourcefile(@_) },  # Wow a CodeRef!
             depthfirst => 1,
             preorder => 1
         );
     }
 
     
-    $self->job->completed();
+    $job->completed();
 
-    $self->order->update({status_id => 27});
+    $job->order->update({status_id => 27});
     return 1;
 };
 

@@ -1,230 +1,14 @@
 package Atacama::Worker::Remedi;
-use Moose;
-extends 'Atacama::Worker::Base';
-use Atacama::Schema;
-use MooseX::Types::Moose qw(Bool Str);
-use MooseX::Types::Path::Class qw(File Dir);
-use DateTime;
+use base 'TheSchwartz::Worker';
+use Atacama::Worker::Job::Remedi;
+use Scalar::Util qw(blessed);
 use Carp;
-use File::Copy;
-use CAM::PDF;
-use Remedi::DigiFooter;
-use Remedi::Mets;
-use Remedi::CSV;
 
-has '+log_config_basename' => (
-    default => 'log4perl_remedi.conf',
-);
-
-
-has '+log_basename' => (
-    default => 'remedi.log',                        
-);
-
-has 'does_copy_files' => (
-    is => 'ro',
-    isa => Bool,
-    builder => '_build_does_copy_files',
-    lazy => 1,
-);
-
-has 'does_csv' => (
-    is => 'ro',
-    isa => Bool,
-    builder => '_build_does_csv',
-    lazy => 1,
-);
-
-has 'does_digifooter' => (
-    is => 'ro',
-    isa => Bool,
-    builder => '_build_does_digifooter',
-    lazy => 1,
-);
-
-has 'does_mets' => (
-    is => 'ro',
-    isa => Bool,
-    builder => '_build_does_mets',
-    lazy => 1,
-);
-
-has 'csv_file' => (
-    is => 'ro',
-    isa => File,
-    builder => '_build_csv_file',
-    lazy => 1,
-);
-
-has 'csv_basename' => (
-    is => 'ro',
-    isa => Str,
-    builder => '_build_csv_basename',
-    lazy => 1,
-);
-
-has 'csv_save_dir' => (
-    is => 'ro',
-    isa => Dir,
-    builder => '_build_csv_save_dir',
-    lazy => 1,
-);
-
-has 'remedi_config_file' => (
-    is => 'ro',
-    isa => File,
-    lazy => 1,
-    coerce => 1,
-    builder => '_build_remedi_config_file',
-);
-
-has 'scanfiles' => (
-    is => 'ro',
-    isa => 'ArrayRef[Atacama::Schema::Result::Scanfile]',
-    lazy => 1,
-    builder => '_build_scanfiles',
-);
-
-has 'source_pdf' => (
-    is => 'rw',
-    isa => File,
-);
-
-sub _build_csv_basename {
-    my $self = shift;
-    
-    return $self->order_id . '.csv';
-}
-
-
-sub _build_csv_file {
-    my $self = shift;
-    
-    return Path::Class::File->new($self->work_dir, $self->csv_basename);
-}
-
-sub _build_csv_save_dir {
-    my $self = shift;
-    
-    my $csv_save_dir = Path::Class::Dir->new($self->work_base, 'csv_save');
-    unless (-d $csv_save_dir) {
-        File::Path::make_path($csv_save_dir->stringify)
-            or die "Coldn't create $csv_save_dir: $!";
-    }
-    return $csv_save_dir;
-}
-
-sub _build_does_copy_files {
-    my $self = shift;
-    
-    return exists $self->job_arg->{copy_files}
-           && $self->job_arg->{copy_files};
-}
-
-sub _build_does_csv {
-    my $self = shift;
-    
-    return exists $self->job_arg->{csv}
-           && $self->job_arg->{csv};    
-}
-
-sub _build_does_digifooter {
-    my $self = shift;
-    
-    return exists $self->job_arg->{digifooter}
-           && $self->job_arg->{digifooter};    
-}
-
-sub _build_does_mets {
-    my $self = shift;
-    
-    return exists $self->job_arg->{mets}
-           && $self->job_arg->{mets};    
-}
-
-sub _builder_log_dir { (shift)->work_dir }
-
-sub _build_remedi_config_file {
-    my $self = shift;
-    
-    my $remedi_config_file = $self->job_arg->{configfile}
-        or $self->log->croak("Keine Remedi-Konfigurationsdatei");
-    return $remedi_config_file;
-}
-
-sub _build_scanfiles {
-    my $self = shift;
-    
-    
-    my @scanfiles = $self->atacama_schema->resultset('Scanfile')->search(
-        { order_id => $self->order_id },
-        { order_by => 'filename' },
-    )->all;
-    $self->log->croak("Keine Scandateien in der Datenbank") unless (@scanfiles);
-    return \@scanfiles;   
-}
-
-
-
-sub copy_pdf {
-    my $self = shift;
-    
-    my $source = Path::Class::File->new( $self->job_arg->{source_pdf_name} );
-    my $dest   = Path::Class::File->new($self->work_dir, $self->order_id . '.pdf');  
-    if ($source->basename =~ /^UBR\d{2}A\d{6}\.pdf/) {
-        $self->log->info("EOD-PDF: " . $source);
-        my $doc = CAM::PDF->new($source) || $self->log->logdie("$CAM::PDF::errstr\n");
-        my $pagenums = '1-4,' . $doc->numPages;
-        if (!$doc->deletePages($pagenums)) {
-            $self->log->logdie("Failed to delete a page\n");
-        } else {
-            $self->log->info("4 Seiten vorne und 1 hinten im PDF gelöscht!");    
-        }
-        $doc->cleanoutput($dest);
-    }
-    else {
-        copy($source, $dest) 
-        or $self->log->logdie("Konnte $source nicht nach $dest kopieren: $!");
-    }
-
-    $self->source_pdf($dest);  		
-    $self->log->info("$source --> $dest");    
-    
-}
-
-sub copy_scanfiles {
-    my $self = shift;
-
-    foreach my $scanfile ( @{$self->scanfiles} ) {
-        $self->log->debug("Scandatei: " . $scanfile->filename);
-        my $source_dir = $scanfile->filepath;
-        my $source = File::Spec->catfile($source_dir, $scanfile->filename);
-        my $dest   = File::Spec->catfile($self->work_dir,   $scanfile->filename);
-        copy($source, $dest) 
-            or $self->log->logdie(
-                "Konnte $source nicht nach $dest kopieren: $!"
-            );
-        $self->log->info("$source --> $dest");
-    }    
-    
-}
-
-sub save_csv_file {
-    my $self = shift;
-    
-    File::Copy::move(
-        $self->csv_file->stringify,
-        $self->csv_save_dir->stringify,
-    ) or croak(
-        'Konnte ' . $self->csv_file . ' nicht nach '
-                  . $self->csv_savedir . ' verschieben.'
-    );
-}
 
 sub empty_work_dir {
-    my $self = shift;
+    my $job = shift;
     
-    my $work_dir = $self->work_dir;
+    my $work_dir = $job->work_dir;
     $work_dir->rmtree({keep_root => 1, error => \my $err});
     if (@$err) {
         my $err_str;
@@ -243,117 +27,136 @@ sub empty_work_dir {
     }    
 }
 
+
+
+
 sub prepare_work_dir {
-    my $self = shift;
+    my $job = shift;
     
-    my $csv_saved = $self->save_csv_file if -e $self->csv_file;
-    $self->empty_work_dir;
+    my $csv_saved = save_csv_file($job) if -e $job->csv_file;
+    empty_work_dir($job);
     my $log_msg = $self->restore_csv_file if $csv_saved;
     return $log_msg ? "Alte CSV-Datei gesichert als $log_msg" : '';
 }
 
 sub restore_csv_file {
-    my $self = shift;
+    my $job = shift;
     
     my $csv_file_saved
-        = Path::Class::File->new($self->csv_save_dir, $self->csv_basename);
+        = Path::Class::File->new($job->csv_save_dir, $job->csv_basename);
     my $now = DateTime->now->strftime("%Y-%m-%d-%H-%M");
     my $csv_saved_target 
         = Path::Class::File->new(
-                $self->work_dir, $self->order_id . '_' . $now . '.csv'
+                $job->work_dir, $job->order_id . '_' . $now . '.csv'
         ); 
     File::Copy::copy($csv_file_saved->stringify, $csv_saved_target->stringify)
         or croak("Konnte $csv_file_saved nicht nach $csv_saved_target kopieren");
     return $csv_saved_target->stringify;
 }
 
+
+sub save_csv_file {
+    my $job = shift;
+    
+    File::Copy::move(
+        $job->csv_file->stringify,
+        $job->csv_save_dir->stringify,
+    ) or croak(
+        'Konnte ' . $job->csv_file . ' nicht nach '
+                  . $job->csv_savedir . ' verschieben.'
+    );
+}
+
 sub start_digifooter {
-    my $self = shift;
+    my $job = shift;
     
     my %init_arg = (
-        image_path => $self->order_id,
-        title      => $self->order->titel->titel_isbd || '',
-        author     => $self->order->titel->autor_avs || '',
-        configfile => $self->remedi_config_file,
-        source_pdf_name => $self->job_arg->{source_pdf_name},
+        image_path => $job->order_id,
+        title      => $job->order->titel->titel_isbd || '',
+        author     => $job->order->titel->autor_avs || '',
+        configfile => $job->remedi_config_file,
+        source_pdf_name => $job->arg->{source_pdf_name},
     );
     foreach my $key (qw/resolution_correction source_format/) {
-        $init_arg{$key} = $self->job_arg->{$key} if $self->job_arg->{$key};
+        $init_arg{$key} = $job->arg->{$key} if $job->arg->{$key};
     }
-    while (my($key, $val) = each %init_arg) { $self->log->info("$key => $val") } 
+    while (my($key, $val) = each %init_arg) { $job->log->info("$key => $val") } 
     Remedi::DigiFooter->new_with_config(%init_arg)->make_footer;    
     
 }
 
 sub start_mets {
-    my $self = shift;
+    my $job = shift;
 
     my %init_arg = ( 
-        image_path   => $self->order_id,
-        bv_nr        => $self->order->titel->bvnr,
+        image_path   => $job->order_id,
+        bv_nr        => $job->order->titel->bvnr,
         # shelf_number => $titel->signatur,
-        title        => $self->order->titel->titel_isbd,
+        title        => $job->order->titel->titel_isbd,
         # author       => $titel->autor_avs,
-        configfile   => $self->remedi_config_file,
+        configfile   => $job->remedi_config_file,
     );
     $init_arg{shelf_number}
-        =  $self->order->titel->signatur if $self->order->titel->signatur;
+        =  $job->order->titel->signatur if $job->order->titel->signatur;
     $init_arg{author}
-        =  $self->order->titel->autor_avs if $self->order->titel->autor_avs;
+        =  $job->order->titel->autor_avs if $job->order->titel->autor_avs;
     Remedi::Mets->new_with_config(%init_arg)->make_mets;    
 
 }
 
 sub start_csv {
-    my $self = shift;
+    my $job = shift;
     
     my %init_arg = (
-        image_path => $self->order_id,
-        configfile => $self->remedi_config_file,
+        image_path => $job->order_id,
+        configfile => $job->remedi_config_file,
     );
     Remedi::CSV->new_with_config(%init_arg)->make_csv;     
     
 }
 
 
+
 sub work {
     my $class = shift;
-    my $job = shift;
+    my $job_theschwartz = shift;
     
-    Class::MOP::load_class($class);
-    my $self = $class->new();
+    croak("Falscher Aufruf von Atacama::Worker::Remedi::work()"
+            . " mit Klasse: $class"
+         ) unless $class eq 'Atacama::Worker::Remedi';
+    croak("Falscher Aufruf von Atacama::Worker::Remedi::work():"
+            . ref $job_theschwartz . " ist kein Objekt vom Typ TheSchwartz::Job"       
+         ) unless blessed($job_theschwartz) && $job_theschwartz->isa( 'TheSchwartz::Job' );
+    my $job = Atacama::Worker::Job::Remedi->new(job => $job_theschwartz);
 
-    confess("Falscher Aufruf von Atacama::Worker::Remedi::work():"
-            . " kein Objekt vom Typ TheSchwartz::Job"       
-         ) unless blessed($job) && $job->isa( 'TheSchwartz::Job' );
 
-    my $log_msg = $self->prepare_work_dir if $self->does_copy_files;
-    my $log = $self->log;
+    my $log_msg = prepare_work_dir($job) if $job->does_copy_files;
+    my $log = $job->log;
     $log->info('Programm gestartet');
     $log->info($log_msg) if $log_msg;
-    $self->order->update({status_id => 22});
+    $job->order->update({status_id => 22});
 
-    if ($self->does_copy_files) {    
-        $self->copy_scanfiles;
-        $self->copy_pdf if $self->job_arg->{source_format} eq 'PDF';
+    if ($job->does_copy_files) {    
+        $job->copy_scanfiles;
+        $job->copy_pdf if $job->job_arg->{source_format} eq 'PDF';
     }
 
-    if ($self->does_digifooter) {
-        $self->start_digifooter;
+    if ($job->does_digifooter) {
+        $job->start_digifooter;
     }
 
-    if ($self->does_mets) {
-        $self->start_mets;
+    if ($job->does_mets) {
+        $job->start_mets;
     }
 
-    if ($self->does_csv) {
-        $self->start_csv;
+    if ($job->does_csv) {
+        $job->start_csv;
     }
     
     $job->completed();
 
-    $self->order->update({status_id => 26});
+    $job->order->update({status_id => 26});
     return 1;
-};
+}
 
 1;
