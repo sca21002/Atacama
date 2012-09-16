@@ -185,6 +185,12 @@ __PACKAGE__->has_many(
 );
 
 __PACKAGE__->has_many(
+    "ocrfiles",
+    "Atacama::Schema::Result::Ocrfile",
+    { "foreign.order_id" => "self.order_id" }
+);
+
+__PACKAGE__->has_many(
     "remarks",
     "Atacama::Schema::Result::Remark",
     { "foreign.order_id" => "self.order_id" }
