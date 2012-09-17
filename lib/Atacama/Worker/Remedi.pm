@@ -5,6 +5,52 @@ use Scalar::Util qw(blessed);
 use Carp;
 
 
+
+sub copy_pdf {
+    my $job = shift;
+    
+    my $source = Path::Class::File->new( $job->arg->{source_pdf_name} );
+    my $dest   = Path::Class::File->new($job->work_dir, $job->order_id . '.pdf');  
+    if ($source->basename =~ /^UBR\d{2}A\d{6}\.pdf/) {
+        $job->log->info("EOD-PDF: " . $source);
+        my $doc = CAM::PDF->new($source) || $job->log->logdie("$CAM::PDF::errstr\n");
+        my $pagenums = '1-4,' . $doc->numPages;
+        if (!$doc->deletePages($pagenums)) {
+            $job->log->logdie("Failed to delete a page\n");
+        } else {
+            $job->log->info("4 Seiten vorne und 1 hinten im PDF gelöscht!");    
+        }
+        $doc->cleanoutput($dest);
+    }
+    else {
+        copy($source, $dest) 
+        or $job->log->logdie("Konnte $source nicht nach $dest kopieren: $!");
+    }
+
+    $job->source_pdf($dest);  		
+    $job->log->info("$source --> $dest");    
+    
+}
+
+sub copy_scanfiles {
+    my $job = shift;
+
+    foreach my $scanfile ( @{$job->scanfiles} ) {
+        $job->log->debug("Scandatei: " . $scanfile->filename);
+        my $source_dir = $scanfile->filepath;
+        my $source = File::Spec->catfile($source_dir, $scanfile->filename);
+        my $dest   = File::Spec->catfile($job->work_dir,   $scanfile->filename);
+        copy($source, $dest) 
+            or $job->log->logdie(
+                "Konnte $source nicht nach $dest kopieren: $!"
+            );
+        $job->log->info("$source --> $dest");
+    }    
+    
+}
+
+
+
 sub empty_work_dir {
     my $job = shift;
     
@@ -137,20 +183,20 @@ sub work {
     $job->order->update({status_id => 22});
 
     if ($job->does_copy_files) {    
-        $job->copy_scanfiles;
-        $job->copy_pdf if $job->job_arg->{source_format} eq 'PDF';
+        copy_scanfiles($job);
+        copy_pdf($job) if $job->arg->{source_format} eq 'PDF';
     }
 
     if ($job->does_digifooter) {
-        $job->start_digifooter;
+        start_digifooter($job);
     }
 
     if ($job->does_mets) {
-        $job->start_mets;
+        start_mets($job);
     }
 
     if ($job->does_csv) {
-        $job->start_csv;
+        start_csv($job);
     }
     
     $job->completed();
