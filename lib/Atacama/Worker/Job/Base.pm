@@ -5,6 +5,7 @@ extends 'TheSchwartz::Job';
 use Atacama::Types qw(Order_id);
 use MooseX::Types::Path::Class qw(File Dir);
 use MooseX::Types::Moose qw(HashRef Str);
+use Atacama::Schema;
 use Config::ZOMG;
 use Log::Log4perl;
 

@@ -3,7 +3,13 @@ use base 'TheSchwartz::Worker';
 use Atacama::Worker::Job::Remedi;
 use Scalar::Util qw(blessed);
 use Carp;
+use File::Copy;
+use CAM::PDF;
+use Remedi::DigiFooter;
+use Remedi::Mets;
+use Remedi::CSV;
 
+my $log_file_name;
 
 
 sub copy_pdf {
@@ -73,8 +79,7 @@ sub empty_work_dir {
     }    
 }
 
-
-
+sub get_logfile_name { $log_file_name }
 
 sub prepare_work_dir {
     my $job = shift;
@@ -84,6 +89,7 @@ sub prepare_work_dir {
     my $log_msg = $self->restore_csv_file if $csv_saved;
     return $log_msg ? "Alte CSV-Datei gesichert als $log_msg" : '';
 }
+
 
 sub restore_csv_file {
     my $job = shift;
@@ -113,6 +119,7 @@ sub save_csv_file {
     );
 }
 
+
 sub start_digifooter {
     my $job = shift;
     
@@ -130,6 +137,7 @@ sub start_digifooter {
     Remedi::DigiFooter->new_with_config(%init_arg)->make_footer;    
     
 }
+
 
 sub start_mets {
     my $job = shift;
@@ -150,6 +158,7 @@ sub start_mets {
 
 }
 
+
 sub start_csv {
     my $job = shift;
     
@@ -162,7 +171,6 @@ sub start_csv {
 }
 
 
-
 sub work {
     my $class = shift;
     my $job_theschwartz = shift;
@@ -170,12 +178,8 @@ sub work {
     croak("Falscher Aufruf von Atacama::Worker::Remedi::work()"
             . " mit Klasse: $class"
          ) unless $class eq 'Atacama::Worker::Remedi';
-    croak("Falscher Aufruf von Atacama::Worker::Remedi::work():"
-            . ref $job_theschwartz . " ist kein Objekt vom Typ TheSchwartz::Job"       
-         ) unless blessed($job_theschwartz) && $job_theschwartz->isa( 'TheSchwartz::Job' );
     my $job = Atacama::Worker::Job::Remedi->new(job => $job_theschwartz);
-
-
+    $log_file_name = $job->log_file_name;
     my $log_msg = prepare_work_dir($job) if $job->does_copy_files;
     my $log = $job->log;
     $log->info('Programm gestartet');

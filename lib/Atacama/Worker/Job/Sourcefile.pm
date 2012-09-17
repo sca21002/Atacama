@@ -3,7 +3,8 @@ use Moose;
 extends 'Atacama::Worker::Job::Base';
 use MooseX::Types::Moose qw(Bool Str);
 use MooseX::Types::Path::Class qw(File Dir);
-
+use List::Util qw(first);
+use Carp;
 
 has 'job' => (
     is => 'rw',
@@ -62,6 +63,8 @@ sub  _build_scanfile_format {
 sub _build_sourcedir {
     my $self = shift;
     
+    carp "order_id: " . $self->order_id;
+    carp "source_dirs: " . join('\n', @{$self->sourcedirs}); 
     return first { -d } map { Path::Class::Dir->new( $_, $self->order_id ) }
         @{$self->sourcedirs}
     ;

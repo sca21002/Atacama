@@ -1,12 +1,16 @@
 package Atacama::Worker::Sourcefile;
 use base 'TheSchwartz::Worker';
+use Atacama::Worker::Job::Sourcefile;
+use MooseX::Types::Path::Class qw(File);
 use Scalar::Util qw(blessed);
 use Carp;
-use List::Util qw(first);
-use MooseX::Types::Path::Class qw(File);
 use Remedi::Imagefile;
 use Remedi::PDF::API2;
 use Data::Dumper;
+
+my $log_file_name;
+
+sub get_logfile_name { $log_file_name }
 
 sub get_sourcefile {
     
@@ -125,12 +129,10 @@ sub work {
     
     croak("Falscher Aufruf von Atacama::Worker::Remedi::work()"
             . " mit Klasse: $class"
-         ) unless $class eq 'Atacama::Worker::Remedi';
-    croak("Falscher Aufruf von Atacama::Worker::Remedi::work():"
-            . " kein Objekt vom Typ TheSchwartz::Job"       
-         ) unless blessed($job) && $job->isa( 'TheSchwartz::Job' );
-    my $job = Atacama::Worker::Job::Sourcefile->new($job_theschwartz);
-    my $log = $self->log;
+         ) unless $class eq 'Atacama::Worker::Sourcefile';
+    my $job = Atacama::Worker::Job::Sourcefile->new(job => $job_theschwartz);
+    $log_file_name = $job->log_file_name;
+    my $log = $job->log;
     $log->info('Programm gestartet');
     $job->order->update({status_id => 22});
     $log->logcroak('Verzeichnis mit Quelldateien nicht gefunden!')
@@ -138,7 +140,7 @@ sub work {
     
     foreach  ($job->scanfile_format, 'PDF') {
         $job->format($_);
-        $self->log->trace("Start-Format: " . $self->format);
+        $job->log->trace("Start-Format: " . $job->format);
         $job->sourcedir->recurse(
             callback => sub { get_sourcefile(@_) },  # Wow a CodeRef!
             depthfirst => 1,
