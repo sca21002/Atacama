@@ -6,13 +6,6 @@ use MooseX::Types::Path::Class qw(File Dir);
 use List::Util qw(first);
 use Carp;
 
-has 'job' => (
-    is => 'rw',
-    isa => 'TheSchwartz::Job',
-    handles => [qw( arg completed)],
-    required => 1,
-);
-
 has '+log_config_basename' => (
     default => 'log4perl_sourcefile.conf',
 );

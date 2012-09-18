@@ -5,13 +5,6 @@ use MooseX::Types::Moose qw(Bool Str);
 use MooseX::Types::Path::Class qw(File Dir);
 
 
-has 'job' => (
-    is => 'rw',
-    isa => 'TheSchwartz::Job',
-    handles => [qw( arg  completed)],
-    required => 1,
-);
-
 has 'csv_basename' => (
     is => 'ro',
     isa => Str,

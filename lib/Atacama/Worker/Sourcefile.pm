@@ -9,7 +9,6 @@ use Remedi::PDF::API2;
 use Data::Dumper;
 
 my $log_file_name;
-# my $job;
 
 sub get_logfile_name { $log_file_name }
 
@@ -147,7 +146,7 @@ sub work {
         $job->format($_);
         $job->log->trace("Start-Format: " . $job->format);
         $job->sourcedir->recurse(
-            callback => make_get_sourcefile( $job ),  # Wow a CodeRef!
+            callback => make_get_sourcefile( $job ),  # Wow a Closure!
             depthfirst => 1,
             preorder => 1
         );

@@ -9,6 +9,14 @@ use Atacama::Schema;
 use Config::ZOMG;
 use Log::Log4perl;
 
+has 'job' => (
+    is => 'rw',
+    isa => 'TheSchwartz::Job',
+    handles => [qw( arg completed)],
+    required => 1,
+);
+
+
 has 'atacama_config_path' => (
     is => 'rw',
     isa => Dir,
