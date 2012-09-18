@@ -9,7 +9,7 @@ use Carp;
 has 'job' => (
     is => 'rw',
     isa => 'TheSchwartz::Job',
-    handles => [qw( arg )],
+    handles => [qw( arg completed)],
     required => 1,
 );
 
@@ -63,8 +63,6 @@ sub  _build_scanfile_format {
 sub _build_sourcedir {
     my $self = shift;
     
-    carp "order_id: " . $self->order_id;
-    carp "source_dirs: " . join('\n', @{$self->sourcedirs}); 
     return first { -d } map { Path::Class::Dir->new( $_, $self->order_id ) }
         @{$self->sourcedirs}
     ;

@@ -9,37 +9,41 @@ use Remedi::PDF::API2;
 use Data::Dumper;
 
 my $log_file_name;
+# my $job;
 
 sub get_logfile_name { $log_file_name }
 
-sub get_sourcefile {
-    
-    my $entry = shift;
-    
-    my $log = $job->log;
-    my $format = $job->format;
-    $log->trace("Format: " . $job->format);    
-    $log->trace($entry . " gefunden");
-    return if $entry->is_dir;
-    # return if $entry->basename lt 'ubr03390'; 
-    if ($format eq 'TIFF') {
-        return unless $entry->basename =~ /^\w{3,4}\d{5}_\d{1,5}\.tif(?:f)?$/i;
-        save_scanfile($entry);   
+sub make_get_sourcefile {
+    my $job = shift;
+    return sub {
+        my $entry = shift;
+        
+        my $log = $job->log;
+        my $format = $job->format;
+        $log->trace("Format: " . $job->format);    
+        $log->trace($entry . " gefunden");
+        return if $entry->is_dir;
+        # return if $entry->basename lt 'ubr03390'; 
+        if ($format eq 'TIFF') {
+            return unless $entry->basename =~ /^\w{3,4}\d{5}_\d{1,5}\.tif(?:f)?$/i;
+            save_scanfile($job, $entry);   
+        }
+        elsif ($format eq 'JPEG') {
+            return unless $entry->basename =~ /^\w{3,4}\d{5}_\d{1,5}\.jpg$/i;
+            save_scanfile($job, $entry);   
+        } 
+        elsif ($format eq 'PDF') {
+            # skip single page pdfs
+            return if $entry->basename =~ /^\w{3,4}\d{5}_\d{3,5}\.pdf$/i;
+            return unless $entry->basename =~ /\.pdf$/i;
+            save_pdffile($job, $entry)
+        }
+        else { $log->logcroak("Unbekanntes Format $format"); }
     }
-    elsif ($format eq 'JPEG') {
-        return unless $entry->basename =~ /^\w{3,4}\d{5}_\d{1,5}\.jpg$/i;
-        save_scanfile($entry);   
-    } 
-    elsif ($format eq 'PDF') {
-        # skip single page pdfs
-        return if $entry->basename =~ /^\w{3,4}\d{5}_\d{3,5}\.pdf$/i;
-        return unless $entry->basename =~ /\.pdf$/i;
-        save_pdffile($entry)
-    }
-    else { $log->logcroak("Unbekanntes Format $format"); }
 }
 
 sub save_scanfile {
+    my $job = shift;
     my $scanfile = shift;
     my $clause;
     
@@ -80,11 +84,12 @@ sub save_scanfile {
 }
 
 sub save_pdffile{
+    my $job = shift;
     my $pdffile = shift;
     my $clause;
     
     my $log = $job->log;
-    my $atacama_schema = $self->atacama_schema;
+    my $atacama_schema = $job->atacama_schema;
     $log->info("PDF-Datei: $pdffile");
     eval {
         my $index = -1;
@@ -130,7 +135,7 @@ sub work {
     croak("Falscher Aufruf von Atacama::Worker::Remedi::work()"
             . " mit Klasse: $class"
          ) unless $class eq 'Atacama::Worker::Sourcefile';
-    my $job = Atacama::Worker::Job::Sourcefile->new(job => $job_theschwartz);
+    $job = Atacama::Worker::Job::Sourcefile->new(job => $job_theschwartz);
     $log_file_name = $job->log_file_name;
     my $log = $job->log;
     $log->info('Programm gestartet');
@@ -142,7 +147,7 @@ sub work {
         $job->format($_);
         $job->log->trace("Start-Format: " . $job->format);
         $job->sourcedir->recurse(
-            callback => sub { get_sourcefile(@_) },  # Wow a CodeRef!
+            callback => make_get_sourcefile( $job ),  # Wow a CodeRef!
             depthfirst => 1,
             preorder => 1
         );

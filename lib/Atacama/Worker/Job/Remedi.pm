@@ -8,7 +8,7 @@ use MooseX::Types::Path::Class qw(File Dir);
 has 'job' => (
     is => 'rw',
     isa => 'TheSchwartz::Job',
-    handles => [qw( arg )],
+    handles => [qw( arg  completed)],
     required => 1,
 );
 
