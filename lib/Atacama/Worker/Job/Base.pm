@@ -8,6 +8,8 @@ use MooseX::Types::Moose qw(HashRef Str);
 use Atacama::Schema;
 use Config::ZOMG;
 use Log::Log4perl;
+use File::Path qw(make_path);
+
 
 has 'job' => (
     is => 'rw',
