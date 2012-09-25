@@ -491,16 +491,18 @@
 </div>
 
 <div id="bindeeinheit" style="display: none;"></div>
-
-
+<!--  { url =
+c.uri_for_action('/order/delete', [order_href.order_id]) title =
+'Auftrag löschen' icon = 'trash' level = '2' }
+-->
 [% title = "Auftrag ${order_href.order_id} bearbeiten"; %] 
 
 [% menu_links
 = [ { url = c.uri_for_action('/order/list') title = 'Auftr&auml;ge' icon = 'contact' class = 'prevent' } { url =
 c.uri_for_action('/order/edit' [order_href.order_id]) title = title icon
-= 'pencil' class = 'prevent' state = 'active' } { url =
-c.uri_for_action('/order/delete', [order_href.order_id]) title =
-'Auftrag löschen' icon = 'trash' level = '2' } { url =
+= 'pencil' class = 'prevent' state = 'active' }
+
+ { url =
 c.uri_for_action('/order/print', [order_href.order_id]) title =
 'Laufzettel drucken' icon = 'print' class = 'prevent' level = '2' } {
 url = c.uri_for_action('/order/print_patchcode_t',

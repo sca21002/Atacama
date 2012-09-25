@@ -2,3 +2,4 @@ atacama_local.conf
 *.swp
 *.log
 .project
+/nbproject/private/
