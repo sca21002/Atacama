@@ -128,7 +128,7 @@ sub start_digifooter {
         title      => $job->order->titel->titel_isbd || '',
         author     => $job->order->titel->autor_avs || '',
         configfile => $job->remedi_config_file,
-        source_pdf_name => $job->arg->{source_pdf_name},
+        source_pdf_name => $job->source_pdf && $job->source_pdf->stringify,
     );
     foreach my $key (qw/resolution_correction source_format/) {
         $init_arg{$key} = $job->arg->{$key} if $job->arg->{$key};

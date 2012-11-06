@@ -72,6 +72,7 @@ has 'scanfiles' => (
 has 'source_pdf' => (
     is => 'rw',
     isa => File,
+    predicate => 'has_source_pdf',
 );
 
 sub _build_csv_basename {

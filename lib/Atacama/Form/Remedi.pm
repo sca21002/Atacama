@@ -105,6 +105,8 @@ sub default_configfile {
         ? first { $_->basename eq 'remedi_de-355_hwkno.yml' } @list 
         : ( $library eq 'Johannes-Turmair-Gymnasium' ) 
         ? first { $_->basename eq 'remedi_de-Str1-355.yml' } @list    
+        : ( $library eq 'Siebenbürgische Bibliothek' )
+        ? first { $_->basename eq 'remedi_de-Gun1-355.yml' } @list
         : first { $_->basename eq 'remedi_de-355.yml' } @list
         ;
     return $default; 

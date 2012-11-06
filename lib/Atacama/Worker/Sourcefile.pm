@@ -138,7 +138,7 @@ sub work {
     $log_file_name = $job->log_file_name;
     my $log = $job->log;
     $log->info('Programm gestartet');
-    $job->order->update({status_id => 22});
+    $job->order->update({status_id => 23});
     $log->logcroak('Verzeichnis mit Quelldateien nicht gefunden!')
         unless $job->sourcedirs;
     
