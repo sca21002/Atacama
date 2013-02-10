@@ -131,17 +131,10 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("filename", "filepath");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2012-09-13 15:16:09
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:4q/3lmrcoZ8oTEgRszKwqg
+# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-02-10 09:09:14
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:iPGquvhzUNNjQaOeoamrNQ
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
-
-__PACKAGE__->belongs_to(
-    "ord",
-    "Atacama::Schema::Result::Order",
-    { "foreign.order_id" => "self.order_id" }
-);
-
 __PACKAGE__->meta->make_immutable;
 1;
