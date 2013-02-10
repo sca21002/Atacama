@@ -54,6 +54,13 @@ has 'does_mets' => (
     lazy => 1,
 );
 
+has 'ocrfiles' => (
+    is => 'ro',
+    isa => 'ArrayRef[Atacama::Schema::Result::Ocrfile]',
+    lazy => 1,
+    builder => '_build_ocrfiles',
+);
+
 has 'remedi_config_file' => (
     is => 'ro',
     isa => File,
@@ -130,6 +137,19 @@ sub _build_remedi_config_file {
         or $self->log->croak("Keine Remedi-Konfigurationsdatei");
     return $remedi_config_file;
 }
+
+sub _build_ocrfiles {
+    my $self = shift;
+    
+    
+    my @ocrfiles = $self->atacama_schema->resultset('Ocrfile')->search(
+        { order_id => $self->order_id },
+        { order_by => 'filename' },
+    )->all;
+    $self->log->info("Keine OCR-Dateien in der Datenbank") unless (@ocrfiles);
+    return \@ocrfiles;   
+}
+
 
 
 sub _build_scanfiles {

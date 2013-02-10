@@ -12,6 +12,25 @@ use Remedi::CSV;
 my $log_file_name;
 
 
+sub copy_ocrfiles {
+    my $job = shift;
+
+    foreach my $ocrfile ( @{$job->ocrfiles} ) {
+        $job->log->debug("OCR-Datei: " . $ocrfile->filename);
+        my $source_dir = $ocrfile->filepath;
+        my $source = File::Spec->catfile($source_dir,    $ocrfile->filename);
+        my $dest   = File::Spec->catfile($job->work_dir, $ocrfile->filename);
+        copy($source, $dest) 
+            or $job->log->logdie(
+                "Konnte $source nicht nach $dest kopieren: $!"
+            );
+        $job->log->info("$source --> $dest");
+    }    
+    
+}
+
+
+
 sub copy_pdf {
     my $job = shift;
     
@@ -189,6 +208,7 @@ sub work {
     if ($job->does_copy_files) {    
         copy_scanfiles($job);
         copy_pdf($job) if $job->arg->{source_format} eq 'PDF';
+        copy_ocrfiles($job);
     }
 
     if ($job->does_digifooter) {
