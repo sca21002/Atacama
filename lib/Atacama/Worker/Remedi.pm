@@ -15,6 +15,7 @@ my $log_file_name;
 sub copy_ocrfiles {
     my $job = shift;
 
+    $job->log->info("BIN IN copy_ocrfiles");
     foreach my $ocrfile ( @{$job->ocrfiles} ) {
         $job->log->debug("OCR-Datei: " . $ocrfile->filename);
         my $source_dir = $ocrfile->filepath;
