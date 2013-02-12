@@ -48,7 +48,7 @@ sub list :Local :Args(0) {
 
 =cut
 
-sub get :Local :Args(1) {
+sub get :Chained('/login/required') PathPart('firefoxsearchplugins/get') Args(1) {
     my ( $self, $c, $filename ) = @_;
 
 	$c->stash(no_wrapper => 1);
