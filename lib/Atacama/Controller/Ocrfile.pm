@@ -50,23 +50,19 @@ sub json : Chained('ocrfiles') PathPart('json') Args(0) {
     my $entries_per_page = $data->{rows} || 10;
 
     my $order = $c->stash->{order};
-#    my $order_by =
-#        $data->{sidx} eq 'id'
-#            || !exists($data->{sidx})
-#            || !exists($data->{sord})
-#        ? { -asc => [ qw/filename/ ] }
-#       :  $data->{sidx} eq 'imagesize'
-#        ? \('height_px * width_px ' . $data->{sord})
-#       :  $data->{sidx} eq 'papersize'
-#        ? \('height_px * width_px / resolution ' . $data->{sord})
-#        :  $data->{sidx} . " " . $data->{sord}
-#        ;
+    my $order_by =
+        $data->{sidx} eq 'id'
+            || !exists($data->{sidx})
+            || !exists($data->{sord})
+        ? { -asc => [ qw/filename/ ] }
+        :  $data->{sidx} . " " . $data->{sord}
+        ;
 
     my $ocrfile_rs = $order->ocrfiles->search(undef,
         {
             page => $page,
             rows => $entries_per_page,
-#            order_by => $order_by,
+            order_by => $order_by,
         }
     );
 
@@ -85,20 +81,7 @@ sub json : Chained('ocrfiles') PathPart('json') Args(0) {
                        $ocrfile->filepath =~ m#^/[^/]*DATA(\d)/#
                    )
                 || ' ',
-            #$scanfile->format,
-            #$scanfile->colortype,
-            #$scanfile->resolution,
-            #sprintf(
-            #    "%d x % d",
-            #    $scanfile->height_px,
-            #    $scanfile->width_px,
-            #),    
-            #sprintf(
-            #    "%.1f x %.1f",
-            #    $scanfile->height_px / $scanfile->resolution * 2.54,
-            #    $scanfile->width_px / $scanfile->resolution * 2.54,
-            #),
-            sprintf("%.1f", $ocrfile->filesize / 1024 / 1024),
+            sprintf("%.1f", $ocrfile->filesize / 1024 ),
         ];
         push @rows, $row;
     }

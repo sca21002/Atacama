@@ -4,7 +4,7 @@ $(document).ready(function() {
 jQuery("#ocrfiles").jqGrid({
     url:"[% json_url %]",
     datatype: "json",
-    colNames:['Datei', 'Ort', 'Dateigr.[MB]'],
+    colNames:['Datei', 'Ort', 'Dateigr.[kB]'],
     colModel:[
         {name:'filename',index:'filename', width:140},
         {name:'volume',index:'volume', width:70},
