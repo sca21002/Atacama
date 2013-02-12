@@ -6,6 +6,7 @@ use Scalar::Util qw(blessed);
 use Carp;
 use Remedi::Imagefile;
 use Remedi::PDF::API2;
+use File::Slurp;
 use Data::Dumper;
 
 my $log_file_name;
@@ -39,7 +40,7 @@ sub make_get_sourcefile {
         }
         elsif ($format eq 'XML') {
             return unless $entry->basename =~ /^\w{3,4}\d{5}_\d{1,5}\.xml$/;
-            save_ocrfile($entry);
+            save_ocrfile($job, $entry);
         }     
         else { $log->logcroak("Unbekanntes Format $format"); }
     }
@@ -146,13 +147,13 @@ sub save_ocrfile {
         my $md5 = Digest::MD5->new;
         my $bin_data = read_file( $ocrfile, binmode => ':raw' ) ;    
         $clause->{md5} = $md5->add($bin_data)->hexdigest;
-        TRACE("OCR-file: " . Dumper($clause));
+        $log->trace("OCR-file: " . Dumper($clause));
     };
     unless ($@) {
-        $schema_atacama->resultset('Ocrfile')->update_or_create($clause);
+        $atacama_schema->resultset('Ocrfile')->update_or_create($clause);
     } else {
-        LOGWARN("Konnte $ocrfile nicht verarbeiten: $@");
-        $schema_atacama->resultset('Ocrfile')->update_or_create({
+        $log->warn("Konnte $ocrfile nicht verarbeiten: $@");
+        $atacama_schema->resultset('Ocrfile')->update_or_create({
             filename => $ocrfile->basename,
             filepath => $ocrfile->dir->stringify,
             error    => $@,
@@ -172,8 +173,8 @@ sub work {
     my $log = $job->log;
     $log->info('Programm gestartet');
     $job->order->update({status_id => 23});
-    $log->logcroak('Verzeichnis mit Quelldateien nicht gefunden!')
-        unless $job->sourcedir;
+    $job->sourcedir or $log->logcroak('Verzeichnis mit Quelldateien nicht gefunden!');
+ 
     
     foreach  ($job->scanfile_format, 'PDF', 'XML') {
         $job->format($_);

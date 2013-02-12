@@ -35,8 +35,8 @@ has  'sourcedirs' => (
     default => sub { [                  
         '/rzblx8_DATA1/digitalisierung/auftraege/',
         '/rzblx8_DATA2/digitalisierung/auftraege/',
-        '/rzblx8_DATA2/digitalisierung/auftraege/rdiss',
-        '/rzblx8_DATA2/digitalisierung/auftraege/rdiss_2',
+        '/rzblx8_DATA2/digitalisierung/auftraege/rdiss/',
+        '/rzblx8_DATA2/digitalisierung/auftraege/rdiss_2/',
         '/rzblx8_DATA3/digitalisierung/auftraege/',
         '/mnt/rzblx9/data/digitalisierung/auftraege/',
     ] },
