@@ -16,13 +16,13 @@ sub make_get_sourcefile {
     my $job = shift;
     return sub {
         my $entry = shift;
-        
         my $log = $job->log;
         my $format = $job->format;
         $log->trace("Format: " . $job->format);    
         $log->trace($entry . " gefunden");
+        return Path::Class::Entity::PRUNE()
+            if $entry->is_dir and $entry->basename eq 'thumbnails';
         return if $entry->is_dir;
-        # return if $entry->basename lt 'ubr03390'; 
         if ($format eq 'TIFF') {
             return unless $entry->basename =~ /^\w{3,4}\d{5}_\d{1,5}\.tif(?:f)?$/i;
             save_scanfile($job, $entry);   
@@ -32,11 +32,15 @@ sub make_get_sourcefile {
             save_scanfile($job, $entry);   
         } 
         elsif ($format eq 'PDF') {
+            return unless $entry->basename =~ /\.pdf$/i;
             # skip single page pdfs
             return if $entry->basename =~ /^\w{3,4}\d{5}_\d{3,5}\.pdf$/i;
-            return unless $entry->basename =~ /\.pdf$/i;
             save_pdffile($job, $entry)
         }
+        elsif ($format eq 'XML') {
+            return unless $entry->basename =~ /^\w{3,4}\d{5}_\d{1,5}\.xml$/;
+            save_ocrfile($entry);
+        }     
         else { $log->logcroak("Unbekanntes Format $format"); }
     }
 }
@@ -99,14 +103,13 @@ sub save_pdffile{
         }
         $log->debug("Keine Auftragsnummer gefunden fuer $pdffile") unless $order_id;
         $order_id = lc $order_id;
-        my $pdf = Remedi::PDF::API2->new(
+        my $pdf = Remedi::PDF::API2->open(
             file => $pdffile,
         );
         $clause->{order_id} = $order_id;
         if ($order_id) {
             $clause->{filename} = $pdffile->basename;
             $clause->{filepath} = $pdffile->dir->stringify;;
-            # $clause->{ocr}    = $ocr;
             $clause->{pages}    = $pdf->pages;
             $clause->{filesize} = $pdf->size;
         }
@@ -126,6 +129,36 @@ sub save_pdffile{
     }
 }
     
+sub save_ocrfile {
+    my $job = shift;
+    my $ocrfile = shift;
+    my $clause;
+    
+    my $log = $job->log;
+    my $atacama_schema = $job->atacama_schema;
+    $log->info("OCR-Datei: $ocrfile");
+    eval {
+        ($clause->{order_id}) = $ocrfile->basename =~ /^(\w{3,4}\d{5})_\d{1,5}\.xml$/;    
+        $clause->{filename} = $ocrfile->basename;
+        $clause->{filepath} = $ocrfile->dir->stringify;;
+        $clause->{filesize} = -s $ocrfile;
+        $clause->{format} = 'XML';
+        my $md5 = Digest::MD5->new;
+        my $bin_data = read_file( $ocrfile, binmode => ':raw' ) ;    
+        $clause->{md5} = $md5->add($bin_data)->hexdigest;
+        TRACE("OCR-file: " . Dumper($clause));
+    };
+    unless ($@) {
+        $schema_atacama->resultset('Ocrfile')->update_or_create($clause);
+    } else {
+        LOGWARN("Konnte $ocrfile nicht verarbeiten: $@");
+        $schema_atacama->resultset('Ocrfile')->update_or_create({
+            filename => $ocrfile->basename,
+            filepath => $ocrfile->dir->stringify,
+            error    => $@,
+        });
+    }    
+}
 
 sub work {
     my $class = shift;
@@ -142,7 +175,7 @@ sub work {
     $log->logcroak('Verzeichnis mit Quelldateien nicht gefunden!')
         unless $job->sourcedirs;
     
-    foreach  ($job->scanfile_format, 'PDF') {
+    foreach  ($job->scanfile_format, 'PDF', 'XML') {
         $job->format($_);
         $job->log->trace("Start-Format: " . $job->format);
         $job->sourcedir->recurse(
@@ -158,6 +191,8 @@ sub work {
     $job->order->update({status_id => 27});
     return 1;
 };
+
+
 
 
 1;
