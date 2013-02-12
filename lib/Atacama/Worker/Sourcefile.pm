@@ -173,7 +173,7 @@ sub work {
     $log->info('Programm gestartet');
     $job->order->update({status_id => 23});
     $log->logcroak('Verzeichnis mit Quelldateien nicht gefunden!')
-        unless $job->sourcedirs;
+        unless $job->sourcedir;
     
     foreach  ($job->scanfile_format, 'PDF', 'XML') {
         $job->format($_);
