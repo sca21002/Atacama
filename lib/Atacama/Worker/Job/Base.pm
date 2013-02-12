@@ -170,7 +170,18 @@ sub _builder_log_file_name {
     
     my $log_dir = $self->log_dir;
     unless (-d $log_dir) {
-        make_path($log_dir->stringify) or die "Coldn't create $log_dir: $!";    
+        make_path($log_dir->stringify, {error => \my $err} );
+        if (@$err) {
+            for my $diag (@$err) {
+                my ($dir, $message) = %$diag;
+                if ($dir eq '') {
+                    print "general error: $message\n";
+                }
+                else {
+                    print "problem making $dir: $message\n";
+                }
+            }    
+        }
     }
     my $log_file_name = Path::Class::File->new(
         $self->log_dir  , $self->log_basename
