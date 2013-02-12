@@ -281,6 +281,7 @@ sub properties {
     }
     $order->{scanfiles_count} = $self->scanfiles->count;
     $order->{pdffiles_count} = $self->pdffiles->count;
+    $order->{ocrfiles_count} = $self->ocrfiles->count;
     $properties->{order_href} = $order;
     
     my %rel = (
