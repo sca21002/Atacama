@@ -15,7 +15,6 @@ my $log_file_name;
 sub copy_ocrfiles {
     my $job = shift;
 
-    $job->log->info("BIN IN copy_ocrfiles");
     foreach my $ocrfile ( @{$job->ocrfiles} ) {
         $job->log->debug("OCR-Datei: " . $ocrfile->filename);
         my $source_dir = $ocrfile->filepath;
@@ -162,20 +161,31 @@ sub start_digifooter {
 sub start_mets {
     my $job = shift;
 
+    my $conf = Config::Any->load_files( {
+        files => [$job->remedi_config_file],
+        use_ext => 1,
+    } );
+    my ($filename, $config) = %{shift @$conf};
+    my $usetypes = $config->{usetypes} || [qw(archive reference thumbnail)];
+    if ($job->ocr_files) {
+        push @$usetypes, 'ocr' unless grep { $_ eq 'ocr' } @$usetypes;
+        $log->info('OCR-Dateien gefunden');
+    }
+    else $log->info('Keine OCR-Dateien gefunden');
+    
+    
     my %init_arg = ( 
         image_path   => $job->order_id,
         bv_nr        => $job->order->titel->bvnr,
-        # shelf_number => $titel->signatur,
         title        => $job->order->titel->titel_isbd,
-        # author       => $titel->autor_avs,
         configfile   => $job->remedi_config_file,
+        usetypes     => $usetypes;
     );
     $init_arg{shelf_number}
         =  $job->order->titel->signatur if $job->order->titel->signatur;
     $init_arg{author}
         =  $job->order->titel->autor_avs if $job->order->titel->autor_avs;
     Remedi::Mets->new_with_config(%init_arg)->make_mets;    
-
 }
 
 
