@@ -136,5 +136,21 @@ __PACKAGE__->set_primary_key("filename", "filepath");
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
+
+__PACKAGE__->belongs_to(
+    "ord",
+    "Atacama::Schema::Result::Order",
+    { "foreign.order_id" => "self.order_id" }
+);
+
+__PACKAGE__->has_many(
+    "publications",
+    "Atacama::Schema::Result::Publication",
+    { "foreign.order_id" => "self.order_id" }
+);
+
+
+
+
 __PACKAGE__->meta->make_immutable;
 1;
