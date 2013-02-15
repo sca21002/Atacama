@@ -94,6 +94,7 @@ sub default_configfile {
     my $self = shift;
       
     my $library = $self->order->titel->library->name;
+    my @projects = $self->order->projects->all;
     my @list = $self->all_remedi_configfiles;
     my $default = ( $library eq 'Staatliche Bibliothek Regensburg' )
         ? first { $_->basename eq  'remedi_de-155-355.yml' } @list
@@ -109,6 +110,8 @@ sub default_configfile {
         ? first { $_->basename eq 'remedi_de-Gun1-355.yml' } @list
         : ( $library eq 'Johannes-Künzig-Institut für Ostdeutsche Volkskunde' )
         ? first { $_->basename eq 'remedi_de-Frei131-355.yml' } @list
+        : ( first { $_->name eq '233' } @projects ) 
+        ? first { $_->basename eq 'remedi_de-355_jpeg.yml' } @list 
         : first { $_->basename eq 'remedi_de-355.yml' } @list
         ;
     return $default; 

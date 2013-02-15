@@ -167,11 +167,11 @@ sub start_mets {
     } );
     my ($filename, $config) = %{shift @$conf};
     my $usetypes = $config->{usetypes} || [qw(archive reference thumbnail)];
-    if ($job->ocr_files) {
+    if ( @{$job->ocrfiles} ) {
         push @$usetypes, 'ocr' unless grep { $_ eq 'ocr' } @$usetypes;
-        $log->info('OCR-Dateien gefunden');
+        $job->log->info('OCR-Dateien gefunden');
     }
-    else $log->info('Keine OCR-Dateien gefunden');
+    else { $job->log->info('Keine OCR-Dateien gefunden'); }
     
     
     my %init_arg = ( 
@@ -179,7 +179,7 @@ sub start_mets {
         bv_nr        => $job->order->titel->bvnr,
         title        => $job->order->titel->titel_isbd,
         configfile   => $job->remedi_config_file,
-        usetypes     => $usetypes;
+        usetypes     => $usetypes,
     );
     $init_arg{shelf_number}
         =  $job->order->titel->signatur if $job->order->titel->signatur;
