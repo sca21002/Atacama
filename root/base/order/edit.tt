@@ -563,7 +563,7 @@ title = 'Fehlerhafte Jobs' icon = 'alert' class = 'prevent' } ]; %]
   [% IF order_href.creation_date.hms %]
   <fieldset>
     <div class="left">angelegt:</div>
-    [% order_href.creation_date.dmy('.') %] #
+    [% order_href.creation_date.dmy('.') %] 
     [% order_href.creation_date.hms %] <br />
     <div class="left">ge&auml;ndert:</div>
     [% order_href.modification_date.dmy('.') %] 

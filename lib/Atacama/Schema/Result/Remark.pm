@@ -57,7 +57,7 @@ __PACKAGE__->table("remarks");
 
   data_type: 'smallint'
   extra: {unsigned => 1}
-  is_nullable: 0
+  is_nullable: 1
 
 =head2 date
 
@@ -91,7 +91,7 @@ __PACKAGE__->add_columns(
   "order_id",
   { data_type => "varchar", is_nullable => 0, size => 25 },
   "status_id",
-  { data_type => "smallint", extra => { unsigned => 1 }, is_nullable => 0 },
+  { data_type => "smallint", extra => { unsigned => 1 }, is_nullable => 1 },
   "date",
   {
     data_type => "timestamp",
@@ -123,8 +123,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("remark_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07015 @ 2011-12-30 14:03:29
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:zm2Vs9JJT2TY287QJ1CXjw
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-02-17 20:41:51
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:3yhI1cMa3Js5e8ros1su/w
 
 __PACKAGE__->belongs_to(
     "ord",
@@ -138,6 +138,7 @@ __PACKAGE__->belongs_to(
     { "foreign.status_id" => "self.status_id" },
     { join_type => 'left' }
 );
+
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;

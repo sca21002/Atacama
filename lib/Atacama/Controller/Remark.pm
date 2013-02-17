@@ -64,7 +64,7 @@ sub json : Chained('remarks') PathPart('json') Args(0) {
         $row->{cell} = [
             $remark->date->strftime('%d.%m.%Y %T'),
             $remark->login,
-            $remark->status->name,
+            $remark->status && $remark->status->name,
             $remark->content,
         ];
         push @rows, $row;

@@ -207,18 +207,24 @@ sub save : Private {
             delete $order_params->{titel}{order_id};
             $c->log->debug('order_params ' . Dumper($order_params->{titel}));
         }
-        if ( exists $order_params->{remark} ) {
-            if ( $order_params->{remark} ) {
-                $order_params->{remarks} = [{
-                    login => $c->user->login,
-                    status_id => defined $order_params->{status_id}
-                                 ? $order_params->{status_id}
-                                 : $order->status_id,
-                    content => $order_params->{remark},
-                }];
-            }
+        $c->log->debug(
+        	'defined($order_params->{status_id}: ' .  defined($order_params->{status_id})
+                . ' exists $order_params->{remark}: ' . (exists $order_params->{remark})
+                . ' $order_params->{remark}: #' . (exists $order_params->{remark} ?  $order_params->{remark} : '<undef>')
+                . '# $order_params->{status_id}: #' . (defined($order_params->{status_id}) ? $order_params->{status_id}: '<undef>')
+                . '# $order->status_id: #' . $order->status_id  
+        );
+        # if status was not selected $order_params->{status_id} is an empty string 
+        if ( $order_params->{remark} or  $order->status_id != $order_params->{status_id}  ) 
+        {
+            $order_params->{remarks} = [{
+                login => $c->user->login,
+                status_id => $order_params->{status_id},
+                content => $order_params->{remark},
+            }];
             delete $order_params->{remark};                            
         }
+        $c->log->debug('STATUS: ' . $order->status_id . ' <=> ' . $order_params->{status_id});
         $order->save($order_params);
     }
     #$c->log->debug(Dumper($order->properties));
