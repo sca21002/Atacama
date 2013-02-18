@@ -21,25 +21,31 @@ sub make_get_sourcefile {
         my $format = $job->format;
         $log->trace("Format: " . $job->format);    
         $log->trace($entry . " gefunden");
+        my $order_id = $job->order_id;
+        if ($entry->basename =~ /^\w{3,4}\d{5}/ 
+                and $entry->basename !~ /^${order_id}/ 
+        ) {
+            $log->warn('Datei ' . $entry . ' im falschen Ordner'); 
+        }
         return Path::Class::Entity::PRUNE()
             if $entry->is_dir and $entry->basename eq 'thumbnails';
         return if $entry->is_dir;
         if ($format eq 'TIFF') {
-            return unless $entry->basename =~ /^\w{3,4}\d{5}_\d{1,5}\.tif(?:f)?$/i;
+            return unless $entry->basename =~ /^${order_id}_\d{1,5}\.(?i:tif(?:f)?)/;
             save_scanfile($job, $entry);   
         }
         elsif ($format eq 'JPEG') {
-            return unless $entry->basename =~ /^\w{3,4}\d{5}_\d{1,5}\.jpg$/i;
+            return unless $entry->basename =~ /^${order_id}_\d{1,5}\.(?i:jpg)$/;
             save_scanfile($job, $entry);   
         } 
         elsif ($format eq 'PDF') {
-            return unless $entry->basename =~ /\.pdf$/i;
+            return unless $entry->basename =~ /^${order_id}.*\.(?i:pdf)$/;
             # skip single page pdfs
-            return if $entry->basename =~ /^\w{3,4}\d{5}_\d{3,5}\.pdf$/i;
+            return if $entry->basename =~ /^${order_id}_\d{3,5}\.pdf$/;
             save_pdffile($job, $entry)
         }
         elsif ($format eq 'XML') {
-            return unless $entry->basename =~ /^\w{3,4}\d{5}_\d{1,5}\.xml$/;
+            return unless $entry->basename =~ /^${order_id}_\d{1,5}\.(?i:xml)$/;
             save_ocrfile($job, $entry);
         }     
         else { $log->logcroak("Unbekanntes Format $format"); }
