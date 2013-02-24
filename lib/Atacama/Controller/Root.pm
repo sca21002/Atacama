@@ -27,7 +27,7 @@ The root page (/)
 
 =cut
 
-sub index :Chained('/login/required') PathPart('') {
+sub index :Chained('/login/required') PathPart('') Does('NoSSL') {
     my ( $self, $c ) = @_;
 
   $c->stash(

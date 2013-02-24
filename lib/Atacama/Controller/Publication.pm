@@ -28,7 +28,7 @@ sub index :Path :Args(0) {
     $c->response->body('Matched Atacama::Controller::Publication in Publication.');
 }
 
-sub publications : Chained('/') PathPart('publication') CaptureArgs(0) {
+sub publications : Chained('/') PathPart('publication') CaptureArgs(0) Does('NoSSL') {
     my ($self, $c) = @_;
     
     $c->stash->{publications} = $c->model('AtacamaDB::Publication');

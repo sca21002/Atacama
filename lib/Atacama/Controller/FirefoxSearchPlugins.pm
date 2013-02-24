@@ -32,7 +32,7 @@ sub index :Path :Args(0) {
 
 =cut
 
-sub list :Local :Args(0) {
+sub list :Local :Args(0) Does('NoSSL') {
     my ( $self, $c ) = @_;
 
 	my $model = $c->model('FirefoxSearchPlugins');

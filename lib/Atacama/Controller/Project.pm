@@ -30,7 +30,7 @@ sub index :Path :Args(0) {
     $c->response->body('Matched Atacama::Controller::Project in Project.');
 }
 
-sub projects : Chained('/login/required') PathPart('project') CaptureArgs(0) {
+sub projects : Chained('/login/required') PathPart('project') CaptureArgs(0) Does('NoSSL') {
     my ($self, $c) = @_;
     
     $c->stash->{projects} = $c->model('AtacamaDB::Project');

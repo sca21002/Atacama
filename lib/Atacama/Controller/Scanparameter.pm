@@ -27,7 +27,7 @@ sub index :Path :Args(0) {
     $c->response->body('Matched Atacama::Controller::Scanparameter in Scanparameter.');
 }
 
-sub scanparameters : Chained('/') PathPart('scanparameter') CaptureArgs(0) {
+sub scanparameters : Chained('/') PathPart('scanparameter') CaptureArgs(0) Does('NoSSL') {
     my ($self, $c) = @_;
     
     $c->stash->{scanparameters} = $c->model('AtacamaDB::Scanparameter');

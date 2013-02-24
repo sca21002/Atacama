@@ -28,7 +28,7 @@ sub index :Path :Args(0) {
     $c->response->body('Matched Atacama::Controller::Job in Job.');
 }
 
-sub jobs : Chained('/login/required') PathPart('job') CaptureArgs(0) {
+sub jobs : Chained('/login/required') PathPart('job') CaptureArgs(0) Does('NoSSL') {
     my ($self, $c) = @_;
     
 }

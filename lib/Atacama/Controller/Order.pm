@@ -29,7 +29,7 @@ sub index :Path :Args(0) {
     $c->response->body('Matched Atacama::Controller::Order in Order.');
 }
 
-sub orders : Chained('/login/required') PathPart('order') CaptureArgs(0) {
+sub orders : Chained('/login/required') PathPart('order') CaptureArgs(0) Does('NoSSL') {
     my ($self, $c) = @_;
     
     $c->stash->{orders} = $c->model('AtacamaDB::Order');

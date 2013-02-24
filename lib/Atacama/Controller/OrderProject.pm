@@ -28,7 +28,7 @@ sub index :Path :Args(0) {
     $c->response->body('Matched Atacama::Controller::OrderProject in OrderProject.');
 }
 
-sub ordersprojects : Chained('/') PathPart('orderproject') CaptureArgs(0) {
+sub ordersprojects : Chained('/') PathPart('orderproject') CaptureArgs(0) Does('NoSSL') {
     my ($self, $c) = @_;
     
     $c->stash->{ordersprojects} = $c->model('AtacamaDB::OrderProject');
