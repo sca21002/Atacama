@@ -40,8 +40,8 @@ sub list : Chained('orders') PathPart('list') Args(0) {
 
     # $c->log->debug('LIST: ');
     # $c->log->debug('Filter stash: ' . $c->session->{order}{list}{filters});
-    $c->log->debug(Dumper($c->user->login));
-    $c->log->debug($c->user->name);
+    $c->log->debug(Dumper($c->user->id));
+    $c->log->debug($c->user->urrzfullname);
     $c->stash(
         projects => [
             $c->model('AtacamaDB::Project')->search(
@@ -52,6 +52,7 @@ sub list : Chained('orders') PathPart('list') Args(0) {
         status => [ $c->model('AtacamaDB::Status')->search({})->all ],
         json_url => $c->uri_for_action('order/json'),
         template => 'order/list.tt',
+        # no_wrapper => 1,
         filters => $c->session->{order}{list}{filters},
     ); 
 }
