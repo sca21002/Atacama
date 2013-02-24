@@ -12,8 +12,8 @@
 <strong>Testdatenbank</strong>
 [% END %]
 
-[% IF c.user.name %]
-<strong>User:</strong> [% c.user.name %] <strong>Login:</strong> [% c.user.login %]
+[% IF c.user.urrzfullname %]
+<strong>User:</strong> [% c.user.urrzfullname %] <strong>Login:</strong> [% c.user.id %]
 [% END %]
 <strong>Stage:</strong> [% c.config.stage %]
 </div>
