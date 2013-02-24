@@ -17,19 +17,11 @@ Catalyst Controller.
 
 =head1 METHODS
 
-=cut
-
 =head2 index
 
 =cut
 
-sub index :Path :Args(0) {
-    my ( $self, $c ) = @_;
-
-    $c->response->body('Matched Atacama::Controller::Order in Order.');
-}
-
-sub orders : Chained('/login/required') PathPart('order') CaptureArgs(0) Does('NoSSL') {
+sub orders : Chained('/base') PathPart('order') CaptureArgs(0) {
     my ($self, $c) = @_;
     
     $c->stash->{orders} = $c->model('AtacamaDB::Order');

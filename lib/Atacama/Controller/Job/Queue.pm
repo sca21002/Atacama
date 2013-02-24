@@ -22,12 +22,6 @@ Catalyst Controller.
 
 =cut
 
-sub index :Path :Args(0) {
-    my ( $self, $c ) = @_;
-
-    $c->response->body('Matched Atacama::Controller::Job::Queue in Job::Queue.');
-}
-
 sub queue : Chained('/job/jobs') PathPart('queue') CaptureArgs(0) {
     my ($self, $c) = @_;
     

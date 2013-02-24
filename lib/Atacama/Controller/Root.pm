@@ -27,10 +27,19 @@ The root page (/)
 
 =cut
 
-sub index :Chained('/login/required') PathPart('') Does('NoSSL') {
+sub base : Chained('/login/required') PathPart('') CaptureArgs(0) Does('NoSSL'){
+    my ( $self, $c ) = @_;
+    
+    $c->stash(
+        roles => [ $c->user && $c->user->roles ],
+    );
+}
+
+
+sub index : Chained('/base') PathPart('') {
     my ( $self, $c ) = @_;
 
-  $c->stash(
+    $c->stash(
         projects => [
             $c->model('AtacamaDB::Project')->search(
                 undef,
@@ -46,13 +55,6 @@ sub index :Chained('/login/required') PathPart('') Does('NoSSL') {
         })->all ],
         orders => [$c->model('AtacamaDB::Order')->get_status_order_count()]
 );
-
-
-
-
-}
-
-
 
 =head2 end
 

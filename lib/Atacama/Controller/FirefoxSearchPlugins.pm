@@ -14,32 +14,24 @@ Catalyst Controller.
 
 =head1 METHODS
 
-=cut
-
-
-=head2 index
-
-=cut
-
-sub index :Path :Args(0) {
-    my ( $self, $c ) = @_;
-
-    $c->response->body('Matched Atacama::Controller::FirefoxSearchPlugins in FirefoxSearchPlugins.');
-}
-
-
 =head2 list
 
 =cut
 
-sub list :Local :Args(0) Does('NoSSL') {
+sub firefoxsearchplugins
+    :Chained('/base')
+    :PathPart('firefoxsearchplugins')
+    :CaptureArgs(0) {
+}
+
+sub list : Chained('firefoxsearchplugins') PathPart('list') Args(0)  {
     my ( $self, $c ) = @_;
 
-	my $model = $c->model('FirefoxSearchPlugins');
-	$model->change_dir('plugins');	# go to where plugins are located
-	my @files = $model->list(mode => 'files');
-	map { $_ = $model->file($_)->basename } @files;	# remove path
-	$c->stash->{ffsearchplugins} = \@files;
+    my $model = $c->model('FirefoxSearchPlugins');
+    $model->change_dir('plugins');	# go to where plugins are located
+    my @files = $model->list(mode => 'files');
+    map { $_ = $model->file($_)->basename } @files;	# remove path
+    $c->stash->{ffsearchplugins} = \@files;
     $c->stash->{template} = "firefoxsearchplugins/list.tt";
 }
 
@@ -48,7 +40,7 @@ sub list :Local :Args(0) Does('NoSSL') {
 
 =cut
 
-sub get :Chained('/login/required') PathPart('firefoxsearchplugins/get') Args(1) {
+sub get : Chained('firefoxsearchplugins') PathPart('get') Args(1) {
     my ( $self, $c, $filename ) = @_;
 
 	$c->stash(no_wrapper => 1);

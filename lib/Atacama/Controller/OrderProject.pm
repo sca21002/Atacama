@@ -22,13 +22,7 @@ Catalyst Controller.
 
 =cut
 
-sub index :Path :Args(0) {
-    my ( $self, $c ) = @_;
-
-    $c->response->body('Matched Atacama::Controller::OrderProject in OrderProject.');
-}
-
-sub ordersprojects : Chained('/') PathPart('orderproject') CaptureArgs(0) Does('NoSSL') {
+sub ordersprojects : Chained('/base') PathPart('orderproject') CaptureArgs(0) {
     my ($self, $c) = @_;
     
     $c->stash->{ordersprojects} = $c->model('AtacamaDB::OrderProject');

@@ -13,8 +13,10 @@
 [% END %]
 
 [% IF c.user.urrzfullname %]
-<strong>User:</strong> [% c.user.urrzfullname %] <strong>Login:</strong> [% c.user.id %]
+<strong>User:</strong> [% c.user.urrzfullname %]
+<strong>Login:</strong> [% c.user.id %]
 [% END %]
+<strong>Rollen:</strong> [% roles.join(', ') %]
 <strong>Stage:</strong> [% c.config.stage %]
 </div>
 </div>

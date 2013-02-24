@@ -22,13 +22,7 @@ Catalyst Controller.
 
 =cut
 
-sub index :Path :Args(0) {
-    my ( $self, $c ) = @_;
-
-    $c->response->body('Matched Atacama::Controller::Publication in Publication.');
-}
-
-sub publications : Chained('/') PathPart('publication') CaptureArgs(0) Does('NoSSL') {
+sub publications : Chained('/base') PathPart('publication') CaptureArgs(0) {
     my ($self, $c) = @_;
     
     $c->stash->{publications} = $c->model('AtacamaDB::Publication');

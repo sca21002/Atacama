@@ -23,12 +23,6 @@ Catalyst Controller.
 
 =cut
 
-sub index :Path :Args(0) {
-    my ( $self, $c ) = @_;
-
-    $c->response->body('Matched Atacama::Controller::Remedi in Remedi.');
-}
-
 sub remedi : Chained('/order/order') PathPart('remedi') Args(0) {
     my ( $self, $c ) = @_;
     

@@ -26,12 +26,6 @@ Catalyst Controller.
 
 =cut
 
-sub index :Path :Args(0) {
-    my ( $self, $c ) = @_;
-
-    $c->response->body('Matched Atacama::Controller::Job::Scoreboard in Job::Scoreboard.');
-}
-
 sub scoreboard : Chained('/job/jobs') PathPart('scoreboard') CaptureArgs(0) {
     my ($self, $c) = @_;    
 

@@ -24,13 +24,7 @@ Catalyst Controller.
 
 =cut
 
-sub index :Path :Args(0) {
-    my ( $self, $c ) = @_;
-
-    $c->response->body('Matched Atacama::Controller::Titel in Titel.');
-}
-
-sub titel : Chained('/') PathPart('titel') CaptureArgs(0) Does('NoSSL') {
+sub titel : Chained('/base') PathPart('titel') CaptureArgs(0) {
     my ($self, $c) = @_;
     
     $c->stash->{titel} = $c->model('AtacamaDB::Titel');

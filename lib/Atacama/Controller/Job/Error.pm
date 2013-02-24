@@ -14,19 +14,9 @@ Catalyst Controller.
 
 =head1 METHODS
 
-=cut
-
-
 =head2 index
 
 =cut
-
-sub index :Path :Args(0) {
-    my ( $self, $c ) = @_;
-
-    $c->response->body('Matched Atacama::Controller::Job::Error in Job::Error.');
-}
-
 
 sub errors : Chained('/job/jobs') PathPart('error') CaptureArgs(0) {
     my ($self, $c) = @_;

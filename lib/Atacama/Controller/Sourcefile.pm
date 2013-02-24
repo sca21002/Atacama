@@ -23,11 +23,6 @@ Catalyst Controller.
 
 =cut
 
-sub index :Path :Args(0) {
-    my ( $self, $c ) = @_;
-
-    $c->response->body('Matched Atacama::Controller::Sourcefile in Sourcefile.');
-}
 
 sub sourcefile : Chained('/order/order') PathPart('sourcefile') Args(0) {
     my ( $self, $c ) = @_;

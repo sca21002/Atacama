@@ -22,13 +22,7 @@ Catalyst Controller.
 
 =cut
 
-sub index :Path :Args(0) {
-    my ( $self, $c ) = @_;
-
-    $c->response->body('Matched Atacama::Controller::Job in Job.');
-}
-
-sub jobs : Chained('/login/required') PathPart('job') CaptureArgs(0) Does('NoSSL') {
+sub jobs : Chained('/base') PathPart('job') CaptureArgs(0) {
     my ($self, $c) = @_;
     
 }
