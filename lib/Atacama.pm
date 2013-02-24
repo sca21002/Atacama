@@ -1,6 +1,7 @@
 package Atacama;
 use Moose;
 use namespace::autoclean;
+use English qw( -no_match_vars ) ;  # Avoids regex performance penalty
 
 use Catalyst::Runtime 5.80;
 
@@ -21,7 +22,8 @@ use Catalyst qw/
     Authentication
     Session
     Session::State::Cookie
-    Session::Store::FastMmap    
+    Session::Store::FastMmap
+    StatusMessage
 /;
 
 extends 'Catalyst';
@@ -47,21 +49,38 @@ __PACKAGE__->config(
     disable_component_resolution_regex_fallback => 1,
     
     'Plugin::Session' => {
-        storage => '/tmp/session_atacdev'
+        storage => "/tmp/session_$EFFECTIVE_USER_ID"                      
     },
-    'Plugin::Authentication' => {
-        default => {
-            credential => {
-                class => 'Password',
-                password_field      => 'pass',
-                password_type       => 'hashed',
-                password_hash_type  => 'SHA-1',
+    
+    'authentication' => {
+        default_realm => 'ldap',
+        realms => {
+            ldap => {
+                credential => {
+                    class => 'Password',
+                    password_field => 'password',
+                    password_type => 'self_check',
+                },
+                store => {
+                    binddn              => 'anonymous',
+                    bindpw              => 'dontcarehow',
+                    class               => '+Atacama::LDAP',
+                    ldap_server         => 'ldapauth1.uni-regensburg.de',
+                    ldap_server_options => { timeout => 30 },
+                    start_tls           => 1,
+                    start_tls_options   => { verify => 'none' },
+                    entry_class         => 'Catalyst::Model::LDAP::Entry',
+                    user_basedn         => 'ou=bibliothek,o=uni-regensburg,C=de',
+                    user_field          => 'cn',
+                    user_filter         => '(&(objectClass=urrzUser)(cn=%s))',
+                    user_scope          => 'sub', 
+                    user_search_options => { deref => 'always' },
+                    user_results_filter => sub { return shift->pop_entry },
+                    user_class          => 'Atacama::LDAP::User',
+                    user_model          => 'AtacamaDB::User',
+                },
             },
-            store => {
-                class => 'DBIx::Class',
-                user_model => 'AtacamaWikiDB::Person',
-            },
-        },    
+        },
     },
     'Controller::Login' => {
             login_form_args => {
