@@ -41,7 +41,7 @@ sub list : Chained('orders') PathPart('list') Args(0) {
     # $c->log->debug('LIST: ');
     # $c->log->debug('Filter stash: ' . $c->session->{order}{list}{filters});
     $c->log->debug(Dumper($c->user->id));
-    $c->log->debug($c->user->urrzfullname);
+    $c->log->debug($c->user->name);
     $c->stash(
         projects => [
             $c->model('AtacamaDB::Project')->search(
@@ -219,7 +219,7 @@ sub save : Private {
         if ( $order_params->{remark} or  $order->status_id != $order_params->{status_id}  ) 
         {
             $order_params->{remarks} = [{
-                login => $c->user->login,
+                login => $c->user->id,
                 status_id => $order_params->{status_id},
                 content => $order_params->{remark},
             }];
