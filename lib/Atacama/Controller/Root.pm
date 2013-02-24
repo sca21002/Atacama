@@ -31,7 +31,7 @@ sub base : Chained('/login/required') PathPart('') CaptureArgs(0) Does('NoSSL'){
     my ( $self, $c ) = @_;
     
     $c->stash(
-        roles => [ $c->user && $c->user->roles ],
+        roles => [ $c->user && $c->user->roles | 'readonly' ],
     );
 }
 
@@ -54,7 +54,8 @@ sub index : Chained('/base') PathPart('') {
                 group_by => [qw/ status_id /]
         })->all ],
         orders => [$c->model('AtacamaDB::Order')->get_status_order_count()]
-);
+    );
+}
 
 =head2 end
 
