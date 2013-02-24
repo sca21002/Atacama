@@ -14,6 +14,7 @@ requires 'aliased';
 requires 'Catalyst::Runtime' => '5.80029';
 requires 'Catalyst::Plugin::ConfigLoader';
 requires 'Catalyst::Plugin::Session::Store::FastMmap';
+requires 'Catalyst::Plugin::StatusMessage';
 requires 'Algorithm::Merge';
 requires 'Archive::Zip';
 requires 'CAM::PDF';
