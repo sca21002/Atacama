@@ -97,7 +97,13 @@ __PACKAGE__->add_unique_constraint("username", ["username"]);
 # Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-02-24 10:14:47
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:tc3ZhcybARTGLr+/OBHVeA
 
+__PACKAGE__->has_many(
+    "users_roles",
+    "Atacama::Schema::Result::UserRole",
+    { "foreign.user_id" => "self.id" }
+);
 
-# You can replace this text with custom code or comments, and it will be preserved on regeneration
+__PACKAGE__->many_to_many("roles", "users_roles", "role");
+
 __PACKAGE__->meta->make_immutable;
 1;

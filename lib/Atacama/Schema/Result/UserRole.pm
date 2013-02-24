@@ -79,7 +79,11 @@ __PACKAGE__->set_primary_key("user_id", "role_id");
 # Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-02-24 10:14:47
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:wQ4UmjFKhG0vQQpR7dY8tg
 
+__PACKAGE__->belongs_to(
+    "role",
+    "Catatest::Schema::Result::Role",
+    { "foreign.id" => "self.role_id" }
+);
 
-# You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;
 1;
