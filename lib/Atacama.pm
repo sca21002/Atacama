@@ -83,11 +83,14 @@ __PACKAGE__->config(
         },
     },
     'Controller::Login' => {
-            login_form_args => {
-               authenticate_username_field_name => 'login',
-               authenticate_password_field_name => 'pass',
-            }
+         login_form_args => {
+            authenticate_username_field_name => 'id',
+            authenticate_password_field_name => 'password',
         },
+        action       => {
+            login    => { Does => [qw( RequireSSL )] },
+        },
+    },
     
 );
 
