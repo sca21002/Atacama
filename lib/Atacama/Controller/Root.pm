@@ -31,12 +31,19 @@ sub base : Chained('/login/required') PathPart('') CaptureArgs(0) Does('NoSSL'){
     my ( $self, $c ) = @_;
  
     my @roles = ('readonly');
-    @roles =  $c->user->roles if  $c->user &&  $c->user->roles;
     my $user;
-    $user->{fullname} = $c->can('user') && $c->user->can('urrzfullname') && $c->user->urrzfullname || 
-                        (($c->can('user') && $c->user->can('urrzgivenname') && $c->user->urrzgivenname)   
-                        . ' ' . ($c->can('user') && $c->user->can('urrzsurname') && $c->user->urrzsurname));
-    $user->{id} = $c->can('user') && $c->user->can('id') &&  $c->user->id || '';
+    if ( $c->can('user') ) { 
+        $user->{fullname}
+            =  $c->user->can('urrzfullname') 
+            ?  $c->user->urrzfullname
+            : join(' ',
+                $c->user->can('urrzgivenname') && $c->user->urrzgivenname,
+                $c->user->can('urrzsurname')   && $c->user->urrzsurname
+            );
+        
+        $user->{id} = $c->user->can('id') &&  $c->user->id;
+        @roles =  $c->user->roles if  $c->user->can('roles');
+    }
     $c->log->debug('User: ' . Dumper($user));
 
     $c->stash( 
