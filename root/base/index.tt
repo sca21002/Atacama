@@ -41,7 +41,6 @@ Universitätsbibliothek Regensburg.</p>
 	der Projekte</a> ansehen.</li>
 	<li>die <a href="[% c.uri_for_action('/firefoxsearchplugins/list') %]">Liste
 	der Firefox-Such-Plugins</a> ansehen.</li>
-	<li>sich ein <a href="http://rzbvm006/atacamawiki/.register">Benutzerkonto anlegen</a>.</li>
 </ul>
 
 

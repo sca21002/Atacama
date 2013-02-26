@@ -81,7 +81,7 @@ __PACKAGE__->set_primary_key("user_id", "role_id");
 
 __PACKAGE__->belongs_to(
     "role",
-    "Catatest::Schema::Result::Role",
+    "Atacama::Schema::Result::Role",
     { "foreign.id" => "self.role_id" }
 );
 

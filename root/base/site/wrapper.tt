@@ -16,7 +16,9 @@
 <strong>User:</strong> [% c.user.urrzfullname %]
 <strong>Login:</strong> [% c.user.id %]
 [% END %]
+[% IF roles %]
 <strong>Rollen:</strong> [% roles.join(', ') %]
+[% END %]
 <strong>Stage:</strong> [% c.config.stage %]
 </div>
 </div>
@@ -36,7 +38,7 @@
 
    <h1 class="main">
    
-[% title or template.title or 'Login' %]
+[% title or template.title or 'Login: Bitte mit Novell-Passwort (Kurzname) anmelden.' %]
 
    </h1>
 [% content %]

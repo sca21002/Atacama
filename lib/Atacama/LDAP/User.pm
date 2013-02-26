@@ -15,9 +15,12 @@ sub new {
 sub roles {
     my ($self, $ldap) = @_;
 
-    $self->{_roles} ||= [
-        map { $_->name } $self->model->find({username => $self->id})->roles
-    ];
+    unless ( $self->{_roles}) {
+        my $result = $self->model->find({username => $self->id});
+        $self->{_roles} =  $result 
+            ?  map { $_->name } $result->roles 
+            : ();
+    }
     return @{$self->{_roles}};
 }
 

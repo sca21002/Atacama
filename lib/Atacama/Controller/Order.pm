@@ -1,7 +1,7 @@
 package Atacama::Controller::Order;
 use Moose;
 use namespace::autoclean;
-use Data::Dumper;
+use Data::# Dumper;
 use JSON;
 use utf8;
 
@@ -93,7 +93,8 @@ sub json : Chained('orders') PathPart('json') Args(0) {
         $row->{cell} = [
             $order->order_id,
             $order->titel && $order->titel->titel_isbd
-                || $order->title =~ /\S/ && 'alt: ' . $order->title ,
+                || $order->title && $order->title =~ /\S/ && 'alt: ' . $order->title
+                || '(kein Titel)' ,
             $order->orders_projects->get_projects_as_string,
             $order->status && $order->status->name,
         ];
@@ -125,12 +126,12 @@ sub edit : Chained('order') {
 sub put : Chained('orders') {
     my ($self, $c) = @_;
     
-    $c->log->debug(Dumper($c->req->params));
+    # $c->log->debug(Dumper($c->req->params));
     my $order_params = $self->list_to_hash($c, $c->req->params);
     $c->stash->{signatur} = $order_params->{titel}{signatur};
     $c->stash->{mediennr} = $order_params->{titel}{mediennr};
     
-    $c->log->debug('order_params' . Dumper ($order_params));
+    # $c->log->debug('order_params' . Dumper ($order_params));
     
     $c->stash->{titel} = $c->model('AtacamaDB::Titel');
     $c->forward('/titel/get_title');
@@ -173,10 +174,10 @@ sub save : Private {
     my $order = $c->stash->{order}
         ||= $c->model('AtacamaDB::Order')->create_order({});
     if ($c->req->method eq 'POST') {
-        $c->log->debug(Dumper($c->req->params));
+        # $c->log->debug(Dumper($c->req->params));
         # $c->log->debug('Method: ' .Dumper($c->req->method));
         my $order_params = $self->list_to_hash($c, $c->req->params);
-        $c->log->debug('Orderparams: ' . Dumper($order_params));
+        # $c->log->debug('Orderparams: ' . Dumper($order_params));
         # $c->log->debug('BVNr: ' . $order_params->{titel}{bvnr});
         # $c->log->debug($order->titel ? $order->titel->bvnr || '' : 'kein Titel');
         #if ( $order_params->{titel}{bvnr}  and not ( $order->titel && $order->titel->bvnr eq  $order_params->{titel}{bvnr}  )   ) {
@@ -194,11 +195,11 @@ sub save : Private {
             $c->stash->{signatur} = $order_params->{titel}{signatur};
             $c->stash->{titel} = $c->model('AtacamaDB::Titel');
             $c->forward('/titel/get_title_by_katkey');
-            $c->log->debug('order->titel ' . Dumper($order_params->{titel}));
-            $c->log->debug('titel_data ' . Dumper($c->stash->{titel_data}));
+            # $c->log->debug('order->titel ' . Dumper($order_params->{titel}));
+            # $c->log->debug('titel_data ' . Dumper($c->stash->{titel_data}));
             $order_params->{titel} = {  %{$order_params->{titel}}, %{$c->stash->{titel_data}} };
             delete $order_params->{titel}{order_id};
-            $c->log->debug('order_params ' . Dumper($order_params->{titel}));
+            # $c->log->debug('order_params ' . Dumper($order_params->{titel}));
         }
         $c->log->debug(
         	'defined($order_params->{status_id}: ' .  defined($order_params->{status_id})
@@ -306,7 +307,7 @@ sub list_to_hash {
   
     my %order_params;
     while (my($key,$value) = each %$params) {
-        $c->log->debug("key: " . $key . " value: " . Dumper($value));
+        # $c->log->debug("key: " . $key . " value: " . Dumper($value));
         $value =~ s/^\s+//;
         $value =~ s/\s+$//;
         # $c->log->debug("key/value:" . $key . ": " . $value);

@@ -6,7 +6,7 @@
 </div>
 <p id="name">
 	<img id="lama" src="[% c.uri_for_static('css/images/AtacamaLama25.png') %]" alt="" title=""  />
-  <strong>Atacama</strong> (アタカマ) v. [% c.VERSION %], letzte &Auml;nderung 24.04.2012, &copy; Universit&auml;tsbibliothek Regensburg 
+  <strong>Atacama</strong> (アタカマ) v. [% c.VERSION %], letzte &Auml;nderung 24.02.2013, &copy; Universit&auml;tsbibliothek Regensburg 
   <br /> DB: [% c.model('AtacamaDB').connect_info.dsn.remove('[^=]*=') %]</p>                         
 </div>
 </div>

@@ -29,10 +29,11 @@ The root page (/)
 
 sub base : Chained('/login/required') PathPart('') CaptureArgs(0) Does('NoSSL'){
     my ( $self, $c ) = @_;
-    
-    $c->stash(
-        roles => [ $c->user && $c->user->roles | 'readonly' ],
-    );
+ 
+    my @roles = ('readonly');
+    @roles =  $c->user->roles if  $c->user &&  $c->user->roles;
+ 
+    $c->stash( roles => [ @roles ] );
 }
 
 
@@ -53,7 +54,13 @@ sub index : Chained('/base') PathPart('') {
                       {count => 'orders.order_id', -as => 'order_count'} ],
                 group_by => [qw/ status_id /]
         })->all ],
-        orders => [$c->model('AtacamaDB::Order')->get_status_order_count()]
+        orders => [ 
+            map {
+                $_->{status_name}
+                ? $_
+                :  { status_name => '(ohne)', order_count => $_->{order_count} } 
+            } $c->model('AtacamaDB::Order')->get_status_order_count() 
+        ]
     );
 }
 

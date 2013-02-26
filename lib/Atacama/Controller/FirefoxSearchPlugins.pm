@@ -28,7 +28,8 @@ sub list : Chained('firefoxsearchplugins') PathPart('list') Args(0)  {
     my ( $self, $c ) = @_;
 
     my $model = $c->model('FirefoxSearchPlugins');
-    $model->change_dir('plugins');	# go to where plugins are located
+    # _dump_paths($c);  
+   $model->change_dir('plugins');	# go to where plugins are located
     my @files = $model->list(mode => 'files');
     map { $_ = $model->file($_)->basename } @files;	# remove path
     $c->stash->{ffsearchplugins} = \@files;
@@ -54,6 +55,18 @@ sub not_found : Local {
     $c->response->status(404);
     $c->stash->{error_msg} = "Plugin nicht gefunden!";
     $c->detach('list');
+}
+
+sub _dump_paths
+{
+    my ($c) = @_;
+
+    my $indent = '.' x length($c->request->base);
+    $c->log->debug('Paths:',
+                   "\t\$c->request->uri:  " . $c->request->uri,
+                   "\t\$c->request->base: " . $c->request->base,
+                   "\t\$c->request->path: $indent" . $c->request->path
+                  );
 }
 
 
