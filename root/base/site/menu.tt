@@ -18,7 +18,7 @@
 [%  END %]
 
 <li  class="ui-state-default ui-corner-all alpha60">
-<span class="ui-icon ui-icon-contact"></span>
+<span class="ui-icon ui-icon-power"></span>
 <a href="[% c.uri_for_action('/login/logout') %]">Logout</a></li>
 
 [% IF !start %]

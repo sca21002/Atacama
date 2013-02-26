@@ -1,7 +1,7 @@
 package Atacama::Controller::Order;
 use Moose;
 use namespace::autoclean;
-use Data::# Dumper;
+use Data::Dumper;
 use JSON;
 use utf8;
 

@@ -12,9 +12,9 @@
 <strong>Testdatenbank</strong>
 [% END %]
 
-[% IF c.user.urrzfullname %]
-<strong>User:</strong> [% c.user.urrzfullname %]
-<strong>Login:</strong> [% c.user.id %]
+[% IF user.fullname %]
+<strong>User:</strong> [% user.fullname %]
+<strong>Login:</strong> [% user.id %]
 [% END %]
 [% IF roles %]
 <strong>Rollen:</strong> [% roles.join(', ') %]
