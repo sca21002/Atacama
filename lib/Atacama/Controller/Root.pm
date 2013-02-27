@@ -37,8 +37,9 @@ sub base : Chained('/login/required') PathPart('') CaptureArgs(0) Does('NoSSL'){
             =  $c->user->can('urrzfullname') 
             ?  $c->user->urrzfullname
             : join(' ',
-                $c->user->can('urrzgivenname') && $c->user->urrzgivenname,
-                $c->user->can('urrzsurname')   && $c->user->urrzsurname
+                grep { defined $_ && $_ }   
+                    $c->user->can('urrzgivenname') && $c->user->urrzgivenname,
+                    $c->user->can('urrzsurname')   && $c->user->urrzsurname
             );
         
         $user->{id} = $c->user->can('id') &&  $c->user->id;

@@ -27,13 +27,13 @@ sub firefoxsearchplugins
 sub list : Chained('firefoxsearchplugins') PathPart('list') Args(0)  {
     my ( $self, $c ) = @_;
 
-    my $model = $c->model('FirefoxSearchPlugins');
+    my $model = $c->model('FirefoxSearchPlugins')->change_dir('plugins');
     # _dump_paths($c);  
-   $model->change_dir('plugins');	# go to where plugins are located
-    my @files = $model->list(mode => 'files');
-    map { $_ = $model->file($_)->basename } @files;	# remove path
-    $c->stash->{ffsearchplugins} = \@files;
-    $c->stash->{template} = "firefoxsearchplugins/list.tt";
+    my @files = map { $_->basename } $model->list(mode => 'files');	# remove path
+    $c->stash(
+        ffsearchplugins => \@files,
+        template => 'firefoxsearchplugins/list.tt',
+    );
 }
 
 
@@ -44,9 +44,11 @@ sub list : Chained('firefoxsearchplugins') PathPart('list') Args(0)  {
 sub get : Chained('firefoxsearchplugins') PathPart('get') Args(1) {
     my ( $self, $c, $filename ) = @_;
 
-	$c->stash(no_wrapper => 1);
 	$c->response->content_type('application/opensearchdescription+xml');
-	$c->stash->{template} = "firefoxsearchplugins/plugins/" . $filename;
+	$c->stash(
+            no_wrapper => 1,      
+            template   => 'firefoxsearchplugins/plugins/' . $filename,
+        );
 }
 
 
