@@ -27,6 +27,7 @@ requires 'Catalyst::Plugin::Static::Simple';
 requires 'Catalyst::Plugin::Unicode::Encoding';
 requires 'Catalyst::Model::File';
 requires 'Catalyst::Action::RenderView';
+requires 'CatalystX::DebugFilter';
 requires 'CatalystX::SimpleLogin';
 requires 'Config::ZOMG';
 requires 'Data::Page';
