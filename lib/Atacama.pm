@@ -4,6 +4,7 @@ use namespace::autoclean;
 use English qw( -no_match_vars ) ;  # Avoids regex performance penalty
 
 use Catalyst::Runtime 5.80;
+    with 'CatalystX::DebugFilter';
 
 # Set flags and add plugins for the application
 #
@@ -93,6 +94,9 @@ __PACKAGE__->config(
             login    => { Does => [qw( RequireSSL )] },
         },
     },
+    'CatalystX::DebugFilter' => {
+        Request => { params => [ 'password' ] },
+    }
     
 );
 
