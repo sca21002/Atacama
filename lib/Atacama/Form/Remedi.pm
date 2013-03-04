@@ -78,7 +78,7 @@ sub _build_remedi_configfiles {
     my $self = shift;
     
     my $dir = Path::Class::Dir->new($self->remedi_configdir);
-    my @files = grep { $_->basename =~ /^remedi_de-.*\.yml$/ } $dir->children;
+    my @files = grep { $_->basename =~ /^remedi_de-.*\.conf$/ } $dir->children;
     return \@files; 
 }
 
@@ -97,22 +97,22 @@ sub default_configfile {
     my @projects = $self->order->projects->all;
     my @list = $self->all_remedi_configfiles;
     my $default = ( $library eq 'Staatliche Bibliothek Regensburg' )
-        ? first { $_->basename eq  'remedi_de-155-355.yml' } @list
+        ? first { $_->basename eq  'remedi_de-155-355.conf' } @list
         : ( $library eq 'Südost-Institut' )
-        ? first { $_->basename eq 'remedi_de-M135-355.yml' } @list
+        ? first { $_->basename eq 'remedi_de-M135-355.conf' } @list
         : ( $library eq 'Osteuropa-Institut' )
-        ? first { $_->basename eq 'remedi_de-M357-355.yml' } @list
+        ? first { $_->basename eq 'remedi_de-M357-355.conf' } @list
         : ( $library eq 'Handwerkskammer Niederbayern-Oberpfalz' )
-        ? first { $_->basename eq 'remedi_de-355_hwkno.yml' } @list 
+        ? first { $_->basename eq 'remedi_de-355_hwkno.conf' } @list 
         : ( $library eq 'Johannes-Turmair-Gymnasium' ) 
-        ? first { $_->basename eq 'remedi_de-Str1-355.yml' } @list    
+        ? first { $_->basename eq 'remedi_de-Str1-355.conf' } @list    
         : ( $library eq 'Siebenbürgische Bibliothek' )
-        ? first { $_->basename eq 'remedi_de-Gun1-355.yml' } @list
+        ? first { $_->basename eq 'remedi_de-Gun1-355.conf' } @list
         : ( $library eq 'Johannes-Künzig-Institut für Ostdeutsche Volkskunde' )
-        ? first { $_->basename eq 'remedi_de-Frei131-355.yml' } @list
+        ? first { $_->basename eq 'remedi_de-Frei131-355.conf' } @list
         : ( first { $_->name eq '233' } @projects ) 
-        ? first { $_->basename eq 'remedi_de-355_jpeg.yml' } @list 
-        : first { $_->basename eq 'remedi_de-355.yml' } @list
+        ? first { $_->basename eq 'remedi_de-355_jpeg.conf' } @list 
+        : first { $_->basename eq 'remedi_de-355.conf' } @list
         ;
     return $default; 
 }
