@@ -14,10 +14,10 @@ has '+log_basename' => (
     default => 'sourcefile.log',                        
 );
 
-has 'scanfile_format' => (
+has 'scanfile_formats' => (
     is => 'rw',
-    isa => 'Str',
-    builder => '_build_scanfile_format',
+    isa => 'ArrayRef[Str]',
+    builder => '_build_scanfile_formats',
     lazy => 1,
 );    
 
@@ -49,10 +49,10 @@ has 'sourcedir' => (
     lazy => 1,
 );
     
-sub  _build_scanfile_format {
+sub  _build_scanfile_formats {
     my $self = shift;    
     
-    return $self->arg->{scanfile_format} || 'TIFF';
+    return $self->arg->{scanfile_formats} || ['TIFF'];
 }
 
 sub _build_sourcedir {

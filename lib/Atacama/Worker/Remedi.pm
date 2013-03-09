@@ -8,6 +8,7 @@ use CAM::PDF;
 use Remedi::DigiFooter;
 use Remedi::Mets;
 use Remedi::CSV;
+use Data::Dumper;
 
 my $log_file_name;
 
@@ -153,10 +154,17 @@ sub start_digifooter {
         $init_arg{$key} = $job->arg->{$key} if $job->arg->{$key};
     }
     while (my($key, $val) = each %init_arg) { $job->log->info("$key => $val") }
-    my $traits = (%{Config::Any->load_files({files => [$job->remedi_config_file],
-        use_ext => 1})->[0]})[1]{traits};
-    Remedi::DigiFooter->new_with_traits($traits)->new_with_config(%init_arg)
-                      ->make_footer;    
+    my $traits = (%{Config::Any->load_files({
+        files => [$job->remedi_config_file],
+        use_ext => 1, 
+        driver_args => { General => { -ForceArray => 1 }}
+    })->[0]})[1]{traits} || [ qw/DestFormat::PDF/ ];
+    $job->log->info('Traits: ' . Dumper($traits));
+    my $class = Remedi::DigiFooter->with_traits(@$traits);
+    #$job->log->logcroak('Class kann nicht DestFormat::JPEG_TIFF') unless $class->does('Remedi::TraitFor::DigiFooter::DestFormat::JPEG_TIFF');
+    my $instance = $class->new_with_config(%init_arg);
+    $job->log->logcroak('Instance kann nicht get_dest_format') unless $instance->can('get_dest_format');
+    $instance->make_footer;    
     
 }
 

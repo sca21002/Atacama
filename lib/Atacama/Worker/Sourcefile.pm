@@ -181,8 +181,8 @@ sub work {
     $job->order->update({status_id => 23});
     $job->sourcedir or $log->logcroak('Verzeichnis mit Quelldateien nicht gefunden!');
  
-    
-    foreach  ($job->scanfile_format, 'PDF', 'XML') {
+    $log->info('Gesuchte Formate: ' . join(' ',(@{$job->scanfile_formats}, 'PDF', 'XML')));    
+    foreach  (@{$job->scanfile_formats}, 'PDF', 'XML') {
         $job->format($_);
         $job->log->trace("Start-Format: " . $job->format);
         $job->sourcedir->recurse(

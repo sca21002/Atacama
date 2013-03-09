@@ -110,8 +110,6 @@ sub default_configfile {
         ? first { $_->basename eq 'remedi_de-Gun1-355.conf' } @list
         : ( $library eq 'Johannes-Künzig-Institut für Ostdeutsche Volkskunde' )
         ? first { $_->basename eq 'remedi_de-Frei131-355.conf' } @list
-        : ( first { $_->name eq '233' } @projects ) 
-        ? first { $_->basename eq 'remedi_de-355_jpeg.conf' } @list 
         : first { $_->basename eq 'remedi_de-355.conf' } @list
         ;
     return $default; 
