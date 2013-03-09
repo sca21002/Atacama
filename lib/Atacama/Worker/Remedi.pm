@@ -152,8 +152,11 @@ sub start_digifooter {
     foreach my $key (qw/resolution_correction source_format/) {
         $init_arg{$key} = $job->arg->{$key} if $job->arg->{$key};
     }
-    while (my($key, $val) = each %init_arg) { $job->log->info("$key => $val") } 
-    Remedi::DigiFooter->new_with_config(%init_arg)->make_footer;    
+    while (my($key, $val) = each %init_arg) { $job->log->info("$key => $val") }
+    my $traits = (%{Config::Any->load_files({files => [$job->remedi_config_file],
+        use_ext => 1})->[0]})[1]{traits};
+    Remedi::DigiFooter->new_with_traits($traits)->new_with_config(%init_arg)
+                      ->make_footer;    
     
 }
 
