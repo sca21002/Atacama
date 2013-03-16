@@ -214,12 +214,14 @@ sub start_csv {
 
 sub work {
     my $class = shift;
-    my $job_theschwartz = shift;
+    my $theschwartz_job = shift;
     
     croak("Falscher Aufruf von Atacama::Worker::Remedi::work()"
             . " mit Klasse: $class"
          ) unless $class eq 'Atacama::Worker::Remedi';
-    my $job = Atacama::Worker::Job::Remedi->new(job => $job_theschwartz);
+    my $job = Atacama::Worker::Job::Remedi
+        ->with_traits( [ qw(TheSchwartz) ] )
+        ->new( thesschwartz_job => $theschwartz_job );
     $log_file_name = $job->log_file_name;
     my $log_msg = prepare_work_dir($job) if $job->does_copy_files;
     my $log = $job->log;

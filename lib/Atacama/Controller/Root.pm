@@ -2,6 +2,7 @@ package Atacama::Controller::Root;
 use Moose;
 use Data::Dumper;
 use namespace::autoclean;
+use Try::Tiny;
 
 BEGIN { extends 'Catalyst::Controller' }
 
@@ -43,7 +44,12 @@ sub base : Chained('/login/required') PathPart('') CaptureArgs(0) Does('NoSSL'){
             );
         
         $user->{id} = $c->user->can('id') &&  $c->user->id;
-        @roles =  $c->user->roles if  $c->user->can('roles');
+        try {
+            @roles =  $c->user->roles if  $c->user->can('roles');
+        } catch {
+            $c->log->warn("Warnung: $_");
+        };
+       
     }
     $c->log->debug('User: ' . Dumper($user));
 

@@ -169,12 +169,14 @@ sub save_ocrfile {
 
 sub work {
     my $class = shift;
-    my $job_theschwartz = shift;
+    my $theschwartz_job = shift;
     
     croak("Falscher Aufruf von Atacama::Worker::Remedi::work()"
             . " mit Klasse: $class"
          ) unless $class eq 'Atacama::Worker::Sourcefile';
-    $job = Atacama::Worker::Job::Sourcefile->new(job => $job_theschwartz);
+    $job = Atacama::Worker::Job::Sourcefile
+        ->with_traits(  qw(TheSchwartz)  )
+        ->new( thesschwartz_job => $theschwartz_job );
     $log_file_name = $job->log_file_name;
     my $log = $job->log;
     $log->info('Programm gestartet');
@@ -188,7 +190,7 @@ sub work {
         $job->sourcedir->recurse(
             callback => make_get_sourcefile( $job ),  # Wow a Closure!
             depthfirst => 1,
-            preorder => 1
+            preorder   => 1
         );
     }
 

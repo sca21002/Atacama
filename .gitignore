@@ -26,3 +26,4 @@ Thumbs.db
 /t/input_files/reference/
 /t/input_files/thumbnail/
 /t/input_files/ubr00003
+lib/Atacama/Model/AtacamaWikiDB.pm

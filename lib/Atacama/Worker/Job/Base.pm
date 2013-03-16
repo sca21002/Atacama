@@ -1,7 +1,6 @@
 package Atacama::Worker::Job::Base;
 use Moose;
-use MooseX::NonMoose;
-extends 'TheSchwartz::Job';
+    with 'MooseX::Traits';
 use Atacama::Types qw(Order_id);
 use MooseX::Types::Path::Class qw(File Dir);
 use MooseX::Types::Moose qw(HashRef Str);
@@ -10,13 +9,6 @@ use Config::ZOMG;
 use Log::Log4perl;
 use File::Path qw(make_path);
 
-
-has 'job' => (
-    is => 'rw',
-    isa => 'TheSchwartz::Job',
-    handles => [qw( arg completed)],
-    required => 1,
-);
 
 
 has 'atacama_config_path' => (
@@ -105,6 +97,8 @@ has 'order_id' => (
     builder => '_build_order_id',
     lazy => 1,
 );
+
+has '+_trait_namespace' => ( default => 'Atacama::Worker::Trait' );
 
 has 'work_base' => (
     is => 'rw',
