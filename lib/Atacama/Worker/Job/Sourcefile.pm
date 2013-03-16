@@ -8,7 +8,7 @@ use Carp;
 use File::Slurp;
 use Remedi::Imagefile;
 use Remedi::PDF::API2;
-
+use Data::Dumper;
 
 has '+log_config_basename' => (
     default => 'log4perl_sourcefile.conf',
