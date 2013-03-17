@@ -43,22 +43,22 @@ __PACKAGE__->table("users_roles");
 =head2 user_id
 
   data_type: 'integer'
-  default_value: 0
+  extra: {unsigned => 1}
   is_nullable: 0
 
 =head2 role_id
 
   data_type: 'integer'
-  default_value: 0
+  extra: {unsigned => 1}
   is_nullable: 0
 
 =cut
 
 __PACKAGE__->add_columns(
   "user_id",
-  { data_type => "integer", default_value => 0, is_nullable => 0 },
+  { data_type => "integer", extra => { unsigned => 1 }, is_nullable => 0 },
   "role_id",
-  { data_type => "integer", default_value => 0, is_nullable => 0 },
+  { data_type => "integer", extra => { unsigned => 1 }, is_nullable => 0 },
 );
 
 =head1 PRIMARY KEY
@@ -76,8 +76,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("user_id", "role_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-02-24 10:14:47
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:wQ4UmjFKhG0vQQpR7dY8tg
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-17 21:36:15
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:XrdO9xGtdKe77+Y41GOHYQ
 
 __PACKAGE__->belongs_to(
     "role",
