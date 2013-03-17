@@ -3,102 +3,103 @@ package Atacama::Helper::TheSchwartz::Job;
 use Moose;
 use MooseX::Types::DateTime;
 use MooseX::Types::Path::Class;
+use namespace::autoclean;
 
-has pid => (
+has 'pid' => (
     is => 'ro',
     isa => 'Str',
     required => 1,
 );
 
-has funcname => (
+has 'funcname' => (
     is => 'ro',
     isa => 'Str',
     required => 1,
 );
 
-has started => (
+has 'started' => (
     is => 'ro',
     isa => 'DateTime',
     required => 1,
     coerce => 1,
 );           
 
-has arg => (
+has 'arg' => (
     is => 'ro',
     isa => 'Str',
     predicate => 'has_arg',
 );
 
-has arg_hashref => (
+has 'arg_hashref' => (
     is => 'rw',
     isa => 'HashRef',
     lazy_build => 1,
 );
 
-has done => (
+has 'done' => (
     is => 'ro',
     isa => 'DateTime',
     coerce => 1,
 );
 
 
-has runtime => (
+has 'runtime' => (
     is => 'ro',
     isa => 'Str',
     lazy_build => 1,
 );
 
-has configfile => (
+has 'remedi_configfile' => (
     is => 'ro',
     isa => 'Path::Class::File',
     coerce => 1,
     lazy_build => 1, 
 );
 
-has digifooter => (
+has 'does_digifooter' => (
     is => 'ro',
     isa => 'Bool',
     lazy_build => 1, 
 );
 
-has copy_files => (
+has 'does_copy_files' => (
     is => 'ro',
     isa => 'Bool',
     lazy_build => 1, 
 );
 
-has csv => (
+has 'does_csv' => (
     is => 'ro',
     isa => 'Bool',
     lazy_build => 1, 
 );
 
-has mets => (
+has 'does_mets' => (
     is => 'ro',
     isa => 'Bool',
     lazy_build => 1, 
 );
 
 
-has source_format => (
+has 'source_format' => (
     is => 'ro',
     isa => 'Str',
     lazy_build => 1, 
 );
 
-has order_id => (
+has 'order_id' => (
     is => 'ro',
     isa => 'Str',
     lazy_build => 1, 
 );
 
-has source_pdf_name => (
+has 'source_pdf' => (
     is => 'ro',
     isa => 'Str',
     lazy_build => 1, 
 );
 
-has additional_args => (
+has 'additional_args' => (
     is => 'ro',
     isa => 'Str',
     lazy_build => 1,
@@ -121,24 +122,24 @@ sub _build_arg_hashref {
     return $arg_hashref;
 }
 
-sub _build_configfile {
-    (shift)->arg_hashref->{configfile} || '';    
+sub _build_remedi_configfile {
+    (shift)->arg_hashref->{remedi_configfile} || '';    
 }
 
-sub _build_digifooter {
-    (shift)->arg_hashref->{digifooter} || '';    
+sub _build_does_digifooter {
+    (shift)->arg_hashref->{does_digifooter} || '';    
 }
 
-sub _build_copy_files {
-    (shift)->arg_hashref->{copy_files} || '';    
+sub _build_does_copy_files {
+    (shift)->arg_hashref->{does_copy_files} || '';    
 }
 
-sub _build_csv {
-    (shift)->arg_hashref->{csv} || '';    
+sub _build_does_csv {
+    (shift)->arg_hashref->{does_csv} || '';    
 }
 
-sub _build_mets {
-    (shift)->arg_hashref->{mets} || '';    
+sub _build_does_mets {
+    (shift)->arg_hashref->{does_mets} || '';    
 }
 
 sub _build_source_format {
@@ -149,8 +150,8 @@ sub _build_order_id {
     (shift)->arg_hashref->{order_id} || '';    
 }
 
-sub _build_source_pdf_name {
-    (shift)->arg_hashref->{source_pdf_name} || '';    
+sub _build_source_pdf {
+    (shift)->arg_hashref->{source_pdf} || '';    
 }
 
 sub _build_additional_args {
@@ -158,8 +159,8 @@ sub _build_additional_args {
     
     my %arg_hashref = %{$self->arg_hashref};
     my @standard_keys = qw(
-        configfile digifooter copy_files csv source_format order_id mets
-        source_pdf_name
+        remedi_configfile does_digifooter does_copy_files does_csv source_format
+        order_id does_mets source_pdf
     );
     my %standard_hash;
     undef @standard_hash{ @standard_keys };                      # hash-slice 

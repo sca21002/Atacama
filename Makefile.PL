@@ -48,7 +48,6 @@ requires 'Log::Log4perl';
 requires 'Moose';
 requires 'MooseX::ClassAttribute';
 requires 'MooseX::NonMoose';
-requires 'MooseX::Traits;
 requires 'MooseX::Types::Path::Class';
 requires 'MooseX::Types::DateTime';
 requires 'Number::Format';

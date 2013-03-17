@@ -35,11 +35,11 @@ has 'order' => (
     isa => 'DBIx::Class::Row'
 );
 
-has_field 'configfile' => (
+has_field 'remedi_configfile' => (
     type => 'Select', label => 'Config-Datei',
     empty_select => '-- Select --',
 );
-has_field 'source_pdf_name' => (
+has_field 'source_pdf' => (
     type => 'Select', label => 'PDF-Datei',
     empty_select => '-- Select --',
 );
@@ -51,16 +51,16 @@ has_field 'source_format' => (
         {value => 'TIFF', label => 'TIFF'},
     ],
 );
-has_field 'copy_files' => (
+has_field 'does_copy_files' => (
     type => 'Checkbox', default => 1, label => 'Dateien kopieren' 
 );
-has_field 'digifooter' => (
+has_field 'does_digifooter' => (
     type => 'Checkbox', default => 1, label => 'Digifooter'
 );
-has_field 'mets' => (
+has_field 'does_mets' => (
     type => 'Checkbox', default => 1, label => 'METS'
 );
-has_field 'csv' => (
+has_field 'does_csv' => (
     type => 'Checkbox', default => 1, label => 'CSV'
 );
 has_field 'submit' => ( type => 'Submit', value => 'Starten' );
@@ -82,7 +82,7 @@ sub _build_remedi_configfiles {
     return \@files; 
 }
 
-sub options_configfile {
+sub options_remedi_configfile {
     my $self = shift;
     
     my @list = $self->all_remedi_configfiles;
@@ -90,7 +90,7 @@ sub options_configfile {
     return \@values;
 }
 
-sub default_configfile {
+sub default_remedi_configfile {
     my $self = shift;
       
     my $library = $self->order->titel->library->name;
@@ -115,7 +115,7 @@ sub default_configfile {
     return $default; 
 }
 
-sub options_source_pdf_name {
+sub options_source_pdf {
     my $self = shift;
     
     my @list = $self->all_source_pdf_files;
@@ -123,7 +123,7 @@ sub options_source_pdf_name {
     return \@values;
 }
 
-sub default_source_pdf_name {
+sub default_source_pdf {
     my $self = shift;
     
     return $self->source_pdf_files->[0]->stringify

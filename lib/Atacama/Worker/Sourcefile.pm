@@ -4,9 +4,6 @@ use Atacama::Worker::Job::Sourcefile;
 use Carp;
 use Data::Dumper;
 
-my $log_file_name;
-sub get_logfile_name { $log_file_name }
-
 sub work {
     my $class = shift;
     my $theschwartz_job = shift;
@@ -14,13 +11,18 @@ sub work {
     croak("Falscher Aufruf von Atacama::Worker::Remedi::work()"
             . " mit Klasse: $class"
          ) unless $class eq 'Atacama::Worker::Sourcefile';
-    $job = Atacama::Worker::Job::Sourcefile
-        ->with_traits(  qw(TheSchwartz)  )
-        ->new( thesschwartz_job => $theschwartz_job );
-    $log_file_name = $job->log_file_name;
+    croak("Falscher Aufruf von Atacama::Worker::Remedi::work()"
+            . " mit Job: " . ref $theschwartz_job 
+         ) unless ref $theschwartz_job eq 'TheSchwartz::Job';
+    my $args;
+    $args->{order_id} = $theschwartz_job->arg->{order_id}
+        if $theschwartz_job->arg->{order_id};
+    $args->{scanfile_formats} = $theschwartz_job->arg->{scanfile_formats}
+        if $theschwartz_job->arg->{scanfile_formats};    
+    $job = Atacama::Worker::Job::Sourcefile->new($args);
     $job->order->update({status_id => 23});
     $job->run;
-    $job->completed();
+    $theschwartz_job->completed();
     $job->order->update({status_id => 27});
     return 1;
 };

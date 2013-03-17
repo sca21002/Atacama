@@ -38,14 +38,14 @@ sub remedi : Chained('/order/order') PathPart('remedi') Args(0) {
         
         # funcname => 'Atacama::Worker::Remedi',
         my %query_values = (
-                configfile =>  $form->params->{configfile},    
+                remedi_configfile =>  $form->params->{remedi_configfile},    
                 source_format => $form->params->{source_format},
                 order_id => $order->order_id,
-                source_pdf_name => $form->params->{source_pdf_name},
-                copy_files => $form->params->{copy_files},
-                digifooter => $form->params->{digifooter},
-                mets => $form->params->{mets},
-                csv => $form->params->{csv},
+                source_pdf => $form->params->{source_pdf},
+                does_copy_files => $form->params->{does_copy_files},
+                does_digifooter => $form->params->{does_digifooter},
+                does_mets => $form->params->{does_mets},
+                does_csv => $form->params->{does_csv},
                            );
         $c->res->redirect($c->uri_for_action('/job/worker/add', ['remedi'], \%query_values));
     }

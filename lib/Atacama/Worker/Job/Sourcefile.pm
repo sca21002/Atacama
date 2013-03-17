@@ -9,12 +9,23 @@ use File::Slurp;
 use Remedi::Imagefile;
 use Remedi::PDF::API2;
 use Data::Dumper;
+use MooseX::ClassAttribute;
+
+
+sub get_log_file_name { return  Atacama::Worker::Job::Sourcefile->log_file_name();}
+ 
+has 'prune_dirs' => (
+    is => 'rw',
+    isa => 'ArrayRef[Str]',
+    default => sub { ['thumbnails'] },
+);
+
 
 has '+log_config_basename' => (
     default => 'log4perl_sourcefile.conf',
 );
 
-has '+log_basename' => (
+class_has '+log_basename' => (
     default => 'sourcefile.log',                        
 );
 
@@ -50,12 +61,8 @@ has 'sourcedir' => (
     builder => '_build_sourcedir',
     lazy => 1,
 );
-    
-sub  _build_scanfile_formats {
-    my $self = shift;    
-    
-    return $self->arg->{scanfile_formats} || ['TIFF'];
-}
+
+sub  _build_scanfile_formats { ['TIFF'] }
 
 sub _build_sourcedir {
     my $self = shift;
@@ -80,7 +87,8 @@ sub make_get_sourcefile {
             $log->warn('Datei ' . $entry . ' im falschen Ordner'); 
         }
         return Path::Class::Entity::PRUNE()
-            if $entry->is_dir and $entry->basename eq 'thumbnails';
+            if $entry->is_dir
+               and first { $_ eq $entry->basename } @{$self->prune_dirs};
         return if $entry->is_dir;
         if ($format eq 'TIFF') {
             return unless $entry->basename =~ /^${order_id}_\d{1,5}\.(?i:tif(?:f)?)/;
@@ -238,10 +246,6 @@ sub run {
             preorder   => 1
         );
     }
-
-            
-
-    
 }
 
 

@@ -1,6 +1,5 @@
 package Atacama::Worker::Job::Base;
 use Moose;
-    with 'MooseX::Traits';
 use Atacama::Types qw(Order_id);
 use MooseX::Types::Path::Class qw(File Dir);
 use MooseX::Types::Moose qw(HashRef Str);
@@ -8,8 +7,8 @@ use Atacama::Schema;
 use Config::ZOMG;
 use Log::Log4perl;
 use File::Path qw(make_path);
-
-
+use MooseX::ClassAttribute;
+use namespace::autoclean;
 
 has 'atacama_config_path' => (
     is => 'rw',
@@ -33,7 +32,7 @@ has 'atacama_schema' => (
     lazy => 1,
 );
 
-has 'log_dir' => (
+class_has 'log_dir' => (
     is => 'ro',
     isa => Dir,
     lazy => 1,
@@ -41,7 +40,7 @@ has 'log_dir' => (
     builder => '_build_log_dir',
 );
 
-has 'log_file_name' => (
+class_has 'log_file_name' => (
     is      => 'ro',
     isa     => File,
     lazy => 1,
@@ -56,7 +55,7 @@ has log => (
     lazy => 1,
 );
 
-has log_basename => (
+class_has log_basename => (
     is => 'ro',
     isa => Str,
     default => 'worker.log',
@@ -94,11 +93,8 @@ has 'order' => (
 has 'order_id' => (
     is => 'rw',
     isa => Order_id,
-    builder => '_build_order_id',
-    lazy => 1,
+    required => 1,
 );
-
-has '+_trait_namespace' => ( default => 'Atacama::Worker::Trait' );
 
 has 'work_base' => (
     is => 'rw',
@@ -127,12 +123,6 @@ sub _build_atacama_config {
     )->load;
 }
 
-sub _build_order_id {
-    my $self = shift;
-    
-    return exists $self->arg->{order_id} && $self->arg->{order_id};
-}
-
 sub _build_order {
     my $self = shift;
     
@@ -152,7 +142,7 @@ sub _build_atacama_schema {
 
 sub _build_log {
     my $self = shift;
-    
+   
     Log::Log4perl->init($self->log_config_file->stringify);
     return Log::Log4perl->get_logger('Atacama::Worker::Remedi');
 }
@@ -163,20 +153,7 @@ sub _builder_log_file_name {
     my $self = shift;
     
     my $log_dir = $self->log_dir;
-    unless (-d $log_dir) {
-        make_path($log_dir->stringify, {error => \my $err} );
-        if (@$err) {
-            for my $diag (@$err) {
-                my ($dir, $message) = %$diag;
-                if ($dir eq '') {
-                    print "general error: $message\n";
-                }
-                else {
-                    print "problem making $dir: $message\n";
-                }
-            }    
-        }
-    }
+    unless (-d $log_dir) { make_path($log_dir->stringify) }
     my $log_file_name = Path::Class::File->new(
         $self->log_dir  , $self->log_basename
     );
@@ -205,9 +182,14 @@ sub _build_work_dir {
     
     my $work_dir = Path::Class::Dir->new( $self->work_base, $self->order_id );
     unless (-d $work_dir) {
-        make_path($work_dir->stringify) or die "Coldn't create $work_dir: $!";
+        make_path($work_dir->stringify, {error => \my $err} );
+        $self->log->logdie('Fehler beim Anlegen des Arbeitsverzeichnisses: '
+                          . $work_dir . ' ' . Dumper($err))
+            if @$err; 
     }
     return $work_dir;
 }
 
+
+__PACKAGE__->meta->make_immutable;
 1;

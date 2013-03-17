@@ -65,14 +65,14 @@
 <form name="[% form.name %]"
     action="[% c.req.uri %]"
     method="post" id="remedi">
-[% form.field('configfile').render %]
-[% form.field('source_pdf_name').render %]
+[% form.field('remedi_configfile').render %]
+[% form.field('source_pdf').render %]
 [% form.field('source_format').render %]
 <hr /><br />
-[% form.field('copy_files').render %]
-[% form.field('digifooter').render %]
-[% form.field('mets').render %]
-[% form.field('csv').render %]
+[% form.field('does_copy_files').render %]
+[% form.field('does_digifooter').render %]
+[% form.field('does_mets').render %]
+[% form.field('does_csv').render %]
 <hr/><br />
 [% form.field('submit').render %]
 </form>
