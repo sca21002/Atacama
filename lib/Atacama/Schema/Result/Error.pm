@@ -1,22 +1,40 @@
+use utf8;
 package Atacama::Schema::Result::Error;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
+
+=head1 NAME
+
+Atacama::Schema::Result::Error
+
+=cut
 
 use strict;
 use warnings;
 
 use Moose;
 use MooseX::NonMoose;
-use namespace::autoclean;
+use MooseX::MarkAsMethods autoclean => 1;
 extends 'DBIx::Class::Core';
 
-__PACKAGE__->load_components( qw( DateTime::Epoch TimeStamp) );
+=head1 COMPONENTS LOADED
 
+=over 4
 
-=head1 NAME
+=item * L<DBIx::Class::InflateColumn::DateTime>
 
-Atacama::Schema::Result::Error
+=item * L<DBIx::Class::TimeStamp>
+
+=item * L<DBIx::Class::PassphraseColumn>
+
+=back
+
+=cut
+
+__PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp", "PassphraseColumn");
+
+=head1 TABLE: C<error>
 
 =cut
 
@@ -53,9 +71,7 @@ __PACKAGE__->table("error");
 
 __PACKAGE__->add_columns(
   "error_time",
-  { data_type => "integer", extra => { unsigned => 1 }, is_nullable => 0,
-    inflate_datetime => 1,
-  },
+  { data_type => "integer", extra => { unsigned => 1 }, is_nullable => 0 },
   "jobid",
   { data_type => "bigint", extra => { unsigned => 1 }, is_nullable => 0 },
   "message",
@@ -70,8 +86,8 @@ __PACKAGE__->add_columns(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07010 @ 2011-03-26 01:12:09
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:IyCU9fdrM56KE5G/KFODbg
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 17:18:40
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:peTpWdFPLFkzGRijfP1L7Q
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

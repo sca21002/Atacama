@@ -1,23 +1,40 @@
+use utf8;
 package Atacama::Schema::Result::OrderProject;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
+
+=head1 NAME
+
+Atacama::Schema::Result::OrderProject
+
+=cut
 
 use strict;
 use warnings;
 
 use Moose;
 use MooseX::NonMoose;
-use namespace::autoclean;
-
-
+use MooseX::MarkAsMethods autoclean => 1;
 extends 'DBIx::Class::Core';
 
-__PACKAGE__->load_components("InflateColumn::DateTime");
+=head1 COMPONENTS LOADED
 
-=head1 NAME
+=over 4
 
-Atacama::Schema::Result::OrdersProject
+=item * L<DBIx::Class::InflateColumn::DateTime>
+
+=item * L<DBIx::Class::TimeStamp>
+
+=item * L<DBIx::Class::PassphraseColumn>
+
+=back
+
+=cut
+
+__PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp", "PassphraseColumn");
+
+=head1 TABLE: C<orders_projects>
 
 =cut
 
@@ -56,14 +73,40 @@ __PACKAGE__->add_columns(
   "order_id",
   { data_type => "varchar", is_nullable => 1, size => 25 },
   "project_id",
-  { data_type => "smallint", extra => { unsigned => 1 }, is_nullable => 0 },
+  { data_type => "smallint", is_nullable => 0 },
 );
+
+=head1 PRIMARY KEY
+
+=over 4
+
+=item * L</ordersprojects_id>
+
+=back
+
+=cut
+
 __PACKAGE__->set_primary_key("ordersprojects_id");
+
+=head1 UNIQUE CONSTRAINTS
+
+=head2 C<order_id>
+
+=over 4
+
+=item * L</order_id>
+
+=item * L</project_id>
+
+=back
+
+=cut
+
 __PACKAGE__->add_unique_constraint("order_id", ["order_id", "project_id"]);
 
 
-# Created by DBIx::Class::Schema::Loader v0.07002 @ 2010-12-26 23:49:59
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:l4W7y0EVRkUNehe0mNvi3Q
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 17:18:40
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:8fycFCL8K6F/YwSl125okg
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

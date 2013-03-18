@@ -1,21 +1,40 @@
+use utf8;
 package Atacama::Schema::Result::Scanfile;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
+
+=head1 NAME
+
+Atacama::Schema::Result::Scanfile
+
+=cut
 
 use strict;
 use warnings;
 
 use Moose;
 use MooseX::NonMoose;
-use namespace::autoclean;
+use MooseX::MarkAsMethods autoclean => 1;
 extends 'DBIx::Class::Core';
 
-__PACKAGE__->load_components("InflateColumn::DateTime");
+=head1 COMPONENTS LOADED
 
-=head1 NAME
+=over 4
 
-Atacama::Schema::Result::Scanfile
+=item * L<DBIx::Class::InflateColumn::DateTime>
+
+=item * L<DBIx::Class::TimeStamp>
+
+=item * L<DBIx::Class::PassphraseColumn>
+
+=back
+
+=cut
+
+__PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp", "PassphraseColumn");
+
+=head1 TABLE: C<scanfiles>
 
 =cut
 
@@ -138,11 +157,24 @@ __PACKAGE__->add_columns(
   "deleted",
   { data_type => "tinyint", is_nullable => 1 },
 );
+
+=head1 PRIMARY KEY
+
+=over 4
+
+=item * L</filename>
+
+=item * L</filepath>
+
+=back
+
+=cut
+
 __PACKAGE__->set_primary_key("filename", "filepath");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07002 @ 2010-12-26 23:49:59
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:OgBTleGH1mN+MWgU54cARw
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 17:18:40
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ZhGwmLXbf9rBpqtfg5dnsA
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

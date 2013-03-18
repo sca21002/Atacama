@@ -26,11 +26,13 @@ extends 'DBIx::Class::Core';
 
 =item * L<DBIx::Class::TimeStamp>
 
+=item * L<DBIx::Class::PassphraseColumn>
+
 =back
 
 =cut
 
-__PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp");
+__PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp", "PassphraseColumn");
 
 =head1 TABLE: C<users_roles>
 
@@ -76,8 +78,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("user_id", "role_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-17 21:36:15
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:XrdO9xGtdKe77+Y41GOHYQ
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 17:18:40
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:990lXgD1GrEnA5rSm3TP6A
 
 __PACKAGE__->belongs_to(
     "role",

@@ -1,22 +1,40 @@
+use utf8;
 package Atacama::Schema::Result::Order;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
+
+=head1 NAME
+
+Atacama::Schema::Result::Order
+
+=cut
 
 use strict;
 use warnings;
 
 use Moose;
 use MooseX::NonMoose;
-use namespace::autoclean;
+use MooseX::MarkAsMethods autoclean => 1;
 extends 'DBIx::Class::Core';
-use Data::Dumper;
 
-__PACKAGE__->load_components("InflateColumn::DateTime");
+=head1 COMPONENTS LOADED
 
-=head1 NAME
+=over 4
 
-Atacama::Schema::Result::Order
+=item * L<DBIx::Class::InflateColumn::DateTime>
+
+=item * L<DBIx::Class::TimeStamp>
+
+=item * L<DBIx::Class::PassphraseColumn>
+
+=back
+
+=cut
+
+__PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp", "PassphraseColumn");
+
+=head1 TABLE: C<orders>
 
 =cut
 
@@ -34,12 +52,14 @@ __PACKAGE__->table("orders");
 =head2 creation_date
 
   data_type: 'timestamp'
+  datetime_undef_if_invalid: 1
   default_value: '0000-00-00 00:00:00'
   is_nullable: 0
 
 =head2 modification_date
 
   data_type: 'timestamp'
+  datetime_undef_if_invalid: 1
   default_value: current_timestamp
   is_nullable: 0
 
@@ -95,23 +115,22 @@ __PACKAGE__->add_columns(
   { data_type => "varchar", default_value => "", is_nullable => 0, size => 25 },
   "creation_date",
   {
-    data_type     => "timestamp",
-    default_value => "0000-00-00 00:00:00",
-    is_nullable   => 0,
+    data_type => "timestamp",
     datetime_undef_if_invalid => 1,
+    default_value => "0000-00-00 00:00:00",
+    is_nullable => 0,
   },
   "modification_date",
   {
-    data_type     => "timestamp",
+    data_type => "timestamp",
+    datetime_undef_if_invalid => 1,
     default_value => \"current_timestamp",
-    is_nullable   => 0,
+    is_nullable => 0,
   },
   "status_id",
-  { data_type => "smallint",     extra => { unsigned => 1 }, is_nullable => 1 },
+  { data_type => "smallint", is_nullable => 1 },
   "documenttype_id",
-  { data_type => "smallint",
-    extra => { unsigned => 1 },
-    is_nullable => 1 },
+  { data_type => "smallint", extra => { unsigned => 1 }, is_nullable => 1 },
   "title",
   { data_type => "text", is_nullable => 1 },
   "author",
@@ -125,11 +144,22 @@ __PACKAGE__->add_columns(
   "copyright_id",
   { data_type => "tinyint", extra => { unsigned => 1 }, is_nullable => 1 },
 );
+
+=head1 PRIMARY KEY
+
+=over 4
+
+=item * L</order_id>
+
+=back
+
+=cut
+
 __PACKAGE__->set_primary_key("order_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07002 @ 2010-12-26 23:49:59
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:rMgcPEPNjtIYQIfGzfeE7A
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 17:18:40
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:O0+KFw5Yc2QBr+qxLlYvIw
 
 
 __PACKAGE__->belongs_to(

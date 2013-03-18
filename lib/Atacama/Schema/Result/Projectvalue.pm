@@ -1,21 +1,40 @@
+use utf8;
 package Atacama::Schema::Result::Projectvalue;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
+
+=head1 NAME
+
+Atacama::Schema::Result::Projectvalue
+
+=cut
 
 use strict;
 use warnings;
 
 use Moose;
 use MooseX::NonMoose;
-use namespace::autoclean;
+use MooseX::MarkAsMethods autoclean => 1;
 extends 'DBIx::Class::Core';
 
-__PACKAGE__->load_components("InflateColumn::DateTime");
+=head1 COMPONENTS LOADED
 
-=head1 NAME
+=over 4
 
-Atacama::Schema::Result::Projectvalue
+=item * L<DBIx::Class::InflateColumn::DateTime>
+
+=item * L<DBIx::Class::TimeStamp>
+
+=item * L<DBIx::Class::PassphraseColumn>
+
+=back
+
+=cut
+
+__PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp", "PassphraseColumn");
+
+=head1 TABLE: C<projectvalues>
 
 =cut
 
@@ -50,19 +69,32 @@ __PACKAGE__->table("projectvalues");
 
 __PACKAGE__->add_columns(
   "projectkey_id",
-  { data_type => "smallint", extra => { unsigned => 1 }, default_value => 0, is_nullable => 0 },
+  { data_type => "smallint", default_value => 0, is_nullable => 0 },
   "ordersprojects_id",
-  { data_type => "mediumint", extra => { unsigned => 1 }, is_nullable => 0 },
+  { data_type => "mediumint", is_nullable => 0 },
   "value",
   { data_type => "varchar", is_nullable => 1, size => 255 },
   "info",
   { data_type => "varchar", is_nullable => 1, size => 255 },
 );
+
+=head1 PRIMARY KEY
+
+=over 4
+
+=item * L</projectkey_id>
+
+=item * L</ordersprojects_id>
+
+=back
+
+=cut
+
 __PACKAGE__->set_primary_key("projectkey_id", "ordersprojects_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07002 @ 2010-12-26 23:49:59
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:sfHYE1IBRss95fhXAcD+Ag
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 17:18:40
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:wjBcxOR4L5wO47y96AZaqQ
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

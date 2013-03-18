@@ -26,11 +26,13 @@ extends 'DBIx::Class::Core';
 
 =item * L<DBIx::Class::TimeStamp>
 
+=item * L<DBIx::Class::PassphraseColumn>
+
 =back
 
 =cut
 
-__PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp");
+__PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp", "PassphraseColumn");
 
 =head1 TABLE: C<users>
 
@@ -53,6 +55,42 @@ __PACKAGE__->table("users");
   is_nullable: 1
   size: 255
 
+=head2 password
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+=head2 password_expires
+
+  data_type: 'timestamp'
+  datetime_undef_if_invalid: 1
+  default_value: current_timestamp
+  is_nullable: 0
+
+=head2 email_address
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+=head2 first_name
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+=head2 last_name
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+=head2 active
+
+  data_type: 'integer'
+  is_nullable: 1
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -65,6 +103,23 @@ __PACKAGE__->add_columns(
   },
   "username",
   { data_type => "varchar", is_nullable => 1, size => 255 },
+  "password",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "password_expires",
+  {
+    data_type => "timestamp",
+    datetime_undef_if_invalid => 1,
+    default_value => \"current_timestamp",
+    is_nullable => 0,
+  },
+  "email_address",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "first_name",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "last_name",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "active",
+  { data_type => "integer", is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -81,6 +136,18 @@ __PACKAGE__->set_primary_key("id");
 
 =head1 UNIQUE CONSTRAINTS
 
+=head2 C<email_address>
+
+=over 4
+
+=item * L</email_address>
+
+=back
+
+=cut
+
+__PACKAGE__->add_unique_constraint("email_address", ["email_address"]);
+
 =head2 C<username>
 
 =over 4
@@ -94,8 +161,8 @@ __PACKAGE__->set_primary_key("id");
 __PACKAGE__->add_unique_constraint("username", ["username"]);
 
 
-# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-02-24 10:14:47
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:tc3ZhcybARTGLr+/OBHVeA
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 17:18:40
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:YbzD7/r+EbPIpxlD4pwn3Q
 
 __PACKAGE__->has_many(
     "users_roles",
