@@ -66,6 +66,7 @@ __PACKAGE__->table("orders");
 =head2 status_id
 
   data_type: 'smallint'
+  extra: {unsigned => 1}
   is_nullable: 1
 
 =head2 documenttype_id
@@ -128,7 +129,7 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
   },
   "status_id",
-  { data_type => "smallint", is_nullable => 1 },
+  { data_type => "smallint", extra => { unsigned => 1 }, is_nullable => 1 },
   "documenttype_id",
   { data_type => "smallint", extra => { unsigned => 1 }, is_nullable => 1 },
   "title",
@@ -158,8 +159,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("order_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 17:18:40
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:O0+KFw5Yc2QBr+qxLlYvIw
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 22:23:06
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:RgXlAb2EMvt6JiY+9jpjKg
 
 
 __PACKAGE__->belongs_to(

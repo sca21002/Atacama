@@ -57,6 +57,7 @@ __PACKAGE__->table("scanoptionvalues");
 =head2 value_id
 
   data_type: 'tinyint'
+  extra: {unsigned => 1}
   is_nullable: 1
 
 =head2 info
@@ -73,7 +74,7 @@ __PACKAGE__->add_columns(
   "scanparameter_id",
   { data_type => "mediumint", extra => { unsigned => 1 }, is_nullable => 0 },
   "value_id",
-  { data_type => "tinyint", is_nullable => 1 },
+  { data_type => "tinyint", extra => { unsigned => 1 }, is_nullable => 1 },
   "info",
   { data_type => "varchar", is_nullable => 1, size => 255 },
 );
@@ -93,8 +94,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("scanoptionkey_id", "scanparameter_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 17:18:40
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:464/s7bf0cBGJntNN5ie8Q
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 22:23:06
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:fZLmkUVC/IJm+T1pR+bukA
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

@@ -52,6 +52,7 @@ __PACKAGE__->table("projectkeys");
 =head2 project_id
 
   data_type: 'smallint'
+  extra: {unsigned => 1}
   is_nullable: 1
 
 =head2 sorting
@@ -88,7 +89,7 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
   },
   "project_id",
-  { data_type => "smallint", is_nullable => 1 },
+  { data_type => "smallint", extra => { unsigned => 1 }, is_nullable => 1 },
   "sorting",
   { data_type => "tinyint", is_nullable => 1 },
   "pkey",
@@ -112,8 +113,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("projectkey_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 17:18:40
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:aMLUuW3a2w4c9bBFP8I63g
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 22:23:06
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:kKJxGSa8c9YZHZa+H3LeHg
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

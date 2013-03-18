@@ -46,11 +46,14 @@ __PACKAGE__->table("projectvalues");
 
   data_type: 'smallint'
   default_value: 0
+  extra: {unsigned => 1}
   is_nullable: 0
 
 =head2 ordersprojects_id
 
   data_type: 'mediumint'
+  default_value: 0
+  extra: {unsigned => 1}
   is_nullable: 0
 
 =head2 value
@@ -69,9 +72,19 @@ __PACKAGE__->table("projectvalues");
 
 __PACKAGE__->add_columns(
   "projectkey_id",
-  { data_type => "smallint", default_value => 0, is_nullable => 0 },
+  {
+    data_type => "smallint",
+    default_value => 0,
+    extra => { unsigned => 1 },
+    is_nullable => 0,
+  },
   "ordersprojects_id",
-  { data_type => "mediumint", is_nullable => 0 },
+  {
+    data_type => "mediumint",
+    default_value => 0,
+    extra => { unsigned => 1 },
+    is_nullable => 0,
+  },
   "value",
   { data_type => "varchar", is_nullable => 1, size => 255 },
   "info",
@@ -93,8 +106,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("projectkey_id", "ordersprojects_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 17:18:40
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:wjBcxOR4L5wO47y96AZaqQ
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 22:23:06
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:N5yo36tLZhcUNJq8tP/KfA
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

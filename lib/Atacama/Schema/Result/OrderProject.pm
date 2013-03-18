@@ -58,7 +58,8 @@ __PACKAGE__->table("orders_projects");
 =head2 project_id
 
   data_type: 'smallint'
-  is_nullable: 0
+  extra: {unsigned => 1}
+  is_nullable: 1
 
 =cut
 
@@ -73,7 +74,7 @@ __PACKAGE__->add_columns(
   "order_id",
   { data_type => "varchar", is_nullable => 1, size => 25 },
   "project_id",
-  { data_type => "smallint", is_nullable => 0 },
+  { data_type => "smallint", extra => { unsigned => 1 }, is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -105,8 +106,8 @@ __PACKAGE__->set_primary_key("ordersprojects_id");
 __PACKAGE__->add_unique_constraint("order_id", ["order_id", "project_id"]);
 
 
-# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 17:18:40
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:8fycFCL8K6F/YwSl125okg
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 22:23:06
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:E2POOp4vYFODyh28+4tk1w
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration
