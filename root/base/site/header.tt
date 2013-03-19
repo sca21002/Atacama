@@ -3,8 +3,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 
+<!-- <script type="text/javascript"
+	src="[% c.uri_for_static('js/ext/jquery/jquery-1.5.min.js') %]"></script> -->
 <script type="text/javascript"
-	src="[% c.uri_for_static('js/ext/jquery/jquery-1.5.min.js') %]"></script>
+        src="[% c.uri_for_static('js/ext/jquery/jquery-1.9.1.js') %]"></script>
+<script type="text/javascript"
+        src="[% c.uri_for_static('js/ext/jquery/jquery-migrate-1.1.1.js') %]"></script>
 <script type="text/javascript"
 	src="[% c.uri_for_static('js/ext/plugins/jquery/jqGrid/i18n/grid.locale-de.js') %]"></script>
 <script type="text/javascript"

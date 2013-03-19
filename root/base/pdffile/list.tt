@@ -6,7 +6,9 @@
     <link rel="stylesheet" type="text/css" media="screen" href="[% c.uri_for_static('css/jqGrid/ui.jqgrid.css') %]" />
 
 
-    <script type="text/javascript" src="[% c.uri_for_static('js/ext/jquery/jquery-1.5.min.js') %]"></script> 
+<!-- <script type="text/javascript" src="[% c.uri_for_static('js/ext/jquery/jquery-1.5.min.js') %]"></script> -->
+    <script type="text/javascript" src="[% c.uri_for_static('js/ext/jquery/jquery-1.9.1.js') %]"></script>
+    <script type="text/javascript" src="[% c.uri_for_static('js/ext/jquery/jquery-migrate-1.1.1.js') %]"></script>
     <script type="text/javascript" src="[% c.uri_for_static('js/ext/plugins/jquery/jqGrid/i18n/grid.locale-de.js') %]"></script> 
     <script type="text/javascript" src="[% c.uri_for_static('js/ext/plugins/jquery/jqGrid/jquery.jqGrid.min.js') %]"></script> 
    
