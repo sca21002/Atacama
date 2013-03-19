@@ -38,7 +38,7 @@
 
    <h1 class="main">
    
-[% title or template.title or 'Login: Bitte mit Novell-Passwort (Kurzname) anmelden.' %]
+[% title or template.title or '19.03.2008 - 19.03.2013: 5 Jahre Atacama' %]
 
    </h1>
 [% content %]

@@ -159,8 +159,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("order_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 22:10:57
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:WFyByOZ/NoGkLXjkwegBuw
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 22:23:06
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:RgXlAb2EMvt6JiY+9jpjKg
 
 
 __PACKAGE__->belongs_to(

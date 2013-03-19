@@ -106,8 +106,8 @@ __PACKAGE__->set_primary_key("ordersprojects_id");
 __PACKAGE__->add_unique_constraint("order_id", ["order_id", "project_id"]);
 
 
-# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 22:10:57
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:qO8GcJz6YYBKEaG71obRcQ
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 22:23:06
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:E2POOp4vYFODyh28+4tk1w
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

@@ -1,4 +1,5 @@
 <div class="error">[% error_msg %]</div>
+<div>Bitte mit dem RZ-Account (Kurzname, z.B. vip1234) anmelden:</div>
 <form id="login_form" method="post" >
     <fieldset class="main_fieldset">
         <div>
