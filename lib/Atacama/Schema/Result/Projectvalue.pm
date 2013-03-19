@@ -106,8 +106,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("projectkey_id", "ordersprojects_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 22:23:06
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:N5yo36tLZhcUNJq8tP/KfA
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 22:10:57
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Vo32ShLjWxXw7fXgPpTKmQ
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

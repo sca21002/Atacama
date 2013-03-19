@@ -94,8 +94,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("scanoptionkey_id", "scanparameter_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 22:23:06
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:fZLmkUVC/IJm+T1pR+bukA
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 22:10:57
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:+ZVPRT2UBCVu0CRTzmf9AA
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

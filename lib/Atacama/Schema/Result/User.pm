@@ -164,18 +164,6 @@ __PACKAGE__->add_unique_constraint("username", ["username"]);
 # Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 17:18:40
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:YbzD7/r+EbPIpxlD4pwn3Q
 
-__PACKAGE__->add_columns(
-    '+password' => {
-        passphrase       => 'rfc2307',
-        passphrase_class => 'BlowfishCrypt',
-        passphrase_args  => {
-            cost        => 14,
-            salt_random => 20,
-        },
-        passphrase_check_method => 'check_password',
-    }
-);
-
 __PACKAGE__->has_many(
     "users_roles",
     "Atacama::Schema::Result::UserRole",

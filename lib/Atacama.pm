@@ -74,7 +74,7 @@ __PACKAGE__->config(
                     start_tls           => 1,
                     start_tls_options   => { verify => 'none' },
                     entry_class         => 'Catalyst::Model::LDAP::Entry',
-                    user_basedn         => 'ou=bibliothek,o=uni-regensburg,C=de',
+                    user_basedn         => 'o=uni-regensburg,C=de',
                     user_field          => 'cn',
                     user_filter         => '(&(objectClass=urrzUser)(cn=%s))',
                     user_scope          => 'sub', 
