@@ -1,0 +1,17 @@
+<div class="error">[% error_msg %]</div>
+<form id="login_form" method="post" >
+    <fieldset class="main_fieldset">
+        <div>
+            <label class="label" for="benutzername">Benutzername:</label>
+            <input type="text" name="username" id="username" value="" />
+        </div>
+ 
+        <div>
+            <label class="label" for="passwort">Passwort: </label>
+            <input type="password" name="password" id="password" value="" />
+        </div>
+ 
+<div><input type="submit" name="Anmelden" id="submit" value="Login" />
+</div>
+    </fieldset>
+</form>

@@ -87,7 +87,8 @@ __PACKAGE__->config(
         },
     },
     'Controller::Login' => {
-         login_form_args => {
+        traits => ['-RenderAsTTTemplate'],  # remove trait to customize login tt                    
+        login_form_args => {
             authenticate_username_field_name => 'id',
             authenticate_password_field_name => 'password',
         },
