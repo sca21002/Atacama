@@ -4,6 +4,7 @@ use FindBin qw($Bin);
 use File::Spec;
 use lib File::Spec->catfile($Bin, '..', 'lib'),
         File::Spec->catfile($Bin, '..', '..', 'lib');
+use English qw( -no_match_vars );
 use Data::Dumper;
 
 BEGIN {
@@ -39,7 +40,9 @@ Helper::prepare_input_files({
 my $job = Atacama::Worker::Job::Remedi->new(
     log_config_path => Path::Class::Dir->new($Bin,'..','config'),                                        
     order_id => 'ubr00003',                                        
-    remedi_configfile => "$Bin/../config/remedi_de-355_win32.conf",
+    remedi_configfile => ( $OSNAME eq 'MSWin32'
+                          ? "$Bin/../config/remedi_de-355_win32.conf"
+                          : "$Bin/../config/remedi_de-355.conf" ),
     atacama_config_path => Path::Class::Dir->new($Bin,'..','config'),
     working_base => $working_base,
     source_format => 'PDF',
