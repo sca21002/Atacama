@@ -257,7 +257,7 @@ sub save_csv_file {
         $self->csv_save_dir->stringify,
     ) or $self->log->logdie(
         'Konnte ' . $self->csv_file . ' nicht nach '
-                  . $self->csv_savedir . ' verschieben.'
+                  . $self->csv_save_dir . ' verschieben.'
     );
 }
 

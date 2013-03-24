@@ -4,6 +4,7 @@ use FindBin qw($Bin);
 use File::Spec;
 use lib File::Spec->catfile($Bin, '..', 'lib'),
         File::Spec->catfile($Bin, '..', '..', 'lib');
+use English qw( -no_match_vars );
 use Data::Dumper;
 
 BEGIN {
@@ -41,7 +42,9 @@ Helper::prepare_input_files({
 my $job = Atacama::Worker::Job::Remedi->new(
     log_config_path => Path::Class::Dir->new($Bin,'..','config'),                                        
     order_id => 'ubr00003',                                        
-    remedi_configfile => "$Bin/../config/remedi_de-355.conf",
+    remedi_configfile => ( $OSNAME eq 'MSWin32'
+                          ? "$Bin/../config/remedi_de-355_win32.conf"
+                          : "$Bin/../config/remedi_de-355.conf" ),
     atacama_config_path => Path::Class::Dir->new($Bin,'..','config'),
     working_base => $working_base,
     source_format => 'PDF',
@@ -71,7 +74,7 @@ $job->atacama_schema->resultset('Scanfile')->populate(
            'order_id' => 'ubr00003',
            'colortype' => 'color',
            'deleted' => undef,
-           'filepath' => 'C:\\Users\\sca21002\\Documents\\Perl\\Atacama\\t\\input_files\\ubr00003',
+           'filepath' => File::Spec->catfile($input_dir, 'ubr00003'),
            'filesize' => '800560',
            'format' => 'TIFF',
            'filename' => 'ubr00003_0001.tif',
@@ -87,7 +90,7 @@ $job->atacama_schema->resultset('Scanfile')->populate(
            'order_id' => 'ubr00003',
            'colortype' => 'color',
            'deleted' => undef,
-           'filepath' => 'C:\\Users\\sca21002\\Documents\\Perl\\Atacama\\t\\input_files\\ubr00003',
+           'filepath' => File::Spec->catfile($input_dir, 'ubr00003'),
            'filesize' => '763748',
            'format' => 'TIFF',
            'filename' => 'ubr00003_0002.tif',
@@ -103,7 +106,7 @@ $job->atacama_schema->resultset('Scanfile')->populate(
            'order_id' => 'ubr00003',
            'colortype' => 'color',
            'deleted' => undef,
-           'filepath' => 'C:\\Users\\sca21002\\Documents\\Perl\\Atacama\\t\\input_files\\ubr00003',
+           'filepath' => File::Spec->catfile($input_dir, 'ubr00003'),
            'filesize' => '973892',
            'format' => 'TIFF',
            'filename' => 'ubr00003_0003.tif',
@@ -120,7 +123,7 @@ $job->atacama_schema->resultset('Ocrfile')->populate(
         {
             'volume' => undef,
             'order_id' => 'ubr00003',
-            'filepath' => 'C:\\Users\\sca21002\\Documents\\Perl\\Atacama\\t\\input_files\\ubr00003',
+            'filepath' => File::Spec->catfile($input_dir, 'ubr00003'),
             'filesize' => '57393',
             'filename' => 'ubr00003_0001.xml',
             'format' => 'XML',
@@ -130,7 +133,7 @@ $job->atacama_schema->resultset('Ocrfile')->populate(
         {
             'volume' => undef,
             'order_id' => 'ubr00003',
-            'filepath' => 'C:\\Users\\sca21002\\Documents\\Perl\\Atacama\\t\\input_files\\ubr00003',
+            'filepath' => File::Spec->catfile($input_dir, 'ubr00003'),
             'filesize' => '2300',
             'filename' => 'ubr00003_0002.xml',
             'format' => 'XML',
@@ -140,7 +143,7 @@ $job->atacama_schema->resultset('Ocrfile')->populate(
         {
             'volume' => undef,
             'order_id' => 'ubr00003',
-            'filepath' => 'C:\\Users\\sca21002\\Documents\\Perl\\Atacama\\t\\input_files\\ubr00003',
+            'filepath' => File::Spec->catfile($input_dir, 'ubr00003'),
             'filesize' => '413553',
             'filename' => 'ubr00003_0003.xml',
             'format' => 'XML',
