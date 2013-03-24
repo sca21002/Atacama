@@ -9,6 +9,7 @@ use Log::Log4perl;
 use File::Path qw(make_path);
 use MooseX::ClassAttribute;
 use namespace::autoclean;
+use Data::Dumper;
 
 has 'atacama_config_path' => (
     is => 'rw',
@@ -96,20 +97,20 @@ has 'order_id' => (
     required => 1,
 );
 
-has 'work_base' => (
+has 'working_base' => (
     is => 'rw',
     isa => Dir,
     lazy => 1,
-    builder => '_build_work_base',
+    builder => '_build_working_base',
     coerce => 1,
 );                    
 
 
-has 'work_dir' => (
+has 'working_dir' => (
     is => 'rw',
     isa => Dir,
     lazy => 1,
-    builder => '_build_work_dir',
+    builder => '_build_working_dir',
     coerce => 1,
 );
 
@@ -117,10 +118,14 @@ has 'work_dir' => (
 sub _build_atacama_config {
     my $self = shift;
     
-    return Config::ZOMG->new(
-        name => 'Atacama',
+    my $atacama_config = Config::ZOMG->new(
+        name => 'atacama',
         path => $self->atacama_config_path,
     )->load;
+    $self->log->logdie(
+        'Keine Konfigurationsdatei gefunden in ' . $self->atacama_config_path
+    ) unless %$atacama_config;
+    return $atacama_config;
 }
 
 sub _build_order {
@@ -135,8 +140,8 @@ sub _build_atacama_schema {
 
     my @dbic_connect_info
         = @{ $self->atacama_config->{'Model::AtacamaDB'}{connect_info} };
-    my $atacama_schema = Atacama::Schema->connect(@dbic_connect_info)
-        or $self->log->logcroak("Datenbankverbindung gescheitert");
+    my $atacama_schema = Atacama::Schema->connect(@dbic_connect_info);
+    $atacama_schema->storage->ensure_connected;
     return $atacama_schema;
 }
 
@@ -169,25 +174,29 @@ sub _build_log_config_file {
     );
 }
 
-sub _build_work_base {
+sub _build_working_base {
     my $self = shift;
 
-    return Path::Class::Dir->new(
-        $self->atacama_config->{'Atacama::Worker::Remedi'}{work_dir},
-    )->absolute;
+    my $working_base =Path::Class::Dir->new(
+        $self->atacama_config->{'Atacama::Worker::Remedi'}{working_base},
+    );
+    $self->log->logdie('Kein Arbeitsverzeichnis (working_base) angegeben')
+        unless $working_base;
+    return $working_base->absolute;
 }    
     
-sub _build_work_dir {
+sub _build_working_dir {
     my $self = shift;
     
-    my $work_dir = Path::Class::Dir->new( $self->work_base, $self->order_id );
-    unless (-d $work_dir) {
-        make_path($work_dir->stringify, {error => \my $err} );
+    my $working_dir = Path::Class::Dir->new( $self->working_base, $self->order_id );
+    unless (-d $working_dir) {
+        make_path($working_dir->stringify, {error => \my $err} );
         $self->log->logdie('Fehler beim Anlegen des Arbeitsverzeichnisses: '
-                          . $work_dir . ' ' . Dumper($err))
+                          . $working_dir . ' ' . Dumper($err))
             if @$err; 
     }
-    return $work_dir;
+    warn $working_dir;
+    return $working_dir;
 }
 
 

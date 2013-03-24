@@ -42,18 +42,18 @@ is(
    'atacama_config_path'
 );
 
-is(Path::Class::Dir->new($worker->work_base),
+is(Path::Class::Dir->new($worker->working_base),
    Path::Class::File->new("$Bin/../input_files/inArbeit"),
-   'work_base',
+   'working_base',
 );
 
-is( Path::Class::Dir->new($worker->work_dir),
+is( Path::Class::Dir->new($worker->working_dir),
     Path::Class::File->new("$Bin/../input_files/inArbeit/ubr12224"),
-    'work_dir'
+    'working_dir'
 );
 
 is( $worker->log_file_name,
-    Path::Class::File->new($worker->work_dir, 'worker.log'),
+    Path::Class::File->new($worker->working_dir, 'worker.log'),
     'log_file_name'
 );
 

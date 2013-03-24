@@ -35,22 +35,26 @@ has 'csv_save_dir' => (
 has 'does_copy_files' => (
     is => 'ro',
     isa => Bool,
+    default => 0,
 );
 
 has 'does_csv' => (
     is => 'ro',
     isa => Bool,
+    default => 0,
 );
+            
 
 has 'does_digifooter' => (
     is => 'ro',
     isa => Bool,
+    default => 0,
 );
 
 has 'does_mets' => (
     is => 'ro',
     isa => Bool,
-
+    default => 0,
 );
 
 has 'ocrfiles' => (
@@ -82,6 +86,7 @@ has 'scanfiles' => (
 has 'source_format' => (
     is => 'ro',
     isa => Str,
+    predicate => 'has_source_format',
 );
 
 has 'source_pdf' => (
@@ -96,7 +101,7 @@ around BUILDARGS => sub {
       my $class = shift;
       my %args = @_;
 
-      warn "BUILDARGS: " . Dumper(\%args);
+      # warn 'BUILDARGS: ' . Dumper(\%args));
       return $class->$orig(@_);
 };
 
@@ -109,13 +114,13 @@ sub _build_csv_basename {
 sub _build_csv_file {
     my $self = shift;
     
-    return Path::Class::File->new($self->work_dir, $self->csv_basename);
+    return Path::Class::File->new($self->working_dir, $self->csv_basename);
 }
 
 sub _build_csv_save_dir {
     my $self = shift;
     
-    my $csv_save_dir = Path::Class::Dir->new($self->work_base, 'csv_save');
+    my $csv_save_dir = Path::Class::Dir->new($self->working_base, 'csv_save');
     unless (-d $csv_save_dir) {
         File::Path::make_path($csv_save_dir->stringify)
             or die "Coldn't create $csv_save_dir: $!";
@@ -157,7 +162,7 @@ sub copy_ocrfiles {
         $log->debug("OCR-Datei: " . $ocrfile->filename);
         my $source_dir = $ocrfile->filepath;
         my $source = Path::Class::File->new($source_dir,    $ocrfile->filename);
-        my $dest   = Path::Class::File->new($self->work_dir, $ocrfile->filename);
+        my $dest   = Path::Class::File->new($self->working_dir, $ocrfile->filename);
         File::Copy::copy($source->stringify, $dest->stringify) 
             or $log->logdie("Konnte $source nicht nach $dest kopieren: $!");
         $log->info("$source --> $dest");
@@ -170,7 +175,7 @@ sub copy_pdf {
     my $log = $self->log;
     my $source = $self->source_pdf;
     $log->logdie('Keine PDF-Quelldatei!') unless $source;
-    my $dest = Path::Class::File->new($self->work_dir, $self->order_id . '.pdf');  
+    my $dest = Path::Class::File->new($self->working_dir, $self->order_id . '.pdf');  
     if ($source->basename =~ /^UBR\d{2}A\d{6}\.pdf/) {
         $log->info("EOD-PDF: " . $source);
         my $doc = CAM::PDF->new($source) || $log->logdie("$CAM::PDF::errstr\n");
@@ -178,7 +183,7 @@ sub copy_pdf {
         if (!$doc->deletePages($pagenums)) {
             $log->logdie("Failed to delete a page\n");
         } else {
-            $log->info("4 Seiten vorne und 1 hinten im PDF gelöscht!");    
+            $log->info("4 Seiten vorne und 1 hinten im PDF gelÃ¶scht!");    
         }
         $doc->cleanoutput($dest);
     }
@@ -200,28 +205,28 @@ sub copy_scanfiles {
         $log->debug("Scandatei: " . $scanfile->filename);
         my $source_dir = $scanfile->filepath;
         my $source = Path::Class::File->new($source_dir, $scanfile->filename);
-        my $dest   = Path::Class::File->new($self->work_dir,   $scanfile->filename);
+        my $dest   = Path::Class::File->new($self->working_dir,   $scanfile->filename);
         File::Copy::copy($source->stringify, $dest->stringify) 
             or $log->logdie("Konnte $source nicht nach $dest kopieren: $!");
         $log->info("$source --> $dest");
     }    
 }
 
-sub empty_work_dir {
+sub empty_working_dir {
     my $self = shift;
     
-    my $work_dir = $self->work_dir;
-    $work_dir->rmtree({keep_root => 1, error => \my $err});
-    $self->log->logdie('Fehler beim Löschen von ' . $work_dir . Dumper($err))
+    my $working_dir = $self->working_dir;
+    $working_dir->rmtree({keep_root => 1, error => \my $err});
+    $self->log->logdie('Fehler beim LÃ¶schen von ' . $working_dir . Dumper($err))
         if @$err;
     return 1; 
 }
 
-sub prepare_work_dir {
+sub prepare_working_dir {
     my $self = shift;
     
     my $csv_saved = $self->save_csv_file() if -e $self->csv_file;
-    $self->empty_work_dir();
+    $self->empty_working_dir();
     my $csv_file_restored = $self->restore_csv_file if $csv_saved;
     $self->log->info("Alte CSV-Datei gesichert als $csv_file_restored")
         if $csv_file_restored;
@@ -235,7 +240,7 @@ sub restore_csv_file {
     my $now = DateTime->now->strftime("%Y-%m-%d-%H-%M");
     my $csv_saved_target 
         = Path::Class::File->new(
-                $self->work_dir, $self->order_id . '_' . $now . '.csv'
+                $self->working_dir, $self->order_id . '_' . $now . '.csv'
         ); 
     File::Copy::copy($csv_file_saved->stringify, $csv_saved_target->stringify)
         or $self->log->logdie(
@@ -332,7 +337,7 @@ sub start_csv {
 sub run {
     my $self = shift;
     
-    my $log_msg = $self->prepare_work_dir() if $self->does_copy_files;
+    my $log_msg = $self->prepare_working_dir() if $self->does_copy_files;
     my $log = $self->log;
     $log->info('Programm gestartet');
     $log->info($log_msg) if $log_msg;
@@ -340,7 +345,8 @@ sub run {
     if ($self->does_copy_files) {
         $log->trace('Does copy files');    
         $self->copy_scanfiles();
-        $self->copy_pdf() if $self->source_format eq 'PDF';
+        $self->copy_pdf()
+            if $self->has_source_format and $self->source_format eq 'PDF';
         $self->copy_ocrfiles();
     }
 
