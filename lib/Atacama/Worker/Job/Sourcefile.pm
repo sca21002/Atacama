@@ -32,14 +32,13 @@ class_has '+log_basename' => (
 has 'scanfile_formats' => (
     is => 'rw',
     isa => 'ArrayRef[Str]',
-    builder => '_build_scanfile_formats',
-    lazy => 1,
+    default => sub { ['TIFF'] },
 );    
 
 
-has 'format' => (
+has 'sourceformats' => (
     is => 'rw',
-    isa => 'Str',
+    isa => 'ArrayRef[Str]',
 );
     
 has  'sourcedirs' => (
@@ -62,8 +61,6 @@ has 'sourcedir' => (
     lazy => 1,
 );
 
-sub  _build_scanfile_formats { ['TIFF'] }
-
 sub _build_sourcedir {
     my $self = shift;
     
@@ -72,46 +69,63 @@ sub _build_sourcedir {
     ;
 }
 
+
+sub is_searched {
+    my ($self, $format) = @_;
+    
+    return first {$_ eq $format} @{$self->sourceformats};
+}
+
+
 sub make_get_sourcefile {
     my $self = shift;
     return sub {
         my $entry = shift;
         my $log = $self->log;
-        my $format = $self->format;
-        $log->trace("Format: $format");    
+        my $formats = $self->sourceformats;
         $log->trace($entry . " gefunden");
         my $order_id = $self->order_id;
-        if ($entry->basename =~ /^\w{3,4}\d{5}/ 
-                and $entry->basename !~ /^${order_id}/ 
-        ) {
+        my $basename = $entry->basename;
+        
+        if ($basename =~ /^\w{3,4}\d{5}/ and $basename !~ /^${order_id}/ ) {
             $log->warn('Datei ' . $entry . ' im falschen Ordner'); 
         }
+        
         return Path::Class::Entity::PRUNE()
             if $entry->is_dir
-               and first { $_ eq $entry->basename } @{$self->prune_dirs};
+               and first { $_ eq $basename } @{ $self->prune_dirs };
+        
         return if $entry->is_dir;
-        if ($format eq 'TIFF') {
-            return unless $entry->basename =~ /^${order_id}_\d{1,5}\.(?i:tif(?:f)?)/;
-            $self->save_scanfile($entry);   
-        }
-        elsif ($format eq 'JPEG') {
-            return unless $entry->basename =~ /^${order_id}_\d{1,5}\.(?i:jpg)$/;
-            $self->save_scanfile($entry);   
-        } 
-        elsif ($format eq 'PDF') {
-            return unless $entry->basename =~ /^${order_id}.*\.(?i:pdf)$/;
-            # skip single page pdfs
-            return if $entry->basename =~ /^${order_id}_\d{3,5}\.pdf$/;
-            $self->save_pdffile($entry)
-        }
-        elsif ($format eq 'XML') {
-            return unless $entry->basename =~ /^${order_id}_\d{1,5}\.(?i:xml)$/;
-            $self->save_ocrfile($entry);
-        }     
-        else { $log->logcroak("Unbekanntes Format $format"); }
+        
+        return unless $basename =~ /^${order_id}/;
+        
+        my $single_page_re = qr/^${order_id}_\d{1,5}\.((?i)[a-z]+)$/;
+        my $pdf_re         = qr/^${order_id}.*\.(?i:pdf)$/;
+        my $ext_re = {
+            TIFF => qr/^(?i:tif(?:f)?)$/,
+            JPEG => qr/^(?i:jpg)$/,
+            PDF  => qr/^(?i:pdf)$/,
+            XML  => qr/^(?i:xml)$/,
+        };
+ 
+        if ( my($ext) = $basename =~ $single_page_re ) {
+            if ( $self->is_searched('TIFF') and $ext =~ $ext_re->{TIFF} ) {
+                $self->save_scanfile($entry);    
+            } elsif ( $self->is_searched('JPEG') and $ext =~ $ext_re->{JPEG} ) {
+                $self->save_scanfile($entry); 
+            } elsif ( $self->is_searched('XML') and $ext =~ $ext_re->{XML} ) {
+                $self->save_ocrfile($entry);
+            } elsif ( $ext =~ $ext->{PDF} ) {
+                # skip single page pdfs
+                return if $basename =~ /^${order_id}_\d{3,5}\.(?i:pdf)$/;
+                $self->save_pdffile($entry)                
+            } else { return }
+        } elsif ( $self->is_searched('PDF') and $basename =~ $pdf_re ) {
+            $self->save_pdffile($entry);      
+        } else { return }    
     }
-}
-
+}    
+    
 sub save_scanfile {
     my $self = shift;
     my $scanfile = shift;
@@ -168,7 +182,8 @@ sub save_pdffile{
             ($order_id) = (File::Spec->splitdir($pdffile->dir))[$index--]
                 =~ /^((?:u|s)br\d{5})/i;
         }
-        $log->debug("Keine Auftragsnummer gefunden fuer $pdffile") unless $order_id;
+        $log->debug("Keine Auftragsnummer gefunden fuer $pdffile")
+            unless $order_id;
         $order_id = lc $order_id;
         my $pdf = Remedi::PDF::API2->open(
             file => $pdffile,
@@ -234,18 +249,18 @@ sub run {
     my $log = $self->log;
     $log->info('Programm gestartet');
 
-    $self->sourcedir or $log->logcroak('Verzeichnis mit Quelldateien nicht gefunden!');
- 
-    $log->info('Gesuchte Formate: ' . join(' ',(@{$self->scanfile_formats}, 'PDF', 'XML')));    
-    foreach  (@{$self->scanfile_formats}, 'PDF', 'XML') {
-        $self->format($_);
-        $log->trace("Start-Format: " . $self->format);
-        $self->sourcedir->recurse(
-            callback => $self->make_get_sourcefile(),            # Wow a closure
-            depthfirst => 1,
-            preorder   => 1
-        );
-    }
+    $self->sourcedir
+        or $log->logcroak( sprintf( "Kein Unterverzeichnis %s in %s", 
+            $self->order_id, join(' ', @{$self->sourcedirs})
+           ));
+    $self->sourceformats( [ @{$self->scanfile_formats}, 'PDF', 'XML' ] );
+    $log->info('Gesuchte Formate: ' . join(' ',(@{$self->sourceformats}))); 
+    
+    $self->sourcedir->recurse(
+        callback => $self->make_get_sourcefile(),   # Wow a closure
+        depthfirst => 1,
+        preorder   => 1
+    );
 }
 
 
