@@ -102,22 +102,22 @@ sub make_get_sourcefile {
         my $single_page_re = qr/^${order_id}_\d{1,5}\.((?i)[a-z]+)$/;
         my $pdf_re         = qr/^${order_id}.*\.(?i:pdf)$/;
         my $ext_re = {
-            TIFF => qr/^(?i:tif(?:f)?)$/,
-            JPEG => qr/^(?i:jpg)$/,
-            PDF  => qr/^(?i:pdf)$/,
-            XML  => qr/^(?i:xml)$/,
+            TIFF => qr/^tiff?$/i,
+            JPEG => qr/^jpg$/i,
+            PDF  => qr/^pdf$/i,
+            XML  => qr/^xml$/i,
         };
  
         if ( my($ext) = $basename =~ $single_page_re ) {
-            if ( $self->is_searched('TIFF') and $ext =~ $ext_re->{TIFF} ) {
+            if      ( $ext =~ $ext_re->{TIFF} and $self->is_searched('TIFF') ) {
                 $self->save_scanfile($entry);    
-            } elsif ( $self->is_searched('JPEG') and $ext =~ $ext_re->{JPEG} ) {
+            } elsif ( $ext =~ $ext_re->{JPEG} and $self->is_searched('JPEG') ) {
                 $self->save_scanfile($entry); 
-            } elsif ( $self->is_searched('XML') and $ext =~ $ext_re->{XML} ) {
+            } elsif ( $ext =~ $ext_re->{XML}  and $self->is_searched('XML')  ) {
                 $self->save_ocrfile($entry);
             } elsif ( $ext =~ $ext->{PDF} ) {
                 # skip single page pdfs
-                return if $basename =~ /^${order_id}_\d{3,5}\.(?i:pdf)$/;
+                return if $basename =~ /^${order_id}_\d{3,5}\./;
                 $self->save_pdffile($entry)                
             } else { return }
         } elsif ( $self->is_searched('PDF') and $basename =~ $pdf_re ) {
@@ -220,7 +220,8 @@ sub save_ocrfile {
     my $atacama_schema = $job->atacama_schema;
     $log->info("OCR-Datei: $ocrfile");
     eval {
-        ($clause->{order_id}) = $ocrfile->basename =~ /^(\w{3,4}\d{5})_\d{1,5}\.xml$/;    
+        ($clause->{order_id})
+            = $ocrfile->basename =~ /^(\w{3,4}\d{5})_\d{1,5}\.xml$/;    
         $clause->{filename} = $ocrfile->basename;
         $clause->{filepath} = $ocrfile->dir->stringify;;
         $clause->{filesize} = -s $ocrfile;
@@ -254,7 +255,7 @@ sub run {
             $self->order_id, join(' ', @{$self->sourcedirs})
            ));
     $self->sourceformats( [ @{$self->scanfile_formats}, 'PDF', 'XML' ] );
-    $log->info('Gesuchte Formate: ' . join(' ',(@{$self->sourceformats}))); 
+    $log->info('Gesuchte Formate: ' . join(' ', @{$self->sourceformats} ) ); 
     
     $self->sourcedir->recurse(
         callback => $self->make_get_sourcefile(),   # Wow a closure
