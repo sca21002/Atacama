@@ -51,7 +51,7 @@ sub base : Chained('/login/required') PathPart('') CaptureArgs(0) Does('NoSSL'){
         };
        
     }
-    $c->log->debug('User: ' . Dumper($user));
+    $c->log->debug( 'User: ' . $user->{id} );
 
     $c->stash( 
 	roles => [ @roles ],
