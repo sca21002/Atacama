@@ -57,6 +57,10 @@ has 'does_mets' => (
     default => 0,
 );
 
+has '+log_config_basename' => (
+    default => 'log4perl_remedi.conf',
+);
+
 has 'ocrfiles' => (
     is => 'ro',
     isa => 'ArrayRef[Atacama::Schema::Result::Ocrfile]',

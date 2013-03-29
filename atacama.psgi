@@ -9,8 +9,9 @@ my $app = Atacama->apply_default_middlewares(Atacama->psgi_app);
 my $panels = Plack::Middleware::Debug->default_panels;
  
 builder {
-  enable 'DBIC::QueryLog';
-  enable 'Debug::CatalystLog';
-  enable 'Debug', panels =>['CatalystLog','DBIC::QueryLog', @$panels];
+  enable_if { $ENV{ATACAMA_DEBUG} } 'DBIC::QueryLog';
+  enable_if { $ENV{ATACAMA_DEBUG} } 'Debug::CatalystLog';
+  enable_if { $ENV{ATACAMA_DEBUG} } 'Debug',
+    panels =>['CatalystLog','DBIC::QueryLog', @$panels];
   $app;
 };

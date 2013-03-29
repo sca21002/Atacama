@@ -5,7 +5,6 @@ use Carp;
 use Data::Dumper;
 
 
-
 sub work {
     my $class = shift;
     my $theschwartz_job = shift;

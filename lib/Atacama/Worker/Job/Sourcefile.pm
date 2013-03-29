@@ -11,8 +11,6 @@ use Remedi::PDF::API2;
 use Data::Dumper;
 use MooseX::ClassAttribute;
 
-
-sub get_log_file_name { return  Atacama::Worker::Job::Sourcefile->log_file_name();}
  
 has 'prune_dirs' => (
     is => 'rw',

@@ -2,6 +2,7 @@ package Atacama;
 use Moose;
 use namespace::autoclean;
 use English qw( -no_match_vars ) ;  # Avoids regex performance penalty
+use Log::Log4perl::Catalyst;
 
 use Catalyst::Runtime 5.80;
     with 'CatalystX::DebugFilter';
@@ -15,7 +16,6 @@ use Catalyst::Runtime 5.80;
 #                 directory
 
 use Catalyst qw/
-    -Debug
     ConfigLoader
     Unicode::Encoding
     Static::Simple
@@ -101,6 +101,8 @@ __PACKAGE__->config(
     }
     
 );
+
+__PACKAGE__->log(Log::Log4perl::Catalyst->new('log4perl.conf'));
 
 # Start the application
 __PACKAGE__->setup();
