@@ -10,8 +10,7 @@ my $panels = Plack::Middleware::Debug->default_panels;
  
 builder {
   enable_if { $ENV{ATACAMA_DEBUG} } 'DBIC::QueryLog';
-  enable_if { $ENV{ATACAMA_DEBUG} } 'Debug::CatalystLog';
   enable_if { $ENV{ATACAMA_DEBUG} } 'Debug',
-    panels =>['CatalystLog','DBIC::QueryLog', @$panels];
+    panels =>['DBIC::QueryLog', 'Log4perl', @$panels];
   $app;
 };
