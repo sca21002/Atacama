@@ -11,6 +11,6 @@ my $panels = Plack::Middleware::Debug->default_panels;
 builder {
   enable 'DBIC::QueryLog';
   enable 'Debug::CatalystLog';
-  enable 'Debug', panels =>['DBIC::QueryLog', @$panels];
+  enable 'Debug', panels =>['CatalystLog','DBIC::QueryLog', @$panels];
   $app;
 };
