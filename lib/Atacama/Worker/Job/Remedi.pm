@@ -58,6 +58,8 @@ has 'does_mets' => (
 );
 
 has '+log_config_basename' => (
+    is => 'ro',
+    isa => Str,
     default => 'log4perl_remedi.conf',
 );
 
@@ -130,6 +132,13 @@ sub _build_csv_save_dir {
             or die "Coldn't create $csv_save_dir: $!";
     }
     return $csv_save_dir;
+}
+
+sub _build_log {
+    my $self = shift;
+   
+    Log::Log4perl->init($self->log_config_file->stringify);
+    return Log::Log4perl->get_logger('Atacama::Worker::Job::Remedi');
 }
 
 sub _build_ocrfiles {

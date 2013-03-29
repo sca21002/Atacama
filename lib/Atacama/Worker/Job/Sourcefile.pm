@@ -19,13 +19,16 @@ has 'prune_dirs' => (
 );
 
 
-has '+log_config_basename' => (
-    default => 'log4perl_sourcefile.conf',
-);
-
 class_has '+log_basename' => (
     default => 'sourcefile.log',                        
 );
+
+has '+log_config_basename' => (
+    is => 'ro',
+    isa => Str,
+    default => 'log4perl_sourcefile.conf',
+);
+
 
 has 'scanfile_formats' => (
     is => 'rw',
@@ -58,6 +61,13 @@ has 'sourcedir' => (
     builder => '_build_sourcedir',
     lazy => 1,
 );
+
+sub _build_log {
+    my $self = shift;
+   
+    Log::Log4perl->init($self->log_config_file->stringify);
+    return Log::Log4perl->get_logger('Atacama::Worker::Job::Sourcefile');
+}
 
 sub _build_sourcedir {
     my $self = shift;
