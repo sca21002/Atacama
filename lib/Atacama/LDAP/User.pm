@@ -1,13 +1,25 @@
 package Atacama::LDAP::User;
 
 use parent Catalyst::Authentication::Store::LDAP::User;
+use Data::Dumper;
+
 
 BEGIN { __PACKAGE__->mk_accessors(qw(model)) }
 
 sub new {
     my ( $class, $store, $user, $c ) = @_;
-
+    
     return unless $user;
+            
+    my $fullname 
+        =  $user->can('urrzfullname') 
+        ?  $user->urrzfullname
+        : join(' ',
+            grep { defined $_ && $_ }   
+                $user->can('urrzgivenname') && $user->urrzgivenname,
+                $user->can('urrzsurname')   && $user->urrzsurname
+    );
+    $user->fullname($fullname);
     my $model = $c->model($store->user_model);
     bless { store => $store, user => $user, model => $model }, $class;
 }
