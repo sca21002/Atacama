@@ -31,32 +31,13 @@ The root page (/)
 sub base : Chained('/login/required') PathPart('') CaptureArgs(0) Does('NoSSL'){
     my ( $self, $c ) = @_;
  
-    $c->log->info('User: ' . Dumper($c->user));
- 
-    my @roles = ('readonly');
-    my $user;
-    if ( $c->can('user') ) { 
-        $user->{fullname}
-            =  $c->user->can('urrzfullname') 
-            ?  $c->user->urrzfullname
-            : join(' ',
-                grep { defined $_ && $_ }   
-                    $c->user->can('urrzgivenname') && $c->user->urrzgivenname,
-                    $c->user->can('urrzsurname')   && $c->user->urrzsurname
-            );
-        
-        $user->{id} = $c->user->can('id') &&  $c->user->id;
-        try {
-            @roles =  $c->user->roles if  $c->user->can('roles');
-        } catch {
-            $c->log->warn("Warnung: $_");
-        };
-       
-    }
-    $c->log->debug( 'User: ' . $user->{id} );
-
+    my $user = $c->user if $c->user_exists;
+    my $roles =  $c->user->roles if $c->user_exists && $c->user->can('roles'); 
+    $c->log->debug( 'User: ' . $user->id );
+    $c->log->debug( 'Roles: ' . join(' ',@{$c->user->roles}));
+   
     $c->stash( 
-	roles => [ @roles ],
+	roles => $roles,
         user => $user,
     );
 }

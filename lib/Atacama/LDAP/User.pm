@@ -1,8 +1,7 @@
 package Atacama::LDAP::User;
 
 use parent Catalyst::Authentication::Store::LDAP::User;
-use Data::Dumper;
-
+use Data::Dumper::Concise;
 
 BEGIN { __PACKAGE__->mk_accessors(qw(model)) }
 
@@ -10,16 +9,14 @@ sub new {
     my ( $class, $store, $user, $c ) = @_;
     
     return unless $user;
-            
-    my $fullname 
-        =  $user->can('urrzfullname') 
-        ?  $user->urrzfullname
-        : join(' ',
-            grep { defined $_ && $_ }   
-                $user->can('urrzgivenname') && $user->urrzgivenname,
-                $user->can('urrzsurname')   && $user->urrzsurname
-    );
-    $user->fullname($fullname);
+    $user->{attributes}{fullname}    
+        =  exists $user->{attributes}{'urrzfullname'} && 
+           $user->{attributes}{'urrzfullname'} 
+        ? $user->{attributes}{'urrzfullname'}
+        : join(' ', grep { defined $_ && $_ }   
+                $user->{attributes}{'urrzgivenname'},
+                $user->{attributes}{'urrzsurname'},   
+          );
     my $model = $c->model($store->user_model);
     bless { store => $store, user => $user, model => $model }, $class;
 }
@@ -30,10 +27,10 @@ sub roles {
     unless ( $self->{_roles}) {
         my $result = $self->model->find({username => $self->id});
         $self->{_roles} =  $result 
-            ?  map { $_->name } $result->roles 
-            : ();
+            ?  [ map { $_->name } $result->roles ] 
+            :  ['readonly'];
     }
-    return @{$self->{_roles}};
+    return $self->{_roles};
 }
 
 

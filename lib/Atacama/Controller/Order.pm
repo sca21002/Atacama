@@ -64,7 +64,7 @@ sub json : Chained('orders') PathPart('json') Args(0) {
         : {}
         ; 
    
-    # $c->log->debug('filters: ' . Dumper($data->{filters}));
+     $c->log->debug('filters: ' . Dumper($data->{filters}));
     my $filters = $data->{filters};
     # $filters = decode_json $filters if $filters; ging nicht mit utf8??    
     $filters = from_json $filters if $filters;   
@@ -100,6 +100,8 @@ sub json : Chained('orders') PathPart('json') Args(0) {
         push @rows, $row;
     }
     $response->{rows} = \@rows;    
+
+    $c->log->debug('Records: ' . $response->{records});
 
     $c->stash(
         %$response,
