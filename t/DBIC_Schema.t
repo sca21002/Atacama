@@ -12,7 +12,7 @@ use_ok( 'AtacamaTestSchema' );
 use Data::Dumper;
 
 ok( my $schema = AtacamaTestSchema->init_schema(populate => 1), 'created a test schema object' );
-ok(my $order = $schema->resultset('Order')->find('ubr02862'),'find ubr02862');
+ok(my $order = $schema->resultset('Order')->find('ubr00003'),'find ubr00003');
 is($order->control,'pen 31.3.07','field control');
 my $params = {
               'orders_projects' => [{

@@ -87,7 +87,6 @@ sub json : Chained('orders') PathPart('json') Args(0) {
     $response->{total} = $orders_rs->pager->last_page;
     $response->{records} = $orders_rs->pager->total_entries;
     my @rows; 
-    my $i = $orders_rs->pager->first;
     while (my $order = $orders_rs->next) {
         my $row->{id} = $order->order_id;
         $row->{cell} = [
@@ -99,7 +98,6 @@ sub json : Chained('orders') PathPart('json') Args(0) {
             $order->status && $order->status->name,
         ];
         push @rows, $row;
-        $i++
     }
     $response->{rows} = \@rows;    
 

@@ -102,10 +102,12 @@ __PACKAGE__->config(
     
 );
 
-__PACKAGE__->log(Log::Log4perl::Catalyst->new('log4perl.conf'));
-
 # Start the application
 __PACKAGE__->setup();
+
+__PACKAGE__->log(Log::Log4perl::Catalyst->new(
+    __PACKAGE__->path_to('log4perl.conf')->stringify
+));
 
 
 sub uri_for_static {

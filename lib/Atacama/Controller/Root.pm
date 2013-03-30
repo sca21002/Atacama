@@ -31,6 +31,8 @@ The root page (/)
 sub base : Chained('/login/required') PathPart('') CaptureArgs(0) Does('NoSSL'){
     my ( $self, $c ) = @_;
  
+    $c->log->info('User: ' . Dumper($c->user));
+ 
     my @roles = ('readonly');
     my $user;
     if ( $c->can('user') ) { 
