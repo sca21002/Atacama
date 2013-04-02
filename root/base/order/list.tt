@@ -18,7 +18,7 @@
                             var value = allcookies.substring(start, end);  // Extract the value
                             if (value) {
                                 value = unescape(value);               // Decode it
-				console.debug(value);
+				// console.debug(value);
 
 				try	{
 				result = jQuery.parseJSON(value);
@@ -38,7 +38,7 @@
 
 			var jsonstring = JSON.stringify(this.data);
 
-			document.cookie = 'atacama_kk='escape(jsonstring) + ';path=' + p + ';expires='
+			document.cookie = 'atacama_kk=' + escape(jsonstring) + ';path=' + p + ';expires='
 					+ d.toUTCString();
 		}
 
@@ -52,7 +52,7 @@
 			projects : $('#gs_projects').val(),
 			status : $('#gs_status').val()
 		};
-		console.debug(filters);
+		// console.debug(filters);
 
 		prefs.data = {
 			filter : filters,
