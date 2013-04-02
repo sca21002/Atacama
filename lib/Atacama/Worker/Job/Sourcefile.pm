@@ -117,13 +117,14 @@ sub make_get_sourcefile {
         };
  
         if ( my($ext) = $basename =~ $single_page_re ) {
+            $log->trace("Extension: $ext"); 
             if      ( $ext =~ $ext_re->{TIFF} and $self->is_searched('TIFF') ) {
                 $self->save_scanfile($entry);    
             } elsif ( $ext =~ $ext_re->{JPEG} and $self->is_searched('JPEG') ) {
                 $self->save_scanfile($entry); 
             } elsif ( $ext =~ $ext_re->{XML}  and $self->is_searched('XML')  ) {
                 $self->save_ocrfile($entry);
-            } elsif ( $ext =~ $ext->{PDF} ) {
+            } elsif ( $ext =~ $ext_re->{PDF} ) {
                 # skip single page pdfs
                 return if $basename =~ /^${order_id}_\d{3,5}\./;
                 $self->save_pdffile($entry)                

@@ -5,20 +5,30 @@
 		data : {},
 		
 		load : function() {
-			var the_cookie = document.cookie.split(';');
-			// console.debug("THE Cookie: " +document.cookie);
-			if (the_cookie[0]) {
-				the_cookie[0] = unescape(the_cookie[0]);
-				// console.debug(the_cookie[0]);
+                        // Read the cookie property. This returns all cookies for this document.
+                        var allcookies = document.cookie;
+                        // Look for the start of the cookie named 'atacama_kk='
+                        var pos = allcookies.indexOf('atacama_kk=');
+
+                        // If we find a cookie by that name, extract and use its value
+                        if (pos != -1) {
+                            var start = pos + 11;                     // Start of cookie value
+                            var end = allcookies.indexOf(";", start);  // End of cookie value
+                            if (end == -1) end = allcookies.length;
+                            var value = allcookies.substring(start, end);  // Extract the value
+                            if (value) {
+                                value = unescape(value);               // Decode it
+				console.debug(value);
 
 				try	{
-				result = jQuery.parseJSON( the_cookie[0]);
+				result = jQuery.parseJSON(value);
 				return result;
 				}
 				catch(e) 	{
 				// We report an error, and show the erronous JSON string (we replace all " by ', to prevent another error)
 				result = jQuery.parseJSON( '{"code":"error","content":"' + e.replace(/"/g, "'") + '"}' );
-				} 
+				}
+                            }
 			}
 		},
 
@@ -28,7 +38,7 @@
 
 			var jsonstring = JSON.stringify(this.data);
 
-			document.cookie = escape(jsonstring) + ';path=' + p + ';expires='
+			document.cookie = 'atacama_kk='escape(jsonstring) + ';path=' + p + ';expires='
 					+ d.toUTCString();
 		}
 
@@ -42,7 +52,7 @@
 			projects : $('#gs_projects').val(),
 			status : $('#gs_status').val()
 		};
-		// console.debug(filters);
+		console.debug(filters);
 
 		prefs.data = {
 			filter : filters,
