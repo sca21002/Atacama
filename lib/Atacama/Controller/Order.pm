@@ -30,10 +30,6 @@ sub orders : Chained('/base') PathPart('order') CaptureArgs(0) {
 sub list : Chained('orders') PathPart('list') Args(0) {
     my ( $self, $c ) = @_;
 
-    # $c->log->debug('LIST: ');
-    # $c->log->debug('Filter stash: ' . $c->session->{order}{list}{filters});
-    $c->log->debug(Dumper($c->user->id));
-    $c->log->debug($c->user->name);
     $c->stash(
         projects => [
             $c->model('AtacamaDB::Project')->search(
@@ -47,6 +43,14 @@ sub list : Chained('orders') PathPart('list') Args(0) {
         # no_wrapper => 1,
         filters => $c->session->{order}{list}{filters},
     ); 
+}
+
+sub goto : Chained('orders') PathPart('goto') Args(0) {
+    my ($self, $c) = @_;
+
+    $c->stash->{index} = $c->req->params->{index};
+    $c->forward('edit_from_list');
+    
 }
 
 sub json : Chained('orders') PathPart('json') Args(0) {
@@ -69,8 +73,6 @@ sub json : Chained('orders') PathPart('json') Args(0) {
     # $filters = decode_json $filters if $filters; ging nicht mit utf8??    
     $filters = from_json $filters if $filters;   
 
-    $c->session->{order}{list}{filters} = $data->{filters};
-
     my $orders_rs = $c->stash->{orders};
     $orders_rs = $orders_rs->filter($filters);
     $orders_rs = $orders_rs->search(
@@ -81,6 +83,18 @@ sub json : Chained('orders') PathPart('json') Args(0) {
             order_by => "$sidx $sord",
         }
     );
+
+    $c->session(
+        order => {
+            list => {        
+                filters => $data->{filters},        
+                search =>  $search,
+                sidx => $sidx, 
+                sord => $sord,
+            }
+        }
+    );
+    # $c->log->debug("Sess.: " . Dumper($c->session->{order}));
    
     my $response;
     $response->{page} = $page;
@@ -122,6 +136,84 @@ sub edit : Chained('order') {
     $c->forward('save');
 }
 
+sub edit_from_list : Chained('order') {
+    my ($self, $c) = @_;
+    $c->log->debug('Bin in edit_from_list');
+    
+    my ($filters, $search, $sidx, $sord)                    # hash-slice
+        = @{$c->session->{order}{list}}{ qw(filters search sidx sord) };
+    $filters = from_json $filters if $filters;
+    $sidx ||= 'order_id';
+    $sord ||= 'asc';
+
+    my $orders_rs = $c->stash->{orders};
+    $orders_rs = $orders_rs->filter($filters);
+    $orders_rs = $orders_rs->search(
+        $search,
+        {
+           order_by => "$sidx $sord",
+        }
+    );
+    my $orders_count = $orders_rs->count;
+    my $index = $c->stash->{index};
+    if ($index) {
+        $index += 0;          
+        $index = 1 if $index < 1;
+        $index = $orders_count if $index > $orders_count;
+        my($order) = $orders_rs->search({})->slice($index-1, $index-1);
+        $c->stash->{order} = $order;
+    }
+    my $order_id = $c->stash->{order}->order_id;
+
+    my $first = $orders_rs->search(
+        {},
+        {
+            order_by => "$sidx $sord",
+        }
+    )->single;       
+        
+    my $prev_rs =  $orders_rs->search(
+        {
+            'me.order_id' => { '<', $order_id } 
+        },
+        {
+            order_by => "$sidx " . ($sord eq 'desc' ? 'asc' : 'desc'),
+        }
+    );
+    my $prev = $prev_rs->single;
+    $index ||= $prev eq $order_id ? 1 : $prev_rs->count +1;
+        
+    my $next = $orders_rs->search(
+        {
+            'me.order_id' => { '>', $order_id } 
+        },
+        {
+            order_by => "$sidx $sord"
+        }
+    )->single;
+    my $last = $orders_rs->search(
+        {},
+        {
+            order_by => "$sidx " . ($sord eq 'desc' ? 'asc' : 'desc'),
+        }
+    )->single;
+    
+    $c->log->debug('order_id: ' . $order_id);
+    $c->log->debug('index: ' . $index);
+    $c->log->debug('First: ' . $first->order_id) if $first;
+    $c->log->debug('Prev: ' . $prev->order_id) if $prev;
+    $c->log->debug('Next: ' . $next->order_id) if $next;
+    $c->log->debug('Last: ' . $last->order_id) if $last;
+    $c->stash(
+        orders_count => $orders_count,
+        index => $index,
+        first => $first && $first->order_id ne $order_id && $first->order_id || '',
+        prev  => $prev  && $prev->order_id  || '',
+        next  => $next  && $next->order_id  || '',
+        last  => $last  && $last->order_id ne $order_id  && $last->order_id || '',
+    );
+    $c->forward('save');
+}
 
 sub put : Chained('orders') {
     my ($self, $c) = @_;

@@ -32,12 +32,12 @@ sub base : Chained('/login/required') PathPart('') CaptureArgs(0) Does('NoSSL'){
     my ( $self, $c ) = @_;
  
     my $user = $c->user if $c->user_exists;
-    my $roles =  $c->user->roles if $c->user_exists && $c->user->can('roles'); 
+    my @roles =  $c->user->roles if $c->user_exists && $c->user->can('roles'); 
     $c->log->debug( 'User: ' . $user->id );
-    $c->log->debug( 'Roles: ' . join(' ',@{$c->user->roles}));
+    $c->log->debug( "Roles: @roles" );
    
     $c->stash( 
-	roles => $roles,
+	roles => \@roles,
         user => $user,
     );
 }

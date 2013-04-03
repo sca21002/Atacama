@@ -98,7 +98,10 @@ __PACKAGE__->config(
     },
     'CatalystX::DebugFilter' => {
         Request => { params => [ 'password' ] },
-    }
+    },
+    'Model::AtacamaDB' => {
+        traits =>  ( $ENV{ATACAMA_DEBUG} ? ['QueryLog::AdoptPlack'] : []),
+    },
     
 );
 
