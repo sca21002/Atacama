@@ -304,7 +304,7 @@ sub save : Private {
         if ( $order_params->{remark} or  $order->status_id != $order_params->{status_id}  ) 
         {
             $order_params->{remarks} = [{
-                login => $c->user->id,
+                login => $c->stash->{user},
                 status_id => $order_params->{status_id},
                 content => $order_params->{remark},
             }];

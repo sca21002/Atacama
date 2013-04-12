@@ -30,10 +30,13 @@ The root page (/)
 
 sub base : Chained('/login/required') PathPart('') CaptureArgs(0) Does('NoSSL'){
     my ( $self, $c ) = @_;
- 
-    my $user = $c->user if $c->user_exists;
-    my @roles =  $c->user->roles if $c->user_exists && $c->user->can('roles'); 
-    $c->log->debug( 'User: ' . $user->id );
+
+    # $c->log->debug(Dumper($c->session->{__user})); 
+    # my $user = $c->user if $c->user_exists;
+    my $user =  $c->session->{__user};
+    # my @roles =  $c->user->roles if $c->user_exists && $c->user->can('roles'); 
+    my @roles = ('user');
+    $c->log->debug( 'User: ' . $user);
     $c->log->debug( "Roles: @roles" );
    
     $c->stash( 

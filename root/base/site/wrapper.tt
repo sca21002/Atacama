@@ -12,9 +12,12 @@
 <strong>Testdatenbank</strong>
 [% END %]
 
-[% IF user.fullname %]
+<!--[% IF user.fullname %]
 <strong>User:</strong> [% user.fullname %]
 <strong>Login:</strong> [% user.id %]
+[% END %]-->
+[% IF user %]
+<strong>[% user %]</strong>
 [% END %]
 [% IF roles %]
 <strong>Rollen:</strong> [% roles.join(', ') %]
