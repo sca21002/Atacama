@@ -44,11 +44,23 @@ has 'stage' => ( is => 'rw' );
 # with an external configuration file acting as an override for
 # local deployment.
 
+__PACKAGE__->config( 'Plugin::ConfigLoader' => {
+    driver => {
+    'General' => { -UTF8 => 1 },
+    }
+    } );
+
+
 __PACKAGE__->config(
     name => 'Atacama',
     # Disable deprecated behavior needed by old applications
     disable_component_resolution_regex_fallback => 1,
     
+    'Plugin::ConfigLoader' => {
+        driver => { 
+            'General' => { -UTF8 => 1 },            # for utf8 in config file 
+        }
+    }, 
     'Plugin::Session' => {
         storage => "/tmp/session_$EFFECTIVE_USER_ID"                      
     },

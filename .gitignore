@@ -1,4 +1,4 @@
-atacama_local.conf
+atacama_*.conf
 blib/
 .build/
 _build/

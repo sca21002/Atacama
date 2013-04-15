@@ -1,12 +1,10 @@
 package Atacama::LDAP::User;
 
 use parent Catalyst::Authentication::Store::LDAP::User;
-use Data::Dumper::Concise;
 
-BEGIN { __PACKAGE__->mk_accessors(qw(model)) }
 
 sub new {
-    my ( $class, $store, $user, $c ) = @_;
+    my ( $class, $store, $user, @args ) = @_;
     
     return unless $user;
     $user->{attributes}{fullname}    
@@ -17,21 +15,32 @@ sub new {
                 $user->{attributes}{'urrzgivenname'},
                 $user->{attributes}{'urrzsurname'},   
           );
-    my $model = $c->model($store->user_model);
-    bless { store => $store, user => $user, model => $model }, $class;
+
+    Catalyst::Authentication::Store::LDAP::User->new(
+        $class, $store, $user, @args
+    );
 }
 
 sub roles {
     my ($self, $ldap) = @_;
 
     unless ( $self->{_roles}) {
-        my $result = $self->model->find({username => $self->id});
+        my $model = $c->model($store->user_model);
+        my $result = $model->find({username => $self->id});
         $self->{_roles} =  $result 
             ?  [ map { $_->name } $result->roles ] 
             :  ['readonly'];
     }
     return $self->{_roles};
 }
+
+sub for_session {
+    carp 'In ' . __PACKAGE__ . ': method for_session'; 
+    my $self = shift;
+    local $Storable::Deparse = 1;
+    return freeze $self;
+}
+
 
 
 
