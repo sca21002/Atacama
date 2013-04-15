@@ -28,23 +28,20 @@ The root page (/)
 
 =cut
 
+
 sub base : Chained('/login/required') PathPart('') CaptureArgs(0) Does('NoSSL'){
     my ( $self, $c ) = @_;
 
-    # $c->log->debug(Dumper($c->session->{__user})); 
-    # my $user = $c->user if $c->user_exists;
-    my $user =  $c->session->{__user};
-    # my @roles =  $c->user->roles if $c->user_exists && $c->user->can('roles'); 
-    my @roles = ('user');
-    $c->log->debug( 'User: ' . $user);
-    $c->log->debug( "Roles: @roles" );
-   
-    $c->stash( 
-	roles => \@roles,
+    my $user = $c->user if $c->user_exists;
+    # my $roles =  $c->user->roles if $c->user_exists && $c->user->can('roles');
+    # $c->log->debug( 'User: ' . $user->id );
+    # $c->log->debug( 'Roles: ' . join(' ',@{$c->user->roles}));
+
+    $c->stash(
+        roles => [ 'user' ],
         user => $user,
     );
 }
-
 
 sub index : Chained('/base') PathPart('') {
     my ( $self, $c ) = @_;

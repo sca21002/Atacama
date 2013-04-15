@@ -81,7 +81,7 @@ __PACKAGE__->config(
                     ldap_server         => 'ldapauth1.uni-regensburg.de',
                     ldap_server_options => { 
 				             timeout => 30,
-					     raw => qr/(?i:^jpegPhoto|;binary)/,	
+					     # raw => qr/(?i:^jpegPhoto|;binary)/,	
                                            },
                     start_tls           => 1,
                     start_tls_options   => { verify => 'none' },

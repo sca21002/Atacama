@@ -2,9 +2,12 @@ package Atacama::LDAP::User;
 
 use parent Catalyst::Authentication::Store::LDAP::User;
 
+use Storable qw(freeze);
+use Carp;
+use Devel::Dwarn;
 
 sub new {
-    my ( $class, $store, $user, @args ) = @_;
+    my ( $class, $store, $user, $c) = @_;
     
     return unless $user;
     $user->{attributes}{fullname}    
@@ -16,9 +19,7 @@ sub new {
                 $user->{attributes}{'urrzsurname'},   
           );
 
-    Catalyst::Authentication::Store::LDAP::User->new(
-        $class, $store, $user, @args
-    );
+    bless { store => $store, user => $user, }, $class;    
 }
 
 sub roles {
