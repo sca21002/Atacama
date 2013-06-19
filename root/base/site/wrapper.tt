@@ -17,7 +17,7 @@
 <strong>Login:</strong> [% user.id %]
 [% END %]-->
 [% IF user %]
-<strong>[% user %]</strong>
+<strong>[% user.username %]</strong>
 [% END %]
 [% IF roles %]
 <strong>Rollen:</strong> [% roles.join(', ') %]

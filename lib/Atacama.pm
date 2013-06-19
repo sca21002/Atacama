@@ -29,7 +29,7 @@ use Catalyst qw/
 
 extends 'Catalyst';
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 $VERSION = eval $VERSION;
 
 has 'stage' => ( is => 'rw' ); 
@@ -75,25 +75,10 @@ __PACKAGE__->config(
                     password_type => 'self_check',
                 },
                 store => {
-                    binddn              => 'anonymous',
-                    bindpw              => 'dontcarehow',
-                    class               => '+Atacama::LDAP',
-                    ldap_server         => 'ldapauth1.uni-regensburg.de',
-                    ldap_server_options => { 
-				             timeout => 30,
-					     # raw => qr/(?i:^jpegPhoto|;binary)/,	
-                                           },
-                    start_tls           => 1,
-                    start_tls_options   => { verify => 'none' },
-                    entry_class         => 'Catalyst::Model::LDAP::Entry',
-                    user_basedn         => 'o=uni-regensburg,C=de',
-                    user_field          => 'cn',
-                    user_filter         => '(&(objectClass=urrzUser)(cn=%s))',
-                    user_scope          => 'sub', 
-                    user_search_options => { deref => 'always' },
-                    user_results_filter => sub { return shift->pop_entry },
-                    user_class          => 'Atacama::LDAP::User',
-                    user_model          => 'AtacamaDB::User',
+                    class DBIx::Class
+                    user_model AtacamaDB::User
+                    role_relation roles
+                    role_field  name      
                 },
             },
         },
