@@ -66,19 +66,19 @@ __PACKAGE__->config(
     },
     
     'authentication' => {
-        default_realm => 'ldap',
+        default_realm => 'users',
         realms => {
-            ldap => {
+            users => {
                 credential => {
                     class => 'Password',
                     password_field => 'password',
                     password_type => 'self_check',
                 },
                 store => {
-                    class DBIx::Class
-                    user_model AtacamaDB::User
-                    role_relation roles
-                    role_field  name      
+                    class => 'DBIx::Class',
+                    user_model => 'AtacamaDB::User',
+                    role_relation => 'roles',
+                    role_field  => 'name',      
                 },
             },
         },

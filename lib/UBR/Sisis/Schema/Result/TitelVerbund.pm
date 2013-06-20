@@ -31,7 +31,7 @@ sub get_titel {
         { katkey => \$where },
     )->first;
     my $titel_href = $titel_buch_key->get_titel_dup_daten();
-    my $where = '= ' . $titel_buch_key->mcopyno;
+    $where = '= ' . $titel_buch_key->mcopyno;
     my $buch = $schema->resultset('D01buch')->search(
         { d01mcopyno => \$where },
         { result_class => 'DBIx::Class::ResultClass::HashRefInflator' }

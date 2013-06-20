@@ -73,68 +73,6 @@
 		var idUrl = "[% c.uri_for('/order/') %]" + options.rowId + "/edit_from_list";
 		return "<a href='" + idUrl + "'>" + cellvalue + "</a>";
 
-		data : {},
-
-		load : function() {
-			var the_cookie = document.cookie.split(';');
-			console.debug("THE Cookie: " +document.cookie);
-			if (the_cookie[0]) {
-				the_cookie[0] = unescape(the_cookie[0]);
-				console.debug(the_cookie[0]);
-
-				try	{
-				result = jQuery.parseJSON( the_cookie[0]);
-				}
-				catch(e) 	{
-				// We report an error, and show the erronous JSON string (we replace all " by ', to prevent another error)
-				result = jQuery.parseJSON( '{"code":"error","content":"' + e.replace(/"/g, "'") + '"}' );
-				} 
-					
-			}
-			return result;
-		},
-
-		save : function(expires, path) {
-			var d = expires || new Date(2020, 02, 02);
-			var p = path || '/';
-
-			var jsonstring = JSON.stringify(this.data);
-
-			document.cookie = escape(jsonstring) + ';path=' + p + ';expires='
-					+ d.toUTCString();
-		}
-
-	}
-
-	$(window).unload(function() {
-
-		var filters = {
-			order_id : $('#gs_order_id').val(),
-			titel_isbd : $('#gs_titel_isbd').val(),
-			projects : $('#gs_projects').val(),
-			status : $('#gs_status').val()
-		};
-		console.debug(filters);
-
-		prefs.data = {
-			filter : filters,
-			scol : $('#orders').jqGrid('getGridParam', 'sortname'),
-			sord : $('#orders').jqGrid('getGridParam', 'sortorder'),
-			page : $('#orders').jqGrid('getGridParam', 'page'),
-			rows : $('#orders').jqGrid('getGridParam', 'rowNum')
-		};
-
-		prefs.save();
-	});
-
-
-    [% IF filters %] var filters_from_session = [% filters %]; [% END %]
-
-
-   function showCatlink(cellvalue, options, rowObject) {
-		var idUrl = "/order/" + options.rowId + "/edit";
-		return "<a href='" + idUrl + "'>" + cellvalue + "</a>";
-
 	}
 
 	function createField(name, op, data) {
@@ -149,7 +87,7 @@
 		var titel_isbd = gridprefs.filter.titel_isbd;
 		var projects = gridprefs.filter.projects;
 		var status = gridprefs.filter.status;
-		// console.debug ("status: "+status);
+		//console.debug ("status: "+status);
 
 		if (order_id != ""){
 			fields += (fields.length == 0 ? "" : ",")
