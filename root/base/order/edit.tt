@@ -848,23 +848,15 @@ title = 'Fehlerhafte Jobs' icon = 'alert' class = 'prevent' } ]; %]
        disabled="true" value="Speichern">
 </form>
 <form
-    action="[% c.uri_for_action('/order/goto') %]" method="get"
+    action="[% c.uri_for_action('/order/edit', [order_href.order_id]) %]" method="get"
 >
 </div>
-[% IF first %]
- <a href="[% c.uri_for_action('/order/edit_from_list',[first]) %]">Erster</a>|
-[% END %]
-[% IF prev %]
-<a href="[% c.uri_for_action('/order/edit_from_list',[prev]) %]">Voriger</a>
-[% END %]
-<input name="index" style="text-align:right;" type="text" size="3" maxlength="4" value="[% index %]">
+ <a href="[% c.uri_for_action('/order/edit', [order_href.order_id], {navigate => 'first'} ) %]">Erster</a>|
+<a href="[% c.uri_for_action('/order/edit', [order_href.order_id], {navigate => 'prev'} ) %]">Voriger</a>
+<input name="navigate" style="text-align:right;" type="text" size="3" maxlength="4" value="">
 von [% orders_count %]
-[% IF next %]
-<a href="[% c.uri_for_action('/order/edit_from_list',[next]) %]">Nächster</a>|
-[% END %]
-[% IF last %]
-|<a href="[% c.uri_for_action('/order/edit_from_list',[last]) %]">Letzter</a>
-[% END %]
+<a href="[% c.uri_for_action('/order/edit', [order_href.order_id], {navigate => 'next'} ) %]">Nächster</a>|
+|<a href="[% c.uri_for_action('/order/edit', [order_href.order_id], {navigate => 'last'} ) %]">Letzter</a>
 </div>
 </form>  
 <script type="text/javascript">		   
