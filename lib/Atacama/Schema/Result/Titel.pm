@@ -208,6 +208,12 @@ __PACKAGE__->set_primary_key("order_id");
 # Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 17:18:40
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:tJzcB6Xwig6508bZPP5cHQ
 
+__PACKAGE__->add_columns(
+    '+library_id' => { sisis => 'd01zweig' },                     
+    '+mediennr'   => { sisis => 'd01gsi'   },
+    '+signatur'   => { sisis => 'd01ort'   },
+);
+
 __PACKAGE__->belongs_to(
     "ord",
     "Atacama::Schema::Result::Order",

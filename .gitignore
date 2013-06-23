@@ -20,11 +20,7 @@ Thumbs.db
 *.log
 *.sql
 .project
-/t/input_files/*.*
-/t/input_files/ingest/
-/t/input_files/reference_new/
-/t/input_files/archive/
-/t/input_files/reference/
-/t/input_files/thumbnail/
-/t/input_files/ubr00003
-lib/Atacama/Model/AtacamaWikiDB.pm
+t/var/atacama.conf
+t/var/atacama.db
+t/var/sisis.conf
+t/var/sisis.db

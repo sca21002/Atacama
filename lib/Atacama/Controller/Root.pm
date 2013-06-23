@@ -58,7 +58,7 @@ sub index : Chained('/base') PathPart('') {
                 join => [qw/ orders /],
                 select => ['name', 'status_id', 
                       {count => 'orders.order_id', -as => 'order_count'} ],
-                group_by => [qw/ status_id /]
+                group_by => [qw/ me.status_id /]
         })->all ],
         orders => [ 
             map {

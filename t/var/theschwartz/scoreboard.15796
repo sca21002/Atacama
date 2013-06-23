@@ -1,5 +1,0 @@
-pid=15796
-funcname=Atacama::Worker::Remedi
-started=1299517457
-arg=configfile=/home/atacama/Remedi-0.04/lib/Remedi/config/remedi_de-155-355.yml,digifooter=,copy_files=1,csv=1,source_format=PDF,order_id=ubr07296,mets=1,add_param=Zusatz,source_pdf_name=/rzblx8_DATA3/digitalisierung/auftraege/ubr07296/ubr07296.pdf
-done=1299517515

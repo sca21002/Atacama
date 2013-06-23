@@ -81,18 +81,9 @@ sub get_title : Private {
     return unless $mediennr || $signatur;
 
     my @titel;
-	my $buch;
-	if ( $mediennr ) {
-		$buch = $c->model('SisisDB::D01buch')->search({
-			d01gsi => $mediennr
-		})->first;
-	} else {
-		$buch = $c->model('SisisDB::D01buch')->search({
-			d01ort => $signatur
-		})->first;
-	}
-    
-    foreach my $titel_sisis (@{$buch->get_titel}) {
+    my $cond = $mediennr ? { d01gsi => $mediennr } : { d01ort => $signatur }; 
+    my @titel_sisis = $c->model('SisisDB::TitelBuchKey')->get_titles($cond);
+    foreach my $titel_sisis (@titel_sisis) {
         my $titel_new = $titel->get_new_result_as_href({});
         # $c->log->debug('titel_sisis : ' . Dumper($titel_sisis));
         my $source_titel = $c->model('AtacamaDB')->source('Titel');
