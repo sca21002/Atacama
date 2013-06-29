@@ -110,6 +110,10 @@ sub default_remedi_configfile {
         ? first { $_->basename eq 'remedi_de-Gun1-355.conf' } @list
         : ( $library eq 'Johannes-Künzig-Institut für Ostdeutsche Volkskunde' )
         ? first { $_->basename eq 'remedi_de-Frei131-355.conf' } @list
+        : ( $library eq 'Deutsche Nationalbibliothek' )
+        ? first { $_->basename eq 'remedi_de-101-355.conf' } @list
+        : ( $library eq 'Bundesinstitut für die Kultur und Geschichte der Deutschen im östlichen Europa' )
+        ? first { $_->basename eq 'remedi_de-715-355.conf' } @list
         : first { $_->basename eq 'remedi_de-355.conf' } @list
         ;
     return $default; 
