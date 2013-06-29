@@ -29,7 +29,7 @@ use Catalyst qw/
 
 extends 'Catalyst';
 
-our $VERSION = '0.03';
+our $VERSION = '0.05';
 $VERSION = eval $VERSION;
 
 has 'stage' => ( is => 'rw' ); 

@@ -24,6 +24,10 @@
 
 \begin{document}
 
+% Checkbox
+\newsavebox{\kk}
+\sbox{\kk}{\framebox[4mm]{\rule[2mm]{0mm}{0mm}}}
+
 \setlength{\parindent}{0pt}	% Do not indent paragraphs.
 
 % Define horizontal extent of barcode:
@@ -84,6 +88,10 @@ Status:          & [% order.status.name | latex_encode %]\\
 		[% projectparam.key | latex_encode %]: & [% projectparam.value | latex_encode %]  \\
 	[% END %]
 [% END %]
+                 & \\
+                 & \\
+gescannt:        & \usebox{\kk} $\longleftarrow$ {\it Hak' mich ab!} \\
+
 \end{tabular}
 
 %%%%%Bemerkung:\\
@@ -94,7 +102,7 @@ Status:          & [% order.status.name | latex_encode %]\\
 
 \vfill
 \begin{center}
-	{\tiny Druckjob: Seite \thepage von \pageref{LastPage}}
+	{\tiny Druckjob: Seite \thepage von \pageref{LastPage}} 
 \end{center}
 
 \newpage
