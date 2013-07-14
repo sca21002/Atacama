@@ -1,8 +1,10 @@
 use utf8;
 package Atacama::Controller::Order;
+use Modern::Perl;
 use Moose;
 use namespace::autoclean;
 use JSON;
+
 
 BEGIN {extends 'Catalyst::Controller'; }
 

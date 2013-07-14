@@ -17,7 +17,6 @@ use Catalyst::Runtime 5.80;
 
 use Catalyst qw/
     ConfigLoader
-    Unicode::Encoding
     Static::Simple
     +CatalystX::SimpleLogin
     Authentication
@@ -29,7 +28,7 @@ use Catalyst qw/
 
 extends 'Catalyst';
 
-our $VERSION = '0.05';
+our $VERSION = '0.07';
 $VERSION = eval $VERSION;
 
 has 'stage' => ( is => 'rw' ); 
@@ -59,6 +58,9 @@ __PACKAGE__->config(
     name => 'Atacama',
     # Disable deprecated behavior needed by old applications
     disable_component_resolution_regex_fallback => 1,
+    enable_catalyst_header => 1, # Send X-Catalyst header
+    # Plugin Unicode::Encode is auto-applied, config this plugin for UTF-8
+    encoding => 'UTF-8',
     
     'Plugin::ConfigLoader' => {
         driver => { 

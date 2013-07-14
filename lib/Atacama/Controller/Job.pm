@@ -1,4 +1,6 @@
+use utf8;
 package Atacama::Controller::Job;
+use Modern::Perl;
 use Moose;
 use namespace::autoclean;
 use Data::Dumper;
