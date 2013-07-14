@@ -34,6 +34,10 @@ $VERSION = eval $VERSION;
 
 has 'stage' => ( is => 'rw' ); 
 
+sub log_file_name {
+    __PACKAGE__->path_to( qw(log atacama.log) )->stringify;
+}
+
 
 # Configure the application.
 #

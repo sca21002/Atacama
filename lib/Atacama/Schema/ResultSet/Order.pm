@@ -1,11 +1,14 @@
 package Atacama::Schema::ResultSet::Order;
-use strict;
-use warnings;
 
-use base qw/DBIx::Class::ResultSet/;
-use Carp;
-use Data::Dumper;
-use feature qw(switch);
+use Moose;
+use namespace::autoclean;
+use MooseX::NonMoose;
+extends 'DBIx::Class::ResultSet';
+    with 'Atacama::SchemaRole::ResultSet::Navigate';
+use feature qw(switch); 
+ 
+ 
+sub BUILDARGS { $_[2] }
 
 sub create_order {
     my ($self, $vals) = @_;

@@ -1,11 +1,12 @@
+use utf8;
 package Atacama::Controller::Order;
 use Moose;
 use namespace::autoclean;
-use Data::Dumper;
 use JSON;
-use utf8;
 
 BEGIN {extends 'Catalyst::Controller'; }
+
+# ABSTRACT: Controller for listing and editing orders
 
 =head1 NAME
 
@@ -24,7 +25,7 @@ Catalyst Controller.
 sub orders : Chained('/base') PathPart('order') CaptureArgs(0) {
     my ($self, $c) = @_;
     
-    $c->stash->{orders} = $c->model('AtacamaDB::Order');
+    $c->stash->{order_rs} = $c->model('AtacamaDB::Order');
 }
 
 sub list : Chained('orders') PathPart('list') Args(0) {
@@ -39,18 +40,8 @@ sub list : Chained('orders') PathPart('list') Args(0) {
         ],       
         status => [ $c->model('AtacamaDB::Status')->search({})->all ],
         json_url => $c->uri_for_action('order/json'),
-        template => 'order/list.tt',
-        # no_wrapper => 1,
         filters => $c->session->{order}{list}{filters},
     ); 
-}
-
-sub goto : Chained('orders') PathPart('goto') Args(0) {
-    my ($self, $c) = @_;
-
-    $c->stash->{index} = $c->req->params->{index};
-    $c->forward('edit_from_list');
-    
 }
 
 sub json : Chained('orders') PathPart('json') Args(0) {
@@ -68,19 +59,21 @@ sub json : Chained('orders') PathPart('json') Args(0) {
         : {}
         ; 
    
-    # $c->log->debug('filters: ' . Dumper($data->{filters}));
     my $filters = $data->{filters};
-    # $filters = decode_json $filters if $filters; ging nicht mit utf8??    
     $filters = from_json $filters if $filters;   
 
-    my $orders_rs = $c->stash->{orders};
-    $orders_rs = $orders_rs->filter($filters);
+    my $orders_rs = $c->stash->{order_rs}->filter($filters);
     $orders_rs = $orders_rs->search(
         $search,
         {
+            prefetch => [
+                'status',
+                'titel',
+                { orders_projects => {project => 'projectkeys'} },
+            ],
             page => $page,
             rows => $entries_per_page,
-            order_by => "$sidx $sord",
+            order_by => {"-$sord" => "me.$sidx"},
         }
     );
 
@@ -94,7 +87,6 @@ sub json : Chained('orders') PathPart('json') Args(0) {
             }
         }
     );
-    # $c->log->debug("Sess.: " . Dumper($c->session->{order}));
    
     my $response;
     $response->{page} = $page;
@@ -106,7 +98,8 @@ sub json : Chained('orders') PathPart('json') Args(0) {
         $row->{cell} = [
             $order->order_id,
             $order->titel && $order->titel->titel_isbd
-                || $order->title && $order->title =~ /\S/ && 'alt: ' . $order->title
+                || $order->title
+                    && $order->title =~ /\S/ && 'alt: ' . $order->title
                 || '(kein Titel)' ,
             $order->orders_projects->get_projects_as_string,
             $order->status && $order->status->name,
@@ -114,8 +107,6 @@ sub json : Chained('orders') PathPart('json') Args(0) {
         push @rows, $row;
     }
     $response->{rows} = \@rows;    
-
-    $c->log->debug('Records: ' . $response->{records});
 
     $c->stash(
         %$response,
@@ -127,128 +118,44 @@ sub json : Chained('orders') PathPart('json') Args(0) {
 sub order : Chained('orders') PathPart('') CaptureArgs(1) {
     my ($self, $c, $order_id) = @_;
 
-    my $order = $c->stash->{order} = $c->stash->{orders}->find($order_id)
-        || $c->detach('not_found');
+    my $filters = $c->session->{order}{list}{filters};
+    $filters = from_json $filters if $filters;   
+    my $order_rs = $c->stash->{order_rs}->filter($filters);
+    
+    my $order = $order_rs->find($order_id) || $c->detach('not_found');
+    
+    $c->stash(
+        order_rs     => $order_rs,
+        order        => $order,
+        orders_count => $order_rs->count,
+    );
 }
 
 sub edit : Chained('order') {
     my ($self, $c) = @_;
+    $c->forward('navigate') if $c->req->params->{navigate};
     $c->forward('save');
 }
 
-sub edit_from_list : Chained('order') {
+sub navigate : Private {
     my ($self, $c) = @_;
-    $c->log->debug('Bin in edit_from_list');
     
-    my ($filters, $search, $sidx, $sord)                    # hash-slice
-        = @{$c->session->{order}{list}}{ qw(filters search sidx sord) };
-    $filters = from_json $filters if $filters;
+    my ($search, $sidx, $sord)                    
+        = @{ $c->session->{order}{list} }{ qw(search sidx sord) };  # hash-slice
     $sidx ||= 'order_id';
     $sord ||= 'asc';
-
-    my $orders_rs = $c->stash->{orders};
-    $orders_rs = $orders_rs->filter($filters);
-    $orders_rs = $orders_rs->search(
-        $search,
-        {
-           order_by => "$sidx $sord",
-        }
-    );
-    my $orders_count = $orders_rs->count;
-    my $index = $c->stash->{index};
-    if ($index) {
-        $index += 0;          
-        $index = 1 if $index < 1;
-        $index = $orders_count if $index > $orders_count;
-        my($order) = $orders_rs->search({})->slice($index-1, $index-1);
-        $c->stash->{order} = $order;
-    }
-    my $order_id = $c->stash->{order}->order_id;
-
-    my $first = $orders_rs->search(
-        {},
-        {
-            order_by => "$sidx $sord",
-        }
-    )->single;       
-        
-    my $prev_rs =  $orders_rs->search(
-        {
-            'me.order_id' => { '<', $order_id } 
-        },
-        {
-            order_by => "$sidx " . ($sord eq 'desc' ? 'asc' : 'desc'),
-        }
-    );
-    my $prev = $prev_rs->single;
-    $index ||= $prev eq $order_id ? 1 : $prev_rs->count +1;
-        
-    my $next = $orders_rs->search(
-        {
-            'me.order_id' => { '>', $order_id } 
-        },
-        {
-            order_by => "$sidx $sord"
-        }
-    )->single;
-    my $last = $orders_rs->search(
-        {},
-        {
-            order_by => "$sidx " . ($sord eq 'desc' ? 'asc' : 'desc'),
-        }
-    )->single;
     
-    $c->log->debug('order_id: ' . $order_id);
-    $c->log->debug('index: ' . $index);
-    $c->log->debug('First: ' . $first->order_id) if $first;
-    $c->log->debug('Prev: ' . $prev->order_id) if $prev;
-    $c->log->debug('Next: ' . $next->order_id) if $next;
-    $c->log->debug('Last: ' . $last->order_id) if $last;
-    $c->stash(
-        orders_count => $orders_count,
-        index => $index,
-        first => $first && $first->order_id ne $order_id && $first->order_id || '',
-        prev  => $prev  && $prev->order_id  || '',
-        next  => $next  && $next->order_id  || '',
-        last  => $last  && $last->order_id ne $order_id  && $last->order_id || '',
-    );
-    $c->forward('save');
+    my $order_rs = $c->stash->{order_rs};
+    my $order     = $c->stash->{order};   
+    my $navigate = $c->req->params->{navigate};
+    my $resp = $c->response;
+    my $attrib = { sidx => $sidx, sord => $sord }; 
+    
+    if (my $order = $order_rs->navigate($navigate, $order, $attrib)) {
+        $resp->redirect($c->uri_for_action('/order/edit', [$order->order_id]));
+    } else { $c->detach('not_found') }
 }
 
-sub put : Chained('orders') {
-    my ($self, $c) = @_;
-    
-    # $c->log->debug(Dumper($c->req->params));
-    my $order_params = $self->list_to_hash($c, $c->req->params);
-    $c->stash->{signatur} = $order_params->{titel}{signatur};
-    $c->stash->{mediennr} = $order_params->{titel}{mediennr};
-    
-    # $c->log->debug('order_params' . Dumper ($order_params));
-    
-    $c->stash->{titel} = $c->model('AtacamaDB::Titel');
-    $c->forward('/titel/get_title');
-    my $titel = $c->stash->{titel_data};
-    
-         
-	# TODO: abfangen, wenn titel_data undefined!
-    #$c->log->debug('titel_data ' . Dumper($titel));
-    if (scalar @$titel == 1) {
-        delete $titel->[0]->{titel_isbd};
-        delete $titel->[0]->{order_id};
-        $order_params->{titel} = { %{$order_params->{titel}}, %{$titel->[0]} };
-        my $order = $c->model('AtacamaDB::Order')->create_order(
-           $order_params,
-        );
-
-        # my $titel_new = $order->create_related('titel', {});
-        # $order->titel->save($titel->[0]);
-        $c->stash->{order} = $order;
-    }
-    $c->forward('save');
-    $c->res->redirect(
-        $c->uri_for_action('/order/edit', [ $c->stash->{order}->order_id ] )
-    );
-}
 
 sub add : Chained('orders') {
     my ($self, $c) = @_;
@@ -266,41 +173,16 @@ sub save : Private {
     my $order = $c->stash->{order}
         ||= $c->model('AtacamaDB::Order')->create_order({});
     if ($c->req->method eq 'POST') {
-        # $c->log->debug(Dumper($c->req->params));
-        # $c->log->debug('Method: ' .Dumper($c->req->method));
         my $order_params = $self->list_to_hash($c, $c->req->params);
-        # $c->log->debug('Orderparams: ' . Dumper($order_params));
-        # $c->log->debug('BVNr: ' . $order_params->{titel}{bvnr});
-        # $c->log->debug($order->titel ? $order->titel->bvnr || '' : 'kein Titel');
-        #if ( $order_params->{titel}{bvnr}  and not ( $order->titel && $order->titel->bvnr eq  $order_params->{titel}{bvnr}  )   ) {
-        #    # $c->log->debug('Titel holen');
-        #    $c->stash->{bvnr} = $order_params->{titel}{bvnr};
-        #    $c->stash->{titel} = $c->model('AtacamaDB::Titel');
-        #    $c->forward('/titel/get_title_by_bvnr');
-        #    $order_params->{titel} = {  %{$order_params->{titel}}, %{$c->stash->{titel_data}} };
-        #    delete $order_params->{titel}{order_id};
-        #}
-        
         if ( $order_params->{titel}{katkey}  and not ( $order->titel && $order->titel->katkey eq  $order_params->{titel}{katkey}  )   ) {
             $c->log->debug('Titel holen');
             $c->stash->{katkey} = $order_params->{titel}{katkey};
             $c->stash->{signatur} = $order_params->{titel}{signatur};
             $c->stash->{titel} = $c->model('AtacamaDB::Titel');
             $c->forward('/titel/get_title_by_katkey');
-            # $c->log->debug('order->titel ' . Dumper($order_params->{titel}));
-            # $c->log->debug('titel_data ' . Dumper($c->stash->{titel_data}));
             $order_params->{titel} = {  %{$order_params->{titel}}, %{$c->stash->{titel_data}} };
             delete $order_params->{titel}{order_id};
-            # $c->log->debug('order_params ' . Dumper($order_params->{titel}));
         }
-        $c->log->debug(
-        	'defined($order_params->{status_id}: ' .  defined($order_params->{status_id})
-                . ' exists $order_params->{remark}: ' . (exists $order_params->{remark})
-                . ' $order_params->{remark}: #' . (exists $order_params->{remark} ?  $order_params->{remark} : '<undef>')
-                . '# $order_params->{status_id}: #' . (defined($order_params->{status_id}) ? $order_params->{status_id}: '<undef>')
-                . '# $order->status_id: #' . $order->status_id  
-        );
-        # if status was not selected $order_params->{status_id} is an empty string 
         if ( $order_params->{remark} or  $order->status_id != $order_params->{status_id}  ) 
         {
             $order_params->{remarks} = [{
@@ -313,7 +195,6 @@ sub save : Private {
         $c->log->debug('STATUS: ' . $order->status_id . ' <=> ' . $order_params->{status_id});
         $order->save($order_params);
     }
-    #$c->log->debug(Dumper($order->properties));
     $c->stash(
         %{$order->properties},      
         umlaute => 'ÄÜÖäüÖß',
@@ -361,7 +242,7 @@ sub print_patchcode_t : Chained('order') {
 sub print_patchcode_t_all : Chained('orders') PathPart('print_patchcode') Args(0){ 
     my ($self, $c)  = @_;
     
-    my $orders_rs = $c->stash->{orders};
+    my $orders_rs = $c->stash->{order_rs};
     my $page = $c->req->query_params->{page} || 1;
     
     $orders_rs = $orders_rs->search(
