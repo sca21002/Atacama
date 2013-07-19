@@ -485,7 +485,7 @@
   --></script>
 
 <div id="loading" style="display: none;">
-  <img src="[% c.uri_for_static('images/ajax-loader.gif') %]" alt="Laden"
+  <img src="[% c.uri_for('/static/images/ajax-loader.gif') %]" alt="Laden"
        title="Laden" />
   <div id="grey_bg"></div>
 </div>
@@ -763,7 +763,7 @@ title = 'Fehlerhafte Jobs' icon = 'alert' class = 'prevent' } ]; %]
 
 
   <a href='#' id='add_scanner'>
-    <img src='[% c.uri_for_static('images/add.png') %]' alt='neuen Scanner einfuegen' />
+    <img src='[% c.uri_for('/static/images/add.png') %]' alt='neuen Scanner einfuegen' />
   neuer Scanner</a>
 </div>
 
@@ -799,7 +799,7 @@ title = 'Fehlerhafte Jobs' icon = 'alert' class = 'prevent' } ]; %]
      [%- END -%] 
      [%- END -%]</li>
   </ul>
-  <a href='#' id='add_project'><img src='[% c.uri_for_static('images/add.png') %]' alt='neues Projektfeld einfuegen' /> neues Projekt 
+  <a href='#' id='add_project'><img src='[% c.uri_for('/static/images/add.png') %]' alt='neues Projektfeld einfuegen' /> neues Projekt 
   </a>
 </div>
     </div>
@@ -839,7 +839,7 @@ title = 'Fehlerhafte Jobs' icon = 'alert' class = 'prevent' } ]; %]
                       type="checkbox" value="1" />[%- END -%]</li> [%- END -%]
   </ul>
   <a href='#' id='add_publication'>
-    <img src='[% c.uri_for_static('images/add.png') %]' alt='neues Publikationsfeld einfuegen' />
+    <img src='[% c.uri_for('/static/images/add.png') %]' alt='neues Publikationsfeld einfuegen' />
   neue Publikation</a>
 </div>
 

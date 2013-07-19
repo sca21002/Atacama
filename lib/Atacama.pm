@@ -115,13 +115,6 @@ __PACKAGE__->log(Log::Log4perl::Catalyst->new(
     __PACKAGE__->path_to('log4perl.conf')->stringify
 ));
 
-
-sub uri_for_static {
-    my ( $self, $asset ) = @_;
-    return ( $self->config->{static_path} || '/static/' ) . $asset;
-}
-
-
 =head1 NAME
 
 Atacama - Catalyst based application

@@ -4,7 +4,7 @@ use strict;
 use base 'Catalyst::Model::File';
 
 __PACKAGE__->config(
-    root_dir => 'root/base/firefoxsearchplugins/',
+    root_dir => Atacama->path_to(qw(root base firefoxsearchplugins)),
 );
 
 =head1 NAME

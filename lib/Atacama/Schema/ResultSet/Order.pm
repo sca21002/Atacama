@@ -63,7 +63,7 @@ sub filter {
                 push @and_cond, @search_fields;
             };    
             when (/status_id/) {
-                push @and_cond, { status_id => $data } ;
+                push @and_cond, { 'me.status_id' => $data } ;
             
             };
             when (/project_id/) {
