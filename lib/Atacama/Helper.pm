@@ -6,8 +6,8 @@ use Carp;
 use Config::ZOMG;
 use Path::Class;    
 use Module::Runtime qw(use_module);
-
-
+use Data::Dumper;
+use Modern::Perl;
 
 sub get_schema {
     my ($config_dir, $model, $schemaclass, $name) = @_;
@@ -21,9 +21,17 @@ sub get_schema {
         name => $name,
         path => $config_dir,
     ) or croak "Keine Konfigurationsdatei gefunden in $config_dir";
-    my @dbic_connect_info
-        = @{ $config_hash->{$model}{connect_info} };
+    my $connect_info =  $config_hash->{$model}{connect_info} or
+        croak "Keine Datenbankverbindungsparameter"; 
+    my @dbic_connect_info;
+    if (ref $connect_info eq 'HASH') {
+        @dbic_connect_info = delete @$connect_info{ qw(dsn user password) };
+        push @dbic_connect_info, $connect_info;
+    } elsif (ref $connect_info eq 'ARRAY') {
+         @dbic_connect_info = @$connect_info;
+    } else { croak("Falscher Typ fuer connect_info: " . ref  $connect_info); }    
     croak "Keine Datenbank-Verbindungsinformationen" unless  @dbic_connect_info;
+    say Dumper(\@dbic_connect_info);
     my $schema = use_module($schemaclass)->connect(@dbic_connect_info);
     $schema->storage->ensure_connected;
     return $schema;
