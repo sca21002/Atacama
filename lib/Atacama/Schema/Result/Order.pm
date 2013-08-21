@@ -305,8 +305,9 @@ sub properties {
     my $properties;
     my $order = {$self->get_inflated_columns};
     $order->{titel} = $self->titel && {$self->titel->get_inflated_columns};
+    ### Don't confuse "->titel" with "->title" 
     $order->{titel}{titel_isbd} = $self->titel && $self->titel->titel_isbd
-        || $self->title =~ /\S/ && 'alt: ' . $self->title;
+        || $self->title && $self->title =~ /\S/ && 'alt: ' . $self->title;
     foreach my $rel ('orders_projects', 'scanparameters',  'publications') {
         $order->{$rel} = $self->get_data_from_rels($rel);
     }

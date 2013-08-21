@@ -9,6 +9,7 @@ use Log::Log4perl;
 use File::Path qw(make_path);
 use MooseX::ClassAttribute;
 use namespace::autoclean;
+use Carp qw(croak);
 use Data::Dumper;
 
 has 'atacama_config_path' => (
@@ -149,6 +150,7 @@ sub _build_log {
     my $self = shift;
    
     Log::Log4perl->init($self->log_config_file->stringify);
+    die "Hin" .  $self->log_config_file;
     return Log::Log4perl->get_logger('Atacama::Worker::Remedi');
 }
 

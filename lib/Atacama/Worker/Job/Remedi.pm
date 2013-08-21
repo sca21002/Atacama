@@ -57,6 +57,14 @@ has 'does_mets' => (
     default => 0,
 );
 
+has 'image_path' => (
+    is => 'ro',
+    isa => File,
+    coerce => 1,
+    lazy => 1,
+    builder => '_build_image_path',
+);
+
 has '+log_config_basename' => (
     is => 'ro',
     isa => Str,
@@ -95,10 +103,9 @@ has 'source_format' => (
     predicate => 'has_source_format',
 );
 
-has 'source_pdf' => (
+has 'source_pdf_file' => (
     is => 'rw',
     isa => File,
-    predicate => 'has_source_pdf',
     coerce => 1,
 );
 
@@ -107,7 +114,7 @@ around BUILDARGS => sub {
       my $class = shift;
       my %args = @_;
 
-      # warn 'BUILDARGS: ' . Dumper(\%args));
+      # warn 'BUILDARGS: ' . Dumper(\%args);
       return $class->$orig(@_);
 };
 
@@ -132,6 +139,12 @@ sub _build_csv_save_dir {
             or die "Coldn't create $csv_save_dir: $!";
     }
     return $csv_save_dir;
+}
+
+sub _build_image_path { 
+    my $self = shift;
+    
+    return Path::Class::File->new($self->order_id);
 }
 
 sub _build_log {
@@ -186,7 +199,7 @@ sub copy_pdf {
     my $self = shift;
     
     my $log = $self->log;
-    my $source = $self->source_pdf;
+    my $source = $self->source_pdf_file;
     $log->logdie('Keine PDF-Quelldatei!') unless $source;
     my $dest = Path::Class::File->new($self->working_dir, $self->order_id . '.pdf');  
     if ($source->basename =~ /^UBR\d{2}A\d{6}\.pdf/) {
@@ -205,7 +218,7 @@ sub copy_pdf {
         or $log->logdie("Konnte $source nicht nach $dest kopieren: $!");
     }
 
-    $self->source_pdf($dest);  		
+    $self->source_pdf_file($dest);  		
     $log->info("$source --> $dest");    
 }
 
@@ -280,11 +293,12 @@ sub start_digifooter {
     
     my $log = $self->log;
     my %init_arg = (
-        image_path => $self->order_id,
-        title      => $self->order->titel->titel_isbd || '',
-        author     => $self->order->titel->autor_avs || '',
-        configfile => $self->remedi_configfile,
-        source_pdf => $self->source_pdf && $self->source_pdf->stringify,
+        image_path      => $self->image_path->stringify,
+        title           => $self->order->titel->titel_isbd || '',
+        author          => $self->order->titel->autor_avs || '',
+        configfile      => $self->remedi_configfile,
+        source_pdf_file => $self->source_pdf_file
+                           && $self->source_pdf_file->stringify,
     );
     foreach my $key (qw/resolution_correction source_format/) {
         $init_arg{$key} = $self->$key if $self->$key;
@@ -322,7 +336,7 @@ sub start_mets {
     
     
     my %init_arg = ( 
-        image_path   => $self->order_id,
+        image_path   => $self->image_path->stringify,
         bv_nr        => $self->order->titel->bvnr,
         title        => $self->order->titel->titel_isbd,
         configfile   => $self->remedi_configfile,
@@ -340,11 +354,11 @@ sub start_csv {
     my $self = shift;
     
     my %init_arg = (
-        image_path => $self->order_id,
+        image_path => $self->image_path->stringify,
         configfile => $self->remedi_configfile,
+        source_pdf_file => $self->source_pdf_file && $self->source_pdf_file->stringify,
     );
     Remedi::CSV->new_with_config(%init_arg)->make_csv;     
-    
 }
 
 sub run {
@@ -368,16 +382,16 @@ sub run {
         $self->start_digifooter();
     }
 
+    if ($self->does_csv) {
+        $log->trace('Does csv');
+        $self->start_csv();
+    }
+    
     if ($self->does_mets) {
         $log->trace('Does mets');
         $self->start_mets();
     }
 
-
-    if ($self->does_csv) {
-        $log->trace('Does csv');
-        $self->start_csv();
-    }    
     $self->order->update({status_id => 26});    
 }
 

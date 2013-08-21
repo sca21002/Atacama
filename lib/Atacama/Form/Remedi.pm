@@ -39,7 +39,7 @@ has_field 'remedi_configfile' => (
     type => 'Select', label => 'Config-Datei',
     empty_select => '-- Select --',
 );
-has_field 'source_pdf' => (
+has_field 'source_pdf_file' => (
     type => 'Select', label => 'PDF-Datei',
     empty_select => '-- Select --',
 );
@@ -119,7 +119,7 @@ sub default_remedi_configfile {
     return $default; 
 }
 
-sub options_source_pdf {
+sub options_source_pdf_file {
     my $self = shift;
     
     my @list = $self->all_source_pdf_files;
@@ -127,7 +127,7 @@ sub options_source_pdf {
     return \@values;
 }
 
-sub default_source_pdf {
+sub default_source_pdf_file {
     my $self = shift;
     
     return $self->source_pdf_files->[0]->stringify

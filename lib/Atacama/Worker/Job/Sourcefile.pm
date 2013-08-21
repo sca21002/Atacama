@@ -7,6 +7,7 @@ use List::Util qw(first);
 use Carp;
 use File::Slurp;
 use Remedi::Imagefile;
+use Remedi::RemediFile;
 use Remedi::PDF::API2;
 use Data::Dumper;
 use MooseX::ClassAttribute;
@@ -151,7 +152,7 @@ sub save_scanfile {
             file => $scanfile->stringify,    # Pass::Class and Path::Tiny 
         );                                   # are incompatible
         $clause->{filename}     = $image->basename;
-        $clause->{filepath}     = $image->dir->stringify;
+        $clause->{filepath}     = $image->parent->stringify;
         $clause->{order_id}     = $image->order_id;
         $clause->{format}       = $image->format;
         $clause->{colortype}    = $image->colortype;
@@ -161,7 +162,7 @@ sub save_scanfile {
         $clause->{filesize}     = $image->size;
         $clause->{icc_profile}  = $image->icc_profile
             if $image->colortype eq 'color';
-        $clause->{md5}          = $image->md5_checksum->hexdigest;
+        $clause->{md5}          = $image->md5_checksum;
         $log->trace("Imagefile: " . Dumper($clause));
     };
     unless ($@) {
@@ -222,22 +223,21 @@ sub save_pdffile{
 
 sub save_ocrfile {
     my $job = shift;
-    my $ocrfile = shift;
+    my $ocrfilename = shift;
     my $clause;
     
+    my $ocrfile = Remedi::RemediFile->new(file => $ocrfilename->stringify);
     my $log = $job->log;
     my $atacama_schema = $job->atacama_schema;
-    $log->info("OCR-Datei: $ocrfile");
+    $log->info("OCR-Datei: " . $ocrfile->stringify);
     eval {
         ($clause->{order_id})
             = $ocrfile->basename =~ /^(\w{3,4}\d{5})_\d{1,5}\.xml$/;    
         $clause->{filename} = $ocrfile->basename;
-        $clause->{filepath} = $ocrfile->dir->stringify;;
+        $clause->{filepath} = $ocrfile->parent->stringify;;
         $clause->{filesize} = -s $ocrfile;
         $clause->{format} = 'XML';
-        my $md5 = Digest::MD5->new;
-        my $bin_data = read_file( $ocrfile, binmode => ':raw' ) ;    
-        $clause->{md5} = $md5->add($bin_data)->hexdigest;
+        $clause->{md5} = $ocrfile->md5_checksum;
         $log->trace("OCR-file: " . Dumper($clause));
     };
     unless ($@) {

@@ -66,7 +66,7 @@
     action="[% c.req.uri %]"
     method="post" id="remedi">
 [% form.field('remedi_configfile').render %]
-[% form.field('source_pdf').render %]
+[% form.field('source_pdf_file').render %]
 [% form.field('source_format').render %]
 <hr /><br />
 [% form.field('does_copy_files').render %]

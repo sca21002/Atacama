@@ -93,7 +93,7 @@ has 'order_id' => (
     lazy_build => 1, 
 );
 
-has 'source_pdf' => (
+has 'source_pdf_file' => (
     is => 'ro',
     isa => 'Str',
     lazy_build => 1, 
@@ -150,8 +150,8 @@ sub _build_order_id {
     (shift)->arg_hashref->{order_id} || '';    
 }
 
-sub _build_source_pdf {
-    (shift)->arg_hashref->{source_pdf} || '';    
+sub _build_source_pdf_file {
+    (shift)->arg_hashref->{source_pdf_file} || '';    
 }
 
 sub _build_additional_args {
@@ -160,7 +160,7 @@ sub _build_additional_args {
     my %arg_hashref = %{$self->arg_hashref};
     my @standard_keys = qw(
         remedi_configfile does_digifooter does_copy_files does_csv source_format
-        order_id does_mets source_pdf
+        order_id does_mets source_pdf_file
     );
     my %standard_hash;
     undef @standard_hash{ @standard_keys };                      # hash-slice 

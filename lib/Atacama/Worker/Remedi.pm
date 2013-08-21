@@ -18,7 +18,7 @@ sub work {
     my %init_arg;
     foreach my $key (qw(
         order_id
-        source_pdf
+        source_pdf_file
         resolution_correction
         source_format
         does_copy_files
