@@ -148,8 +148,8 @@ sub save_scanfile {
             library_union_id => 'bvb',
             library_id => '355',
             regex_filestem_prefix => qr/\w{3,4}\d{5}/,
-            file => $scanfile,
-        );
+            file => $scanfile->stringify,    # Pass::Class and Path::Tiny 
+        );                                   # are incompatible
         $clause->{filename}     = $image->basename;
         $clause->{filepath}     = $image->dir->stringify;
         $clause->{order_id}     = $image->order_id;
