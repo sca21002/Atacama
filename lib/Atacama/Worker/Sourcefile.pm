@@ -23,7 +23,9 @@ sub work {
     $job->order->update({status_id => 23});
     $job->run;
     $theschwartz_job->completed();
-    $job->order->update({status_id => 27});
+    $job->order->update({ 
+	status_id => $theschwartz_job->arg->{status_id} || 27 
+    });
     return 1;
 };
 

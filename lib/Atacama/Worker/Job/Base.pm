@@ -1,12 +1,10 @@
 package Atacama::Worker::Job::Base;
 use Moose;
-use Atacama::Types qw(Order_id);
-use MooseX::Types::Path::Class qw(File Dir);
-use MooseX::Types::Moose qw(HashRef Str);
+use Atacama::Types qw(Dir File HashRef Order_id Path Str);
+use Path::Tiny;
 use Atacama::Schema;
 use Config::ZOMG;
 use Log::Log4perl;
-use File::Path qw(make_path);
 use MooseX::ClassAttribute;
 use namespace::autoclean;
 use Carp qw(croak);
@@ -44,7 +42,7 @@ class_has 'log_dir' => (
 
 class_has 'log_file_name' => (
     is      => 'ro',
-    isa     => File,
+    isa     => Path,
     lazy => 1,
     coerce => 1,
     builder => '_builder_log_file_name',
@@ -124,7 +122,7 @@ sub _build_atacama_config {
         path => $self->atacama_config_path,
     )->load;
     $self->log->logdie(
-        'Keine Konfigurationsdatei gefunden in ' . $self->atacama_config_path
+        "No configuration file found in '" . $self->atacama_config_path . "'!"
     ) unless %$atacama_config;
     return $atacama_config;
 }
@@ -133,7 +131,7 @@ sub _build_order {
     my $self = shift;
     
     my $order = $self->atacama_schema->resultset('Order')->find($self->order_id)
-        or croak("Kein Auftrag zu " . $self->order_id . " gefunden!");    
+        or croak("No order found for '" . $self->order_id . "'!");    
 }
 
 sub _build_atacama_schema {
@@ -150,7 +148,6 @@ sub _build_log {
     my $self = shift;
    
     Log::Log4perl->init($self->log_config_file->stringify);
-    die "Hin" .  $self->log_config_file;
     return Log::Log4perl->get_logger('Atacama::Worker::Remedi');
 }
 
@@ -159,45 +156,37 @@ sub _build_log_dir { '.' }
 sub _builder_log_file_name {
     my $self = shift;
     
-    my $log_dir = $self->log_dir;
-    unless (-d $log_dir) { make_path($log_dir->stringify) }
-    my $log_file_name = Path::Class::File->new(
-        $self->log_dir  , $self->log_basename
-    );
-    unlink $log_file_name if -e $log_file_name;
+    $self->log_dir->mkpath;                  # no op if log_dir doesn't exist
+    my $log_file_name = path( $self->log_dir, $self->log_basename );
+    $log_file_name->remove;                     # no op if file doesn't exist
     return $log_file_name;
 }
 
 sub _build_log_config_file {
     my $self = shift;
     
-    return Path::Class::File->new(
-        $self->log_config_path, $self->log_config_basename
-    );
+    return path( $self->log_config_path, $self->log_config_basename );
 }
 
 sub _build_working_base {
     my $self = shift;
 
-    my $working_base =Path::Class::Dir->new(
+    my $working_base = path(
         $self->atacama_config->{'Atacama::Worker::Remedi'}{working_base},
     );
-    $self->log->logdie('Kein Arbeitsverzeichnis (working_base) angegeben')
-        unless $working_base;
+    $self->log->logdie("working_base '$working_base' doesn't exist")
+        unless $working_base->is_dir;
     return $working_base->absolute;
 }    
     
 sub _build_working_dir {
     my $self = shift;
     
-    my $working_dir = Path::Class::Dir->new( $self->working_base, $self->order_id );
-    unless (-d $working_dir) {
-        make_path($working_dir->stringify, {error => \my $err} );
-        $self->log->logdie('Fehler beim Anlegen des Arbeitsverzeichnisses: '
-                          . $working_dir . ' ' . Dumper($err))
-            if @$err; 
-    }
-    warn $working_dir;
+    my $working_dir = path( $self->working_base, $self->order_id );
+    $working_dir->mkpath({error => \my $err});
+    $self->log->logdie(
+        "Couldn't create working directory: $working_dir " . Dumper($err)
+    ) if @$err; 
     return $working_dir;
 }
 

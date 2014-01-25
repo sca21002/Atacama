@@ -73,6 +73,7 @@
 [% form.field('does_digifooter').render %]
 [% form.field('does_mets').render %]
 [% form.field('does_csv').render %]
+[% form.field('does_thesis_workflow').render %]
 <hr/><br />
 [% form.field('submit').render %]
 </form>

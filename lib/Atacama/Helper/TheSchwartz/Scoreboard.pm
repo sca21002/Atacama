@@ -1,27 +1,26 @@
 package Atacama::Helper::TheSchwartz::Scoreboard;
 
 use Moose;
-use MooseX::Types::Path::Class;
-use Atacama::Helper::TheSchwartz::Job;
+use Atacama::Types qw(ArrayRef Dir File TheSchwartz_Job);
+use aliased 'Atacama::Helper::TheSchwartz::Job';
 use Data::Dumper;
-
 
 has dir => (
     is => 'ro',
-    isa => 'Path::Class::Dir',
+    isa => Dir,
     coerce   => 1,
     required => 1,
 );
 
 has files => (
     is => 'ro',
-    isa => 'ArrayRef[Path::Class::File]',
+    isa => ArrayRef[File],
     lazy_build => 1,
 );
 
 has jobs => (
     is => 'ro',
-    isa => 'ArrayRef[Atacama::Helper::TheSchwartz::Job]',
+    isa => ArrayRef[TheSchwartz_Job],
     lazy_build => 1,
 );
 
@@ -42,7 +41,7 @@ sub _build_jobs {
         open(SF, '<', $file) or die "Can't open score file '$file': $!\n";
         my %dat = map { chomp; split('=', $_, 2) } <SF>;
         close(SF);
-        my $job =  Atacama::Helper::TheSchwartz::Job->new(%dat); 
+        my $job = Job->new(%dat); 
         push @jobs, $job;
     }    
     return \@jobs;

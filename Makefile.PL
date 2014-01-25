@@ -46,6 +46,7 @@ requires 'Config::ZOMG';
 requires 'Data::Page';
 requires 'DateTime::Format::Mail';
 requires 'DBD::mysql';
+requires 'DBIx::Class';
 requires 'DBIx::Class::DateTime::Epoch';
 requires 'DBIx::Class::EncodedColumn';
 requires 'DBIx::Class::PassphraseColumn';
@@ -57,6 +58,7 @@ requires 'HTML::FormHandler::Model::DBIC';
 requires 'Image::ExifTool';                  # because of AtacamaWiki
 requires 'Image::Math::Constrain';
 requires 'Imager';
+requires 'Path::Iterator::Rule';
 requires 'Plack::Middleware::Debug';
 requires 'Plack::Middleware::Debug::DBIC::QueryLog';
 requires 'Plack::Middleware::Debug::Log4perl';
@@ -66,8 +68,9 @@ requires 'Log::Log4perl';
 requires 'Modern::Perl';
 requires 'Moose';
 requires 'MooseX::ClassAttribute';
+requires 'MooseX::MarkAsMethods';
 requires 'MooseX::NonMoose';
-requires 'MooseX::Types::Path::Class';
+requires 'MooseX::Types::Combine';
 requires 'MooseX::Types::DateTime';
 requires 'Number::Format';
 requires 'Regexp::Common';
@@ -75,6 +78,7 @@ requires 'Text::Textile';
 requires 'Template::Plugin::Latex';
 requires 'namespace::autoclean';
 requires 'TheSchwartz',
+requires 'Unicode::UTF8',  # speed up for Path::Tiny::slurp
 requires 'Config::General'; # This should reflect the config file format you've chosen
                  # See Catalyst::Plugin::ConfigLoader for supported formats
 test_requires 'Test::More' => '0.88';

@@ -1,10 +1,10 @@
 use utf8;
 use strict;
 use warnings;
-use Path::Class;
+use Path::Tiny;
 use FindBin qw($Bin);
-use lib dir($Bin, 'lib')->stringify,
-        dir($Bin)->parent->subdir(qw(Remedi lib))->stringify;
+use lib path($Bin, 'lib')->stringify,
+        path($Bin)->parent->child(qw(Remedi lib))->stringify;
 use Plack::Builder;
 use Plack::Middleware::Debug;
 use English qw( -no_match_vars ) ;            # Avoids regex performance penalty
@@ -18,7 +18,7 @@ if ($OSNAME eq 'MSWin32') {
     $panels = [ grep { $_ ne 'Memory' } @$panels ];
 }
 $ENV{SYBASE} = '/opt/sybase';
-warn Dumper \%ENV;
+#warn Dumper \%ENV;
 builder {
     enable_if { $ENV{ATACAMA_DEBUG} }  'Debug',
         panels =>['DBIC::QueryLog', 'Log4perl', @$panels];

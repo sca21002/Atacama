@@ -185,11 +185,5 @@ __PACKAGE__->belongs_to(
     { "foreign.order_id" => "self.order_id" }
 );
 
-__PACKAGE__->has_many(
-    "publications",
-    "Atacama::Schema::Result::Publication",
-    { "foreign.order_id" => "self.order_id" }
-);
-
 __PACKAGE__->meta->make_immutable;
 1;

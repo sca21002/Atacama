@@ -1,107 +1,107 @@
+use utf8;
 package Atacama::Helper::TheSchwartz::Job;
 
 use Moose;
-use MooseX::Types::DateTime;
-use MooseX::Types::Path::Class;
+use Atacama::Types qw(Bool DateTime File HashRef Str);
 use namespace::autoclean;
 
 has 'pid' => (
     is => 'ro',
-    isa => 'Str',
+    isa => Str,
     required => 1,
 );
 
 has 'funcname' => (
     is => 'ro',
-    isa => 'Str',
+    isa => Str,
     required => 1,
 );
 
 has 'started' => (
     is => 'ro',
-    isa => 'DateTime',
+    isa => DateTime,
     required => 1,
     coerce => 1,
 );           
 
 has 'arg' => (
     is => 'ro',
-    isa => 'Str',
+    isa => Str,
     predicate => 'has_arg',
 );
 
 has 'arg_hashref' => (
     is => 'rw',
-    isa => 'HashRef',
+    isa => HashRef,
     lazy_build => 1,
 );
 
 has 'done' => (
     is => 'ro',
-    isa => 'DateTime',
+    isa => DateTime,
     coerce => 1,
 );
 
 
 has 'runtime' => (
     is => 'ro',
-    isa => 'Str',
+    isa => Str,
     lazy_build => 1,
 );
 
 has 'remedi_configfile' => (
     is => 'ro',
-    isa => 'Path::Class::File',
+    isa => File,
     coerce => 1,
     lazy_build => 1, 
 );
 
 has 'does_digifooter' => (
     is => 'ro',
-    isa => 'Bool',
+    isa => Bool,
     lazy_build => 1, 
 );
 
 has 'does_copy_files' => (
     is => 'ro',
-    isa => 'Bool',
+    isa => Bool,
     lazy_build => 1, 
 );
 
 has 'does_csv' => (
     is => 'ro',
-    isa => 'Bool',
+    isa => Bool,
     lazy_build => 1, 
 );
 
 has 'does_mets' => (
     is => 'ro',
-    isa => 'Bool',
+    isa => Bool,
     lazy_build => 1, 
 );
 
 
 has 'source_format' => (
     is => 'ro',
-    isa => 'Str',
+    isa => Str,
     lazy_build => 1, 
 );
 
 has 'order_id' => (
     is => 'ro',
-    isa => 'Str',
+    isa => Str,
     lazy_build => 1, 
 );
 
 has 'source_pdf_file' => (
     is => 'ro',
-    isa => 'Str',
+    isa => Str,
     lazy_build => 1, 
 );
 
 has 'additional_args' => (
     is => 'ro',
-    isa => 'Str',
+    isa => Str,
     lazy_build => 1,
 );
 

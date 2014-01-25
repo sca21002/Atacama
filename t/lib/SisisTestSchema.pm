@@ -64,7 +64,7 @@ sub populate_schema {
     $schema->storage->ensure_connected;
  
     # $schema->create_initial_data;
-    $self->create_test_data($schema);
+    #$self->create_test_data($schema);
 }
 
 sub create_test_data {

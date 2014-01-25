@@ -1,34 +1,42 @@
 package Atacama::Form::Remedi;
 
+use Atacama::Types qw(ArrayRef Bool Dir Path File);
 use HTML::FormHandler::Moose;
-extends 'HTML::FormHandler';
+    extends 'HTML::FormHandler';
 use List::Util qw(first);
+use Path::Tiny;
+use MooseX::AttributeShortcuts;
 
 has 'remedi_configdir' => (
     is => 'ro',
     required => 1,
-    isa => 'Str',
+    isa => Dir,
+    coerce => 1,
 );
 
 has 'remedi_configfiles' => (
     traits  => ['Array'],                         
-    is => 'ro',
-    lazy_build => 1,
-    isa => 'ArrayRef[Path::Class::File]',
+    is => 'lazy',
+    isa => ArrayRef[File],
     handles => {
         all_remedi_configfiles => 'elements',         
     },
 );
 has 'source_pdf_files' => (
     traits  => ['Array'],
-    is => 'ro',
-    lazy_build => 1,
-    isa => 'ArrayRef[Path::Class::File]',
+    is => 'lazy',
+    isa => ArrayRef[File],
     handles => {
         all_source_pdf_files   => 'elements',
         count_source_pdf_files => 'count',        
     },            
 );
+
+has 'is_thesis_workflow' => (
+    is => 'lazy',
+    isa => Bool,
+);
+
 has 'order' => (
     is => 'ro',
     required => 1,
@@ -55,7 +63,7 @@ has_field 'does_copy_files' => (
     type => 'Checkbox', default => 1, label => 'Dateien kopieren' 
 );
 has_field 'does_digifooter' => (
-    type => 'Checkbox', default => 1, label => 'Digifooter'
+    type => 'Checkbox', label => 'Digifooter'
 );
 has_field 'does_mets' => (
     type => 'Checkbox', default => 1, label => 'METS'
@@ -63,21 +71,33 @@ has_field 'does_mets' => (
 has_field 'does_csv' => (
     type => 'Checkbox', default => 1, label => 'CSV'
 );
+
+has_field 'does_thesis_workflow' => (
+    type => 'Checkbox', default => 1, label => 'Diss'
+);
+
 has_field 'submit' => ( type => 'Submit', value => 'Starten' );
+
+sub _build_is_thesis_workflow {
+    my $self = shift;
+    
+    my @projects = $self->order->projects->all;
+    return ( first { $_->id == 3 or  $_->id == 26 or  $_->id == 40 } @projects ) ? 1 : 0;
+}
 
 sub _build_source_pdf_files {
     my $self = shift;
     
     my @pdffiles = $self->order->pdffiles;
     my @pdf_values
-        = map { Path::Class::File->new($_->filepath, $_->filename) } @pdffiles;
+        = map { path($_->filepath, $_->filename) } @pdffiles;
     return \@pdf_values;
 }
 
 sub _build_remedi_configfiles {
     my $self = shift;
     
-    my $dir = Path::Class::Dir->new($self->remedi_configdir);
+    my $dir = path($self->remedi_configdir);
     my @files = grep { $_->basename =~ /^remedi_de-.*\.conf$/ } $dir->children;
     return \@files; 
 }
@@ -90,11 +110,14 @@ sub options_remedi_configfile {
     return \@values;
 }
 
+sub default_does_digifooter { !(shift)->is_thesis_workflow }
+
+sub default_does_thesis_workflow { (shift)->is_thesis_workflow }
+
 sub default_remedi_configfile {
     my $self = shift;
       
     my $library = $self->order->titel->library->name;
-    my @projects = $self->order->projects->all;
     my @list = $self->all_remedi_configfiles;
     my $default = ( $library eq 'Staatliche Bibliothek Regensburg' )
         ? first { $_->basename eq  'remedi_de-155-355.conf' } @list
@@ -114,8 +137,16 @@ sub default_remedi_configfile {
         ? first { $_->basename eq 'remedi_de-101-355.conf' } @list
         : ( $library eq 'Bundesinstitut für die Kultur und Geschichte der Deutschen im östlichen Europa' )
         ? first { $_->basename eq 'remedi_de-715-355.conf' } @list
+        : ( $library eq 'Caritas-Bibliothek' )
+        ? first { $_->basename eq 'remedi_de-Frei26-355.conf' } @list
+        : $self->is_thesis_workflow
+        ? first { $_->basename eq 'remedi_de-355_diss.conf' } @list
         : first { $_->basename eq 'remedi_de-355.conf' } @list
         ;
+
+    $default =  first { $_->basename eq  'remedi_de-355_diss.conf' } @list
+	if $self->is_thesis_workflow;
+
     return $default; 
 }
 

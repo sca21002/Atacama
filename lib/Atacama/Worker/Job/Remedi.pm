@@ -1,14 +1,15 @@
+use utf8;
 package Atacama::Worker::Job::Remedi;
+use Atacama::Types qw(Bool Dir File Path Str);
 use Moose;
 extends 'Atacama::Worker::Job::Base';
-use MooseX::Types::Moose qw(Bool Str);
-use MooseX::Types::Path::Class qw(File Dir);
 use File::Copy qw();
 use CAM::PDF;
 use Remedi::DigiFooter;
-use Remedi::Mets;
+use Remedi::METS;
 use Remedi::CSV;
 use Data::Dumper;
+use Path::Tiny;
 
 
 has 'csv_basename' => (
@@ -20,7 +21,7 @@ has 'csv_basename' => (
 
 has 'csv_file' => (
     is => 'ro',
-    isa => File,
+    isa => Path,
     builder => '_build_csv_file',
     lazy => 1,
 );
@@ -59,10 +60,16 @@ has 'does_mets' => (
 
 has 'image_path' => (
     is => 'ro',
-    isa => File,
+    isa => Path,
     coerce => 1,
     lazy => 1,
     builder => '_build_image_path',
+);
+
+has 'is_thesis_workflow => (
+    is => 'ro',
+    isa => Bool,
+    default => 0,
 );
 
 has '+log_config_basename' => (
@@ -127,25 +134,20 @@ sub _build_csv_basename {
 sub _build_csv_file {
     my $self = shift;
     
-    return Path::Class::File->new($self->working_dir, $self->csv_basename);
+    return path($self->working_dir, $self->csv_basename);
 }
 
 sub _build_csv_save_dir {
     my $self = shift;
     
-    my $csv_save_dir = Path::Class::Dir->new($self->working_base, 'csv_save');
-    unless (-d $csv_save_dir) {
-        File::Path::make_path($csv_save_dir->stringify)
-            or die "Coldn't create $csv_save_dir: $!";
-    }
+    my $csv_save_dir = path($self->working_base, 'csv_save');
+    $csv_save_dir->mkpath( {error => \my $err} );
+    $self->log->logdie("Coldn't create '$csv_save_dir': " . Dumper($err))
+        if @$err;
     return $csv_save_dir;
 }
 
-sub _build_image_path { 
-    my $self = shift;
-    
-    return Path::Class::File->new($self->order_id);
-}
+sub _build_image_path { path( (shift)->order_id ) }
 
 sub _build_log {
     my $self = shift;
@@ -162,7 +164,7 @@ sub _build_ocrfiles {
         { order_id => $self->order_id },
         { order_by => 'filename' },
     )->all;
-    $self->log->info("Keine OCR-Dateien in der Datenbank") unless (@ocrfiles);
+    $self->log->info("No ocr files found in database") unless (@ocrfiles);
     return \@ocrfiles;   
 }
 
@@ -176,7 +178,7 @@ sub _build_scanfiles {
         { order_id => $self->order_id },
         { order_by => 'filename' },
     )->all;
-    $self->log->croak("Keine Scandateien in der Datenbank") unless (@scanfiles);
+    $self->log->croak("No scan files found in database") unless (@scanfiles);
     return \@scanfiles;   
 }
 
@@ -185,12 +187,12 @@ sub copy_ocrfiles {
 
     my $log = $self->log;
     foreach my $ocrfile ( @{$self->ocrfiles} ) {
-        $log->debug("OCR-Datei: " . $ocrfile->filename);
-        my $source_dir = $ocrfile->filepath;
-        my $source = Path::Class::File->new($source_dir,    $ocrfile->filename);
-        my $dest   = Path::Class::File->new($self->working_dir, $ocrfile->filename);
-        File::Copy::copy($source->stringify, $dest->stringify) 
-            or $log->logdie("Konnte $source nicht nach $dest kopieren: $!");
+        $log->debug("ocr file: " . $ocrfile->filename);
+        my $source_dir = path($ocrfile->filepath);
+        my $source = path($source_dir,        $ocrfile->filename);
+        my $dest   = path($self->working_dir, $ocrfile->filename);
+        $source->copy($dest)
+            or $log->logdie("couldn't copy '$source' to '$dest': $!");
         $log->info("$source --> $dest");
     }    
 }
@@ -200,8 +202,8 @@ sub copy_pdf {
     
     my $log = $self->log;
     my $source = $self->source_pdf_file;
-    $log->logdie('Keine PDF-Quelldatei!') unless $source;
-    my $dest = Path::Class::File->new($self->working_dir, $self->order_id . '.pdf');  
+    $log->logdie('No pdf source file!') unless $source;
+    my $dest = path($self->working_dir, $self->order_id . '.pdf');  
     if ($source->basename =~ /^UBR\d{2}A\d{6}\.pdf/) {
         $log->info("EOD-PDF: " . $source);
         my $doc = CAM::PDF->new($source) || $log->logdie("$CAM::PDF::errstr\n");
@@ -214,8 +216,8 @@ sub copy_pdf {
         $doc->cleanoutput($dest);
     }
     else {
-        File::Copy::copy($source->stringify, $dest->stringify) 
-        or $log->logdie("Konnte $source nicht nach $dest kopieren: $!");
+        $source->copy($dest) 
+        or $log->logdie("Couldn't copy '$source' to '$dest': $!");
     }
 
     $self->source_pdf_file($dest);  		
@@ -230,10 +232,10 @@ sub copy_scanfiles {
     foreach my $scanfile ( @{$self->scanfiles} ) {
         $log->debug("Scandatei: " . $scanfile->filename);
         my $source_dir = $scanfile->filepath;
-        my $source = Path::Class::File->new($source_dir, $scanfile->filename);
-        my $dest   = Path::Class::File->new($self->working_dir,   $scanfile->filename);
-        File::Copy::copy($source->stringify, $dest->stringify) 
-            or $log->logdie("Konnte $source nicht nach $dest kopieren: $!");
+        my $source = path($source_dir, $scanfile->filename);
+        my $dest   = path($self->working_dir, $scanfile->filename);
+        $source->copy($dest) 
+            or $log->logdie("Couldn't copy '$source' to '$dest': $!");
         $log->info("$source --> $dest");
     }    
 }
@@ -242,35 +244,33 @@ sub empty_working_dir {
     my $self = shift;
     
     my $working_dir = $self->working_dir;
-    $working_dir->rmtree({keep_root => 1, error => \my $err});
-    $self->log->logdie('Fehler beim Löschen von ' . $working_dir . Dumper($err))
-        if @$err;
+    $working_dir->remove_tree( {keep_root => 1, error => \my $err} );
+    $self->log->logdie(
+        "Couldn't remove '$working_dir' recursively " . Dumper($err)
+    )  if @$err;
     return 1; 
 }
 
 sub prepare_working_dir {
     my $self = shift;
     
-    my $csv_saved = $self->save_csv_file() if -e $self->csv_file;
+    my $csv_saved = $self->save_csv_file() if $self->csv_file->exists;
     $self->empty_working_dir();
     my $csv_file_restored = $self->restore_csv_file if $csv_saved;
-    $self->log->info("Alte CSV-Datei gesichert als $csv_file_restored")
+    $self->log->info("old CSV file saved as '$csv_file_restored'")
         if $csv_file_restored;
 }
 
 sub restore_csv_file {
     my $self = shift;
     
-    my $csv_file_saved
-        = Path::Class::File->new($self->csv_save_dir, $self->csv_basename);
+    my $csv_file_saved = path($self->csv_save_dir, $self->csv_basename);
     my $now = DateTime->now->strftime("%Y-%m-%d-%H-%M");
     my $csv_saved_target 
-        = Path::Class::File->new(
-                $self->working_dir, $self->order_id . '_' . $now . '.csv'
-        ); 
-    File::Copy::copy($csv_file_saved->stringify, $csv_saved_target->stringify)
+        = path($self->working_dir, $self->order_id . '_' . $now . '.csv');
+    $csv_file_saved->copy($csv_saved_target)
         or $self->log->logdie(
-            "Konnte $csv_file_saved nicht nach $csv_saved_target kopieren"
+            "Couldn't copy '$csv_file_saved' to '$csv_saved_target'"
         );
     return $csv_saved_target->stringify;
 }
@@ -278,13 +278,9 @@ sub restore_csv_file {
 sub save_csv_file {
     my $self = shift;
     
-    File::Copy::move(
-        $self->csv_file->stringify,
-        $self->csv_save_dir->stringify,
-    ) or $self->log->logdie(
-        'Konnte ' . $self->csv_file . ' nicht nach '
-                  . $self->csv_save_dir . ' verschieben.'
-    );
+    $self->csv_file->move(path($self->csv_save_dir, $self->csv_file->basename))
+        or $self->log->logdie( "Couldn't move '" . $self->csv_file . "' to '"
+                               . $self->csv_save_dir . "'" );
 }
 
 
@@ -312,7 +308,7 @@ sub start_digifooter {
     $log->info('Traits: ' . Dumper($traits));
     my $class = Remedi::DigiFooter->with_traits(@$traits);
     my $instance = $class->new_with_config(%init_arg);
-    $log->logdie('Instanz kann nicht get_dest_format')
+    $log->logdie('Instance can not get_dest_format')
         unless $instance->can('get_dest_format');
     $instance->make_footer;    
 }
@@ -330,10 +326,9 @@ sub start_mets {
     my $usetypes = $config->{usetypes} || [qw(archive reference thumbnail)];
     if ( @{$self->ocrfiles} ) {
         push @$usetypes, 'ocr' unless grep { $_ eq 'ocr' } @$usetypes;
-        $log->info('OCR-Dateien gefunden');
+        $log->info('OCR files found');
     }
-    else { $log->info('Keine OCR-Dateien gefunden'); }
-    
+    else { $log->info('No OCR files found'); }
     
     my %init_arg = ( 
         image_path   => $self->image_path->stringify,
@@ -341,12 +336,17 @@ sub start_mets {
         title        => $self->order->titel->titel_isbd,
         configfile   => $self->remedi_configfile,
         usetypes     => $usetypes,
+        is_thesis_workflow => $self->is_thesis_workflow,
     );
     $init_arg{shelf_number}
         =  $self->order->titel->signatur if $self->order->titel->signatur;
     $init_arg{author}
         =  $self->order->titel->autor_avs if $self->order->titel->autor_avs;
-    Remedi::Mets->new_with_config(%init_arg)->make_mets;    
+    $init_arg{year_of_publication}
+        =  $self->order->titel->erschjahr if $self->order->titel->erschjahr;    
+    
+    Remedi::METS->new_with_config(%init_arg)->make_mets;
+    
 }
 
 
@@ -366,7 +366,7 @@ sub run {
     
     my $log_msg = $self->prepare_working_dir() if $self->does_copy_files;
     my $log = $self->log;
-    $log->info('Programm gestartet');
+    $log->info('Program started');
     $log->info($log_msg) if $log_msg;
     $self->order->update({status_id => 22});
     if ($self->does_copy_files) {

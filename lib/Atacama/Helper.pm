@@ -4,7 +4,6 @@ package Atacama::Helper;
 
 use Carp;
 use Config::ZOMG;
-use Path::Class;    
 use Module::Runtime qw(use_module);
 use Data::Dumper;
 use Modern::Perl;

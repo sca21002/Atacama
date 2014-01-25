@@ -1,24 +1,43 @@
+use utf8;
 package Atacama::Worker::Job::Sourcefile;
 use Moose;
-extends 'Atacama::Worker::Job::Base';
-use MooseX::Types::Moose qw(Bool Str);
-use MooseX::Types::Path::Class qw(File Dir);
+    extends 'Atacama::Worker::Job::Base';
+use Atacama::Types qw(
+    ArrayRef ArrayRef_of_Dir Bool Dir File HashRef RegexpRef Str
+);
 use List::Util qw(first);
 use Carp;
-use File::Slurp;
+use MooseX::AttributeShortcuts;
+use Path::Tiny;
+use Path::Iterator::Rule;
 use Remedi::Imagefile;
 use Remedi::RemediFile;
 use Remedi::PDF::API2;
 use Data::Dumper;
 use MooseX::ClassAttribute;
 
- 
-has 'prune_dirs' => (
-    is => 'rw',
-    isa => 'ArrayRef[Str]',
-    default => sub { ['thumbnails'] },
+has 'ext_reg' => (
+    is => 'ro',
+    isa => HashRef[RegexpRef],
+    default => sub { +{ 
+        TIFF => qr/(?i:\.tiff?$)/,
+        JPEG => qr/(?i:\.jpg$)/,
+        PDF  => qr/(?i:\.pdf$)/,
+        XML  => qr/(?i:\.xml$)/,
+    } },
 );
 
+has 'pdf_re'         => ( is => 'lazy', isa => RegexpRef );
+
+has 'single_page_re' => ( is => 'lazy', isa => RegexpRef );
+
+has 'rule'           => ( is => 'lazy', isa => 'Path::Iterator::Rule' );
+
+has 'skip_dirs' => (
+    is => 'ro',
+    isa => ArrayRef[RegexpRef],
+    default => sub { [qr/thumbnails/] },
+);
 
 class_has '+log_basename' => (
     default => 'sourcefile.log',                        
@@ -30,17 +49,17 @@ has '+log_config_basename' => (
     default => 'log4perl_sourcefile.conf',
 );
 
-
 has 'scanfile_formats' => (
-    is => 'rw',
-    isa => 'ArrayRef[Str]',
+    is => 'ro',
+    isa => ArrayRef[Str],
     default => sub { ['TIFF'] },
 );    
 
+has 'sourceformats' => ( is => 'lazy', isa => ArrayRef[Str] );
 
 has 'sourceformats' => (
     is => 'rw',
-    isa => 'ArrayRef[Str]',
+    isa => ArrayRef[Str],
 );
     
 has  'sourcedirs' => (
@@ -53,15 +72,49 @@ has  'sourcedirs' => (
         '/rzblx8_DATA2/digitalisierung/auftraege/rdiss_2/',
         '/rzblx8_DATA3/digitalisierung/auftraege/',
         '/mnt/rzblx9/data/digitalisierung/auftraege/',
+        '/mnt/rzblx10b/data/digitalisierung/auftraege/',
     ] },
 );
 
-has 'sourcedir' => (
-    is => 'rw',
-    isa => 'Maybe[Path::Class::Dir]',
-    builder => '_build_sourcedir',
+has  'sourcedirs' => (
+    is => 'ro',
+    isa => ArrayRef_of_Dir,
+    builder => '_build_sourcedirs',
     lazy => 1,
+    coerce => 1,
 );
+
+
+has 'sourcedir' => ( is => 'lazy', isa => Dir, coerce => 1 );
+
+has 'sourcedir'  => ( is => 'lazy', isa => Dir, coerce => 1 );
+
+sub _build_rule {
+    my $self = shift;
+
+    my $rule = Path::Iterator::Rule->new;
+    $rule = $rule->skip_dirs( @{ $self->skip_dirs } );
+
+    my @rules;
+    foreach my $format ( @{ $self->sourceformats } ) {
+        my $rule_part = Path::Iterator::Rule->new;
+        $self->log->logdie("No regular expression defined for format '$format'")
+            unless exists $self->ext_reg->{$format}; 
+        if ($format eq 'PDF') {
+            $rule_part->name($self->pdf_re);
+            # exclude single-page PDFs
+            my $rule_not = Path::Iterator::Rule->new;
+            $rule_not->name($self->single_page_re);
+            $rule_part->not($rule_not);
+        } else {
+            $rule_part->name($self->single_page_re);
+        }
+        $rule_part->name($self->ext_reg->{$format}); 
+        push @rules, $rule_part;
+    }
+    return $rule->or(@rules);
+}
+
 
 sub _build_log {
     my $self = shift;
@@ -70,87 +123,71 @@ sub _build_log {
     return Log::Log4perl->get_logger('Atacama::Worker::Job::Sourcefile');
 }
 
+
+sub _build_pdf_re {
+    my $self = shift;
+
+    my $order_id = $self->order_id;
+    my $pdf_re = $self->atacama_config->{'Atacama::Worker::Sourcefile'}{pdf_re};
+    $pdf_re =~ s/%order_id%/${order_id}/;
+    return qr/${pdf_re}/;
+}
+
+
+sub _build_single_page_re {
+   my $self = shift;
+
+    my $order_id = $self->order_id;
+    my $single_page_re 
+       = $self->atacama_config->{'Atacama::Worker::Sourcefile'}{single_page_re};
+    $single_page_re  =~ s/%order_id%/${order_id}/;
+    return qr/${single_page_re}/;  
+}
+
+
 sub _build_sourcedir {
     my $self = shift;
     
-    return first { -d } map { Path::Class::Dir->new( $_, $self->order_id ) }
+    my $sourcedir = 
+        first { $_->is_dir }
+        map   { path( $_, $self->order_id ) } 
         @{$self->sourcedirs}
     ;
+    $self->log->logcroak( 
+        sprintf( 
+            "Kein Unterverzeichnis %s in %s", 
+            $self->order_id, join(' ', @{$self->sourcedirs})
+        )
+    ) unless $sourcedir;
+    return $sourcedir;
 }
 
 
-sub is_searched {
-    my ($self, $format) = @_;
-    
-    return first {$_ eq $format} @{$self->sourceformats};
+sub _build_sourcedirs {
+    (shift)->atacama_config->{'Atacama::Worker::Sourcefile'}{sourcedirs};
 }
 
-
-sub make_get_sourcefile {
+sub _build_sourceformats {
     my $self = shift;
-    return sub {
-        my $entry = shift;
-        my $log = $self->log;
-        my $formats = $self->sourceformats;
-        $log->trace($entry . " gefunden");
-        my $order_id = $self->order_id;
-        my $basename = $entry->basename;
-        
-        if ($basename =~ /^\w{3,4}\d{5}/ and $basename !~ /^${order_id}/ ) {
-            $log->warn('Datei ' . $entry . ' im falschen Ordner'); 
-        }
-        
-        return Path::Class::Entity::PRUNE()
-            if $entry->is_dir
-               and first { $_ eq $basename } @{ $self->prune_dirs };
-        
-        return if $entry->is_dir;
-        
-        return unless $basename =~ /^${order_id}/;
-        
-        my $single_page_re = qr/^${order_id}_\d{1,5}\.((?i)[a-z]+)$/;
-        my $pdf_re         = qr/^${order_id}.*\.(?i:pdf)$/;
-        my $ext_re = {
-            TIFF => qr/^tiff?$/i,
-            JPEG => qr/^jpg$/i,
-            PDF  => qr/^pdf$/i,
-            XML  => qr/^xml$/i,
-        };
- 
-        if ( my($ext) = $basename =~ $single_page_re ) {
-            $log->trace("Extension: $ext"); 
-            if      ( $ext =~ $ext_re->{TIFF} and $self->is_searched('TIFF') ) {
-                $self->save_scanfile($entry);    
-            } elsif ( $ext =~ $ext_re->{JPEG} and $self->is_searched('JPEG') ) {
-                $self->save_scanfile($entry); 
-            } elsif ( $ext =~ $ext_re->{XML}  and $self->is_searched('XML')  ) {
-                $self->save_ocrfile($entry);
-            } elsif ( $ext =~ $ext_re->{PDF} ) {
-                # skip single page pdfs
-                return if $basename =~ /^${order_id}_\d{3,5}\./;
-                $self->save_pdffile($entry)                
-            } else { return }
-        } elsif ( $self->is_searched('PDF') and $basename =~ $pdf_re ) {
-            $self->save_pdffile($entry);      
-        } else { return }    
-    }
-}    
-    
+
+    return [ @{$self->scanfile_formats}, 'PDF', 'XML' ];
+}
+
 sub save_scanfile {
     my $self = shift;
     my $scanfile = shift;
     my $clause;
     
     my $log = $self->log;
-    my $atacama_schema = $self->atacama_schema;
     $log->info('Scanfile: ' . $scanfile);
+    my $atacama_schema = $self->atacama_schema;
     eval {
         my $image = Remedi::Imagefile->new(
             library_union_id => 'bvb',
             library_id => '355',
-            regex_filestem_prefix => qr/\w{3,4}\d{5}/,
-            file => $scanfile->stringify,    # Pass::Class and Path::Tiny 
-        );                                   # are incompatible
+            regex_filestem_prefix => $self->order_id, 
+            file => $scanfile,    
+        );                       
         $clause->{filename}     = $image->basename;
         $clause->{filepath}     = $image->parent->stringify;
         $clause->{order_id}     = $image->order_id;
@@ -183,32 +220,21 @@ sub save_pdffile{
     my $clause;
     
     my $log = $self->log;
-    my $atacama_schema = $self->atacama_schema;
     $log->info("PDF-Datei: $pdffile");
+    my $atacama_schema = $self->atacama_schema;
     eval {
-        my $index = -1;
-        my $order_id;
-        while (!$order_id and $index >= -3) {
-            ($order_id) = (File::Spec->splitdir($pdffile->dir))[$index--]
-                =~ /^((?:u|s)br\d{5})/i;
-        }
-        $log->debug("Keine Auftragsnummer gefunden fuer $pdffile")
-            unless $order_id;
-        $order_id = lc $order_id;
         my $pdf = Remedi::PDF::API2->open(
             file => $pdffile,
         );
-        $clause->{order_id} = $order_id;
-        if ($order_id) {
-            $clause->{filename} = $pdffile->basename;
-            $clause->{filepath} = $pdffile->dir->stringify;;
-            $clause->{pages}    = $pdf->pages;
-            $clause->{filesize} = $pdf->size;
-        }
+        $clause->{order_id} = $self->order_id;
+        $clause->{filename} = $pdffile->basename;
+        $clause->{filepath} = $pdffile->parent->stringify;
+        $clause->{pages}    = $pdf->pages;
+        $clause->{filesize} = $pdf->size;
+        $clause->{pagelabels} = $pdf->pagelabels ? 1 : 0;
         $pdf->release();
         $log->trace("PDF-Datei: " . Dumper($clause));    
     };
-    return unless $clause->{order_id};
     unless ($@) {
         $atacama_schema->resultset('Pdffile')->update_or_create($clause);
     } else {
@@ -222,17 +248,16 @@ sub save_pdffile{
 }
 
 sub save_ocrfile {
-    my $job = shift;
-    my $ocrfilename = shift;
+    my $self = shift;
+    my $ocrfile = shift;
     my $clause;
     
-    my $ocrfile = Remedi::RemediFile->new(file => $ocrfilename->stringify);
-    my $log = $job->log;
-    my $atacama_schema = $job->atacama_schema;
-    $log->info("OCR-Datei: " . $ocrfile->stringify);
+    my $log = $self->log;
+    $log->info("OCR-Datei: " . $ocrfile);
+    my $atacama_schema = $self->atacama_schema;
     eval {
-        ($clause->{order_id})
-            = $ocrfile->basename =~ /^(\w{3,4}\d{5})_\d{1,5}\.xml$/;    
+        $ocrfile = Remedi::RemediFile->new(file => $ocrfile);
+        $clause->{order_id} = $self->order_id;
         $clause->{filename} = $ocrfile->basename;
         $clause->{filepath} = $ocrfile->parent->stringify;;
         $clause->{filesize} = -s $ocrfile;
@@ -259,20 +284,28 @@ sub run {
     my $log = $self->log;
     $log->info('Programm gestartet');
 
-    $self->sourcedir
-        or $log->logcroak( sprintf( "Kein Unterverzeichnis %s in %s", 
-            $self->order_id, join(' ', @{$self->sourcedirs})
-           ));
-    $self->sourceformats( [ @{$self->scanfile_formats}, 'PDF', 'XML' ] );
     $log->info('Gesuchte Formate: ' . join(' ', @{$self->sourceformats} ) ); 
     
-    $self->sourcedir->recurse(
-        callback => $self->make_get_sourcefile(),   # Wow a closure
-        depthfirst => 1,
-        preorder   => 1
+    my $next = $self->rule->iter( 
+        $self->sourcedir, 
+        { 
+            depthfirst => -1 # pre-order, depth-first search 
+        }    
     );
+    while ( my $file = $next->() ) {
+        $file = path($file);
+        if ($file =~ $self->ext_reg->{TIFF}) {
+            $self->save_scanfile($file);        
+        } elsif ( $file =~ $self->ext_reg->{JPEG} ) {
+            $self->save_scanfile($file);   
+        } elsif ( $file =~ $self->ext_reg->{XML} ) {
+            $self->save_ocrfile($file);   
+        } elsif ( $file =~ $self->ext_reg->{PDF} ) {
+            $self->save_pdffile($file);   
+        } else {
+            $log->logdie("Kann $file nicht verarbeiten")
+        } 
+    }
 }
-
-
 
 1;

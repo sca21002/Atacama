@@ -78,6 +78,12 @@ __PACKAGE__->table("pdffiles");
   extra: {unsigned => 1}
   is_nullable: 1
 
+=head2 pagelabels
+
+  data_type: 'tinyint'
+  extra: {unsigned => 1}
+  is_nullable: 1
+
 =head2 error
 
   data_type: 'text'
@@ -98,6 +104,8 @@ __PACKAGE__->add_columns(
   { data_type => "smallint", extra => { unsigned => 1 }, is_nullable => 1 },
   "filesize",
   { data_type => "integer", extra => { unsigned => 1 }, is_nullable => 1 },
+  "pagelabels",
+  { data_type => "tinyint", extra => { unsigned => 1 }, is_nullable => 1 },
   "error",
   { data_type => "text", is_nullable => 1 },
 );
@@ -117,8 +125,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("filename", "filepath");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 17:18:40
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:KcXEutuPr0E7MvO6iIocSA
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2014-02-11 21:34:26
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:A+KDe1IxB/7IQNbtdNl9vg
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration
