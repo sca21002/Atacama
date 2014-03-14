@@ -66,7 +66,7 @@ has 'image_path' => (
     builder => '_build_image_path',
 );
 
-has 'is_thesis_workflow => (
+has 'is_thesis_workflow' => (
     is => 'ro',
     isa => Bool,
     default => 0,

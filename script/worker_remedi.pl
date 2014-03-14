@@ -35,7 +35,7 @@ my $config_hash = $config->load;
 TRACE("reading configuration file" . join(', ', $config->found));
 
 ### Datenbankverbindung
-my $dbic_connect_info = $config_hash->{'Model::AtacamaDB'}{connect_info};
+my $dbic_connect_info = $config_hash->{'Model::TheSchwartzDB'}{connect_info};
 LOGFATAL("No connect_info for the database found!")
     unless $dbic_connect_info;
 

@@ -26,6 +26,7 @@ sub work {
         does_digifooter
         does_mets
         remedi_configfile
+        is_thesis_workflow
     )) {
         $init_arg{$key} = $theschwartz_job->arg->{$key}
             if $theschwartz_job->arg->{$key};
