@@ -2,12 +2,13 @@ use utf8;
 package Atacama::Worker::Job::Remedi;
 use Atacama::Types qw(Bool Dir File Path Str);
 use Moose;
+use MooseX::AttributeShortcuts;
 extends 'Atacama::Worker::Job::Base';
 use File::Copy qw();
 use CAM::PDF;
-use Remedi::DigiFooter;
-use Remedi::METS;
-use Remedi::CSV;
+use Remedi::DigiFooter::App;
+use Remedi::METS::App;
+use Remedi::CSV::App;
 use Data::Dumper;
 use Path::Tiny;
 
@@ -113,6 +114,7 @@ has 'source_format' => (
 has 'source_pdf_file' => (
     is => 'rw',
     isa => File,
+    predicate => 1,
     coerce => 1,
 );
 
@@ -290,27 +292,17 @@ sub start_digifooter {
     my $log = $self->log;
     my %init_arg = (
         image_path      => $self->image_path->stringify,
+        log_level       => $self->log_level,
         title           => $self->order->titel->titel_isbd || '',
-        author          => $self->order->titel->autor_avs || '',
         configfile      => $self->remedi_configfile,
-        source_pdf_file => $self->source_pdf_file
-                           && $self->source_pdf_file->stringify,
     );
     foreach my $key (qw/resolution_correction source_format/) {
         $init_arg{$key} = $self->$key if $self->$key;
     }
+    $init_arg{source_pdf_name} = $self->source_pdf_file->stringify
+        if $self->source_pdf_file;
     while (my($key, $val) = each %init_arg) { $log->info("$key => $val") }
-    my $traits = (%{Config::Any->load_files({
-        files => [$self->remedi_configfile],
-        use_ext => 1, 
-        driver_args => { General => { -ForceArray => 1 }}
-    })->[0]})[1]{traits} || [ qw/DestFormat::PDF/ ];
-    $log->info('Traits: ' . Dumper($traits));
-    my $class = Remedi::DigiFooter->with_traits(@$traits);
-    my $instance = $class->new_with_config(%init_arg);
-    $log->logdie('Instance can not get_dest_format')
-        unless $instance->can('get_dest_format');
-    $instance->make_footer;    
+    Remedi::DigiFooter::App->new_with_config(%init_arg)->make_footer;
 }
 
 
@@ -323,6 +315,7 @@ sub start_mets {
         use_ext => 1,
     } );
     my ($filename, $config) = %{shift @$conf};
+    # TODO move this stuff to Remedi
     my $usetypes = $config->{usetypes} || [qw(archive reference thumbnail)];
     if ( @{$self->ocrfiles} ) {
         push @$usetypes, 'ocr' unless grep { $_ eq 'ocr' } @$usetypes;
@@ -331,12 +324,13 @@ sub start_mets {
     else { $log->info('No OCR files found'); }
     
     my %init_arg = ( 
-        image_path   => $self->image_path->stringify,
-        bv_nr        => $self->order->titel->bvnr,
-        title        => $self->order->titel->titel_isbd,
-        configfile   => $self->remedi_configfile,
-        usetypes     => $usetypes,
-        is_thesis_workflow => $self->is_thesis_workflow,
+        image_path          => $self->image_path->stringify,
+        bv_nr               => $self->order->titel->bvnr,
+        log_level           => $self->log_level,
+        title               => $self->order->titel->titel_isbd,
+        configfile          => $self->remedi_configfile,
+        usetypes            => $usetypes,
+        is_thesis_workflow  => $self->is_thesis_workflow,
     );
     $init_arg{shelf_number}
         =  $self->order->titel->signatur if $self->order->titel->signatur;
@@ -356,9 +350,13 @@ sub start_csv {
     my %init_arg = (
         image_path => $self->image_path->stringify,
         configfile => $self->remedi_configfile,
-        source_pdf_file => $self->source_pdf_file && $self->source_pdf_file->stringify,
+        # csv_file => $self->csv_file,           seems not necessary
+        log_level  => $self->log_level,
+        title => $self->order->titel->titel_isbd,
     );
-    Remedi::CSV->new_with_config(%init_arg)->make_csv;     
+    $init_arg{source_pdf_file} = $self->source_pdf_file
+        if $self->has_source_pdf_file;
+    Remedi::CSV::App->new_with_config(%init_arg)->make_csv;     
 }
 
 sub run {

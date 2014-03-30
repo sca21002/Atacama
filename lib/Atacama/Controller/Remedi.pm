@@ -46,9 +46,12 @@ sub remedi : Chained('/order/order') PathPart('remedi') Args(0) {
             does_digifooter => $form->params->{does_digifooter},
             does_mets => $form->params->{does_mets},
             does_csv => $form->params->{does_csv},
-            is_thesis_workflow => $form->params->{does_thesis_workflow},                       
+            is_thesis_workflow => $form->params->{does_thesis_workflow},      
+            log_level => $form->params->{log_level},        
         );
-        $c->res->redirect($c->uri_for_action('/job/worker/add', ['remedi'], \%query_values));
+        $c->res->redirect(
+            $c->uri_for_action( '/job/worker/add', ['remedi'], \%query_values )
+        );
     }
     else {
         # perform non-validated actions

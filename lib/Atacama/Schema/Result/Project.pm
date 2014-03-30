@@ -61,6 +61,12 @@ __PACKAGE__->table("projects");
   is_nullable: 1
   size: 255
 
+=head2 active
+
+  data_type: 'tinyint'
+  default_value: 1
+  is_nullable: 1
+
 =head2 description
 
   data_type: 'text'
@@ -80,6 +86,8 @@ __PACKAGE__->add_columns(
   { data_type => "smallint", extra => { unsigned => 1 }, is_nullable => 1 },
   "name",
   { data_type => "varchar", is_nullable => 1, size => 255 },
+  "active",
+  { data_type => "tinyint", default_value => 1, is_nullable => 1 },
   "description",
   { data_type => "text", is_nullable => 1 },
 );
@@ -111,8 +119,8 @@ __PACKAGE__->set_primary_key("project_id");
 __PACKAGE__->add_unique_constraint("project_projects", ["name"]);
 
 
-# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 17:18:40
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Wwwqqbjo49pQ0YPxXtSLhA
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2014-05-29 15:19:51
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Tzd7IakA6YsAZRRIO6/TWw
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

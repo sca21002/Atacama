@@ -1,14 +1,14 @@
-package Atacama::Form::Project;
+package Atacama::Form::Status;
 
 use HTML::FormHandler::Moose;
 extends 'HTML::FormHandler::Model::DBIC';
 use namespace::autoclean;
 
-has '+item_class' => ( default =>'Project' );
+has '+item_class' => ( default =>'Status' );
 
 has_field 'name' => (
     type => 'Text',
-    label => 'Projektname',
+    label => 'Status',
     required => 1,
 );
 
@@ -23,11 +23,7 @@ has_field 'description' => (
     cols => 60,
     rows => 3,
 );
-has_field 'projectkeys' => ( type => 'Repeatable' );
-has_field 'projectkeys.projectkey_id' => ( type => 'PrimaryKey' );
-has_field 'projectkeys.sorting';
-has_field 'projectkeys.pkey';
-has_field 'projectkeys.info';
+
 has_field 'submit' => ( type => 'Submit', value => 'Speichern' );
 
 no HTML::FormHandler::Moose;

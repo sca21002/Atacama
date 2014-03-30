@@ -185,8 +185,10 @@ sub save_scanfile {
         my $image = Remedi::Imagefile->new(
             library_union_id => 'bvb',
             library_id => '355',
-            regex_filestem_prefix => $self->order_id, 
-            file => $scanfile,    
+            regex_filestem_prefix => $self->order_id,
+            regex_filestem_var => qr/_\d{1,5}/,		# TODO: should we make it more general 
+            size_class_border  => 150 * 72 / 25.4, 
+	    file => $scanfile,    
         );                       
         $clause->{filename}     = $image->basename;
         $clause->{filepath}     = $image->parent->stringify;
@@ -256,7 +258,11 @@ sub save_ocrfile {
     $log->info("OCR-Datei: " . $ocrfile);
     my $atacama_schema = $self->atacama_schema;
     eval {
-        $ocrfile = Remedi::RemediFile->new(file => $ocrfile);
+        $ocrfile = Remedi::RemediFile->new(
+	    file => $ocrfile,
+            regex_filestem_prefix => $self->order_id,
+            regex_filestem_var    => qr/_\d{1,5}/, 
+        );
         $clause->{order_id} = $self->order_id;
         $clause->{filename} = $ocrfile->basename;
         $clause->{filepath} = $ocrfile->parent->stringify;;

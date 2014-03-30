@@ -1,10 +1,10 @@
 package Atacama::Worker::Job::Base;
 use Moose;
-use Atacama::Types qw(Dir File HashRef Order_id Path Str);
+use Atacama::Types qw(Dir File HashRef Num Order_id Path Str);
 use Path::Tiny;
 use Atacama::Schema;
 use Config::ZOMG;
-use Log::Log4perl;
+use Log::Log4perl qw(:levels);
 use MooseX::ClassAttribute;
 use namespace::autoclean;
 use Carp qw(croak);
@@ -81,6 +81,12 @@ has 'log_config_path' => (
     lazy => 1,
     default => '.',
     coerce   => 1,
+);
+
+has 'log_level' => (
+    is => 'ro',
+    isa => Num,
+    default => $INFO,
 );
 
 has 'order' => (

@@ -32,7 +32,13 @@ The root page (/)
 sub base : Chained('/login/required') PathPart('') CaptureArgs(0) Does('NoSSL'){
     my ( $self, $c ) = @_;
 
-    my $user = $c->user if $c->user_exists;
+    my $user;
+    if ( $c->user_exists && ref($c->user) eq 'SCALAR' ){
+        $user = $c->user;
+    } else {
+        $user = $c->user->username;
+    }
+    
     # my $roles =  $c->user->roles if $c->user_exists && $c->user->can('roles');
     # $c->log->debug( 'User: ' . $user->id );
     # $c->log->debug( 'Roles: ' . join(' ',@{$c->user->roles}));

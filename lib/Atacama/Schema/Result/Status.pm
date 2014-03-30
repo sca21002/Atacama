@@ -49,11 +49,22 @@ __PACKAGE__->table("status");
   is_auto_increment: 1
   is_nullable: 0
 
+=head2 sort
+
+  data_type: 'smallint'
+  is_nullable: 1
+
 =head2 name
 
   data_type: 'varchar'
   is_nullable: 1
   size: 255
+
+=head2 active
+
+  data_type: 'tinyint'
+  default_value: 1
+  is_nullable: 1
 
 =head2 info
 
@@ -71,8 +82,12 @@ __PACKAGE__->add_columns(
     is_auto_increment => 1,
     is_nullable => 0,
   },
+  "sort",
+  { data_type => "smallint", is_nullable => 1 },
   "name",
   { data_type => "varchar", is_nullable => 1, size => 255 },
+  "active",
+  { data_type => "tinyint", default_value => 1, is_nullable => 1 },
   "info",
   { data_type => "varchar", is_nullable => 1, size => 255 },
 );
@@ -90,8 +105,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("status_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-03-18 17:18:40
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:31tCf4yIOs0YB7zm7b0SmA
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2014-05-29 15:19:51
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Pay6dNXmn5RFlY3KhgmFRw
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

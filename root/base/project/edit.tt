@@ -25,6 +25,7 @@
     method="post">
 [% form.field('name').render %]
 [% form.field('description').render %]
+[% form.field('active').render %]
 <hr>
 [% form.field('projectkeys').label = "<h2>Parameter</h2>" %]
 [% form.field('projectkeys').render %]

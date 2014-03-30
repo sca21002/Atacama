@@ -1,0 +1,59 @@
+<script type="text/javascript">
+	function showCatlink(cellvalue, options, rowObject) {
+		var idUrl = "[% c.uri_for('/status/') %]" + options.rowId + "/edit";
+		return "<a href='" + idUrl + "'>" + cellvalue + "</a>";
+
+	}
+
+	$(document).ready(function() {
+		jQuery("#status_tab").jqGrid({
+			url : "[% json_url %]",
+			datatype : "json",
+			colNames : [ 'Status-ID', 'Aktiv', 'Status' ],
+			colModel : [ {
+				name : 'status_id',
+				formatter : showCatlink,
+				index : 'status_id',
+				width : 50,
+				align : 'right'
+			}, {
+                name : 'active',
+                width : 30,
+                align : 'right',
+            }, {
+				name : 'name',
+				sortable : false,
+				width : 300
+			}, ],
+			rowNum : 15,
+			height : "100%",
+			width : "100%",
+			autowidth : true,
+			rowList : [ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 ],
+			pager : '#pager_status',
+			sortname : 'status_id',
+			viewrecords : true,
+			sortorder : "asc",
+			caption : "Status"
+		});
+		jQuery("#status_tab").jqGrid('navGrid', '#pager_status', {
+			edit : false,
+			add : false,
+			del : false
+		});
+		
+		
+		$(window).bind('resize', function() {
+		    $("#status_tab").setGridWidth($('#content').width());
+		}).trigger('resize');
+
+	});
+</script>
+
+
+[% title = "Status" %] [% menu_links = [ { url =
+c.uri_for('/status/list') title = 'Status' icon = 'contact'
+state = 'active' } { url = c.uri_for_action('/status/add') title =
+'Status hinzufügen' icon = 'plus' } ]; %]
+<table id="status_tab"></table>
+<div id="pager_status"></div>

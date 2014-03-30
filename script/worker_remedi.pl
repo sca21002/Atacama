@@ -39,7 +39,14 @@ my $dbic_connect_info = $config_hash->{'Model::TheSchwartzDB'}{connect_info};
 LOGFATAL("No connect_info for the database found!")
     unless $dbic_connect_info;
 
-my $dbh = DBI->connect(@$dbic_connect_info);
+my @dbic_connect_info;    
+if (ref($dbic_connect_info) eq 'HASH') {
+    @dbic_connect_info = @{$dbic_connect_info}{qw(dsn user pass)};    
+} else {
+    @dbic_connect_info = @$dbic_connect_info;
+}
+
+my $dbh = DBI->connect(@dbic_connect_info);
 my $driver = Data::ObjectDriver::Driver::DBI->new( dbh => $dbh);
 LOGFATAL("No database driver found!") unless $driver; 
 my $client = TheSchwartz->new( databases => [{ driver => $driver }],

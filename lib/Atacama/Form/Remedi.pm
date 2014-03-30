@@ -4,6 +4,7 @@ use Atacama::Types qw(ArrayRef Bool Dir Path File);
 use HTML::FormHandler::Moose;
     extends 'HTML::FormHandler';
 use List::Util qw(first);
+use Log::Log4perl qw(:levels);
 use Path::Tiny;
 use MooseX::AttributeShortcuts;
 
@@ -41,6 +42,16 @@ has 'order' => (
     is => 'ro',
     required => 1,
     isa => 'DBIx::Class::Row'
+);
+
+has_field 'log_level' => (
+    type => 'Select',
+    label => 'Log level',
+    options => [ 
+        map { +{ value => $_, label => Log::Log4perl::Level::to_level($_) } }  
+            ($OFF, $FATAL, $ERROR, $WARN, $INFO, $DEBUG, $TRACE, $ALL)
+    ],
+    default => $INFO,
 );
 
 has_field 'remedi_configfile' => (

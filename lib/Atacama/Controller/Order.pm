@@ -36,11 +36,15 @@ sub list : Chained('orders') PathPart('list') Args(0) {
     $c->stash(
         projects => [
             $c->model('AtacamaDB::Project')->search(
-                undef,
-                {order_by => 'name'}
+                { active => 1 },
+                { order_by => 'name' },
             )->all
         ],       
-        status => [ $c->model('AtacamaDB::Status')->search({})->all ],
+        status => [ 
+            $c->model('AtacamaDB::Status')->search(
+                { active => 1 },
+                { order_by => 'sort' },
+            )->all ],
         json_url => $c->uri_for_action('order/json'),
         filters => $c->session->{order}{list}{filters},
     ); 

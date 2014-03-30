@@ -25,6 +25,7 @@ sub work {
         does_csv
         does_digifooter
         does_mets
+        log_level
         remedi_configfile
         is_thesis_workflow
     )) {

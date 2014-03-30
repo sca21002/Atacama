@@ -4,11 +4,11 @@ use warnings;
 use Path::Tiny;
 use FindBin qw($Bin);
 use lib path($Bin, 'lib')->stringify,
-        path($Bin)->parent->child(qw(Remedi lib))->stringify;
+        path($Bin)->parent->child(qw(Remedi-0.052 lib))->stringify;
 use Plack::Builder;
 use Plack::Middleware::Debug;
 use English qw( -no_match_vars ) ;            # Avoids regex performance penalty
-use Data::Dumper;
+use Data::Printer;
 use Atacama;
 my $app = Atacama->apply_default_middlewares(Atacama->psgi_app); 
 my $panels = Plack::Middleware::Debug->default_panels;

@@ -10,6 +10,10 @@
         title = 'Projekte'
         icon = 'contact' 
       }
+      { url   =  c.uri_for('/status/list')
+         title = 'Status'
+         icon = 'contact'
+      }
       { url   =  c.uri_for_action('/firefoxsearchplugins/list')
         title = 'Such-Plugins'
         icon = 'contact' 
@@ -22,7 +26,10 @@
         title = 'Projekt anlegen'
         icon = 'plus' 
       }
-      
+      { url   =  c.uri_for_action('/status/add')      
+        title = 'Status hinzufügen'
+        icon = 'plus'
+      }  
     ];
     
  %]

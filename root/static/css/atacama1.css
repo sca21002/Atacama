@@ -247,7 +247,7 @@ ul#navigation_level2 li.ui-state-active {
 	background-position: -35px center;
 }
 
-input[type="text"],input[type="submit"],input[type="password"],select,textarea
+input[type="text"],input[type="submit"],input[type="password"],input[type="checkbox"],select,textarea
 	{
 	background-color: rgba(255, 255, 255, 0.6);
 	border: 1px solid #CCCCCC;

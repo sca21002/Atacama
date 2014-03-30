@@ -10,14 +10,18 @@
 		jQuery("#orders").jqGrid({
 			url : "[% json_url %]",
 			datatype : "json",
-			colNames : [ 'Projektnr.', 'Projekt' ],
+			colNames : [ 'Projektnr.', 'Aktiv', 'Projekt' ],
 			colModel : [ {
 				name : 'project_id',
 				formatter : showCatlink,
 				index : 'project_id',
-				width : 100,
+				width : 50,
 				align : 'right'
 			}, {
+                name : 'active',
+                width : 30,
+                align : 'right',
+            }, {
 				name : 'name',
 				sortable : false,
 				width : 300

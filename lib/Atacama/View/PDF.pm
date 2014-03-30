@@ -6,6 +6,7 @@ use warnings;
 use base 'Catalyst::View::TT';
 
 __PACKAGE__->config(
+    DEBUG => 'plugins',
     TEMPLATE_EXTENSION => '.tt',
     render_die => 1,
 );

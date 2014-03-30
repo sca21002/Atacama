@@ -89,6 +89,7 @@ sub json : Chained('projects') PathPart('json') Args(0) {
         my $row->{id} = $project->project_id;
         $row->{cell} = [
             $project->project_id,
+            $project->active,
             $project->name,
         ];
         push @rows, $row;
