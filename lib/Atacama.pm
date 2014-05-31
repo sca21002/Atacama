@@ -3,9 +3,12 @@ package Atacama;
 # ABSTRACT: Atacama - a Catalyst based web application for digitisation orders 
 
 use Moose;
+use MooseX::AttributeShortcuts;
 use namespace::autoclean;
 use English qw( -no_match_vars ) ;  # Avoids regex performance penalty
 use Log::Log4perl::Catalyst;
+use CPAN::Changes;
+use DateTime::Format::W3CDTF;
 
 use Catalyst::Runtime 5.80;
     with 'CatalystX::DebugFilter';
@@ -31,7 +34,17 @@ use Catalyst qw/
 
 extends 'Catalyst';
 
+has 'last_modified' => ( is => 'lazy', isa => 'Str' );
+
 has 'stage' => ( is => 'rw' ); 
+
+sub _build_last_modified {
+
+    my $changes = CPAN::Changes->load( 'Changes' );
+    my $date = ($changes->releases)[-1]->date;
+    my $dt = DateTime::Format::W3CDTF->new()->parse_datetime( $date );
+    return $dt->strftime('%d.%m.%Y %H:%M')
+}
 
 sub log_file_name {
     my $logfile =  __PACKAGE__->path_to('log', 'atacama.log');
@@ -50,9 +63,7 @@ sub log_file_name {
 # local deployment.
 
 __PACKAGE__->config( 'Plugin::ConfigLoader' => {
-    driver => {
-    'General' => { -UTF8 => 1 },
-    }
+        driver => { 'General' => { -UTF8 => 1 } }
     } );
 
 
