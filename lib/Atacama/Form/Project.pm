@@ -17,6 +17,7 @@ has_field 'name' => (
 has_field 'active' => (
     type => 'Boolean',
     label => 'Aktiv',
+    tags => { no_wrapped_label => 1 },
 );
 
 has_field 'description' => (
