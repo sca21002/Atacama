@@ -2,6 +2,8 @@ This file documents the revision history for Perl web application Atacama.
 
 {{$NEXT}}
 
+0.081     2014-05-31 13:31:00+02:00 Europe/Berlin
+
     - Change build prozess to Dist::Zilla 
 
 0.01  2010-12-26 23:35:31+01:00 Europe/Berlin 
