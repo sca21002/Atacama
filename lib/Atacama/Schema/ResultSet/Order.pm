@@ -1,5 +1,7 @@
 package Atacama::Schema::ResultSet::Order;
 
+# ABSTRACT: Result set for Order
+
 use Moose;
 use namespace::autoclean;
 use MooseX::NonMoose;
@@ -113,4 +115,4 @@ sub get_status_order_count {
     )->all;
 }
 
-1;
+1; # Magic true value required at end of module

@@ -1,4 +1,7 @@
 package Atacama::Schema::ResultSet::Titel;
+
+# ABSTRACT: Result set for Titel  
+
 use strict;
 use warnings;
 
@@ -14,4 +17,4 @@ sub get_new_result_as_href {
     return $href;
 }
 
-1;
+1; # Magic true value required at end of module

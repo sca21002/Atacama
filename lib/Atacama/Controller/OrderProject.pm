@@ -1,26 +1,12 @@
 package Atacama::Controller::OrderProject;
+
+# ABSTRACT: Controller OrderProject
+
 use Moose;
 use namespace::autoclean;
 use Data::Dumper;
 
 BEGIN {extends 'Catalyst::Controller'; }
-
-=head1 NAME
-
-Atacama::Controller::OrderProject - Catalyst Controller
-
-=head1 DESCRIPTION
-
-Catalyst Controller.
-
-=head1 METHODS
-
-=cut
-
-
-=head2 index
-
-=cut
 
 sub ordersprojects : Chained('/base') PathPart('orderproject') CaptureArgs(0) {
     my ($self, $c) = @_;
@@ -45,18 +31,8 @@ sub json : Chained('ordersprojects') {
     );
 }
 
-
-=head1 AUTHOR
-
-A clever guy
-
-=head1 LICENSE
-
-This library is free software. You can redistribute it and/or modify
-it under the same terms as Perl itself.
-
-=cut
-
 __PACKAGE__->meta->make_immutable;
 
-1;
+1; # Magic true value required at end of module
+
+__END__

@@ -1,4 +1,7 @@
 package Atacama::Schema::ResultSet::Remark;
+
+# ABSTRACT: Result set for Remark
+
 use strict;
 use warnings;
 
@@ -50,4 +53,4 @@ sub save {
     }
 }
 
-1;
+1; # Magic true value required at end of module

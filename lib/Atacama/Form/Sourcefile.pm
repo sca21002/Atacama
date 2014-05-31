@@ -1,5 +1,7 @@
 package Atacama::Form::Sourcefile;
 
+# ABSTRACT: Form to set parameters for searching and collecting files 
+
 use HTML::FormHandler::Moose;
 extends 'HTML::FormHandler';
 
@@ -29,4 +31,7 @@ has_field 'scanfile_formats' => (
 has_field 'submit' => ( type => 'Submit', value => 'Starten' );
 
 no HTML::FormHandler::Moose;
-1;
+
+1; # Magic true value required at end of module
+
+__END__

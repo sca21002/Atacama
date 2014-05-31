@@ -1,4 +1,7 @@
 package Atacama::Worker::Remedi;
+
+# ABSTRACT: Job in the queue for preparing image and other files for the ingest 
+
 use base 'TheSchwartz::Worker';
 use Atacama::Worker::Job::Remedi;
 use Carp;
@@ -38,4 +41,4 @@ sub work {
     return 1;
 }
 
-1;
+1; # Magic true value required at end of module

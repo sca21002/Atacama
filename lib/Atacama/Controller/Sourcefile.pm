@@ -1,28 +1,13 @@
 package Atacama::Controller::Sourcefile;
+
+# ABSTRACT: Conroller for searching and collecting files
+
 use Moose;
 use namespace::autoclean;
 use Atacama::Form::Sourcefile;
 use Data::Dumper;
 
 BEGIN {extends 'Catalyst::Controller'; }
-
-=head1 NAME
-
-Atacama::Controller::Sourcefile - Catalyst Controller
-
-=head1 DESCRIPTION
-
-Catalyst Controller.
-
-=head1 METHODS
-
-=cut
-
-
-=head2 index
-
-=cut
-
 
 sub sourcefile : Chained('/order/order') PathPart('sourcefile') Args(0) {
     my ( $self, $c ) = @_;
@@ -68,20 +53,8 @@ sub sourcefile : Chained('/order/order') PathPart('sourcefile') Args(0) {
     );     
 }
 
-
-
-
-=head1 AUTHOR
-
-Atacama Developer,,,
-
-=head1 LICENSE
-
-This library is free software. You can redistribute it and/or modify
-it under the same terms as Perl itself.
-
-=cut
-
 __PACKAGE__->meta->make_immutable;
 
-1;
+1; # Magic true value required at end of module
+
+__END__

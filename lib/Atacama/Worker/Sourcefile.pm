@@ -1,4 +1,7 @@
 package Atacama::Worker::Sourcefile;
+
+# ABSTRACT: Job in the queue for searching and collecting files 
+
 use base 'TheSchwartz::Worker';
 use Atacama::Worker::Job::Sourcefile;
 use Carp;
@@ -29,4 +32,4 @@ sub work {
     return 1;
 };
 
-1;
+1; # Magic true value required at end of module

@@ -1,4 +1,7 @@
 package Atacama::Controller::Titel;
+
+# ABSTRACT: Conroller for Titel
+
 use Moose;
 use namespace::autoclean;
 use Atacama::Form::Titel;
@@ -6,23 +9,6 @@ use Atacama::Form::Titel;
 use Data::Dumper;
 BEGIN {extends 'Catalyst::Controller'; }
 use Encode;
-
-=head1 NAME
-
-Atacama::Controller::Titel - Catalyst Controller
-
-=head1 DESCRIPTION
-
-Catalyst Controller.
-
-=head1 METHODS
-
-=cut
-
-
-=head2 index
-
-=cut
 
 sub titel : Chained('/base') PathPart('titel') CaptureArgs(0) {
     my ($self, $c) = @_;
@@ -204,18 +190,9 @@ sub not_found : Local {
     $c->detach('/order/list');
 }
 
-    
-=head1 AUTHOR
-
-A clever guy
-
-=head1 LICENSE
-
-This library is free software. You can redistribute it and/or modify
-it under the same terms as Perl itself.
-
-=cut
-
 __PACKAGE__->meta->make_immutable;
 
-1;
+1; # Magic true value required at end of module
+
+__END__
+

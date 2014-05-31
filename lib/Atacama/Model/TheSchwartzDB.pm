@@ -1,5 +1,7 @@
 package Atacama::Model::TheSchwartzDB;
 
+# ABSTRACT: Model for the job queue database
+
 use strict;
 use base 'Catalyst::Model';
 use TheSchwartz;
@@ -24,9 +26,8 @@ sub COMPONENT {
     return $client;
 }
 
-=head1 NAME
+1; # Magic true value required at end of module
 
-Atacama::Model::TheSchwartzDB - Catalyst Model
 =head1 SYNOPSIS
 
 See L<Atacama>
@@ -34,16 +35,3 @@ See L<Atacama>
 =head1 DESCRIPTION
 
 L<Catalyst::Model using schema L<TheSchwartz>
-
-=head1 AUTHOR
-
-A clever guy
-
-=head1 LICENSE
-
-This library is free software, you can redistribute it and/or modify
-it under the same terms as Perl itself.
-
-=cut
-
-1;

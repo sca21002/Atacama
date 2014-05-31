@@ -1,4 +1,7 @@
 use utf8;
+
+# ABSTRACT: Job for preparing image and other files for the ingest 
+
 package Atacama::Worker::Job::Remedi;
 use Atacama::Types qw(Bool Dir File Path Str);
 use Moose;
@@ -393,4 +396,4 @@ sub run {
     $self->order->update({status_id => 26});    
 }
 
-1;
+1; # Magic true value required at end of module

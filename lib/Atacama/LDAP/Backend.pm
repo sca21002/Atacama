@@ -1,5 +1,7 @@
 package Atacama::LDAP::Backend;
 
+# ABSTRACT: Backend for LDAP authentication
+
 use parent Catalyst::Authentication::Store::LDAP::Backend;
 use Carp;
 use Storable qw(thaw);
@@ -21,6 +23,6 @@ sub from_session {
     local $Storable::Eval = 1;
     my $user = thaw $frozenuser;
 }
+1; # Magic true value required at end of module
 
-
-1;
+__END__

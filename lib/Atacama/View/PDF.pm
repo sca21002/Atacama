@@ -1,5 +1,7 @@
 package Atacama::View::PDF;
 
+# ABSTRACT: TT View for PDF files in Atacama
+
 use strict;
 use warnings;
 
@@ -11,27 +13,12 @@ __PACKAGE__->config(
     render_die => 1,
 );
 
-=head1 NAME
-
-Atacama::View::PDF - TT View for Atacama
+1; # Magic true value required at end of module
 
 =head1 DESCRIPTION
 
-TT View for Atacama.
+TT View for PDF files in Atacama.
 
 =head1 SEE ALSO
 
 L<Atacama>
-
-=head1 AUTHOR
-
-Atacama Developer,,,
-
-=head1 LICENSE
-
-This library is free software. You can redistribute it and/or modify
-it under the same terms as Perl itself.
-
-=cut
-
-1;

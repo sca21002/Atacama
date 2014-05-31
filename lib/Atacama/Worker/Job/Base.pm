@@ -1,4 +1,7 @@
 package Atacama::Worker::Job::Base;
+
+# ABSTRACT: Base class for Jobs 
+
 use Moose;
 use Atacama::Types qw(Dir File HashRef Num Order_id Path Str);
 use Path::Tiny;
@@ -198,4 +201,5 @@ sub _build_working_dir {
 
 
 __PACKAGE__->meta->make_immutable;
-1;
+
+1; # Magic true value required at end of module

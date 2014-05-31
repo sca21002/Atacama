@@ -1,4 +1,7 @@
 package Atacama::Controller::Scanfile;
+
+# ABSTRACT: Conroller for Scanfiles
+
 use Moose;
 use namespace::autoclean;
 use Data::Dumper;
@@ -6,23 +9,6 @@ use JSON;
 
 
 BEGIN {extends 'Catalyst::Controller'; }
-
-=head1 NAME
-
-Atacama::Controller::Scanfile - Catalyst Controller
-
-=head1 DESCRIPTION
-
-Catalyst Controller.
-
-=head1 METHODS
-
-=cut
-
-
-=head2 index
-
-=cut
 
 sub scanfiles : Chained('/order/order') PathPart('scanfiles') CaptureArgs(0) {
     my ($self, $c) = @_;
@@ -111,17 +97,9 @@ sub json : Chained('scanfiles') PathPart('json') Args(0) {
     #$c->response->body(encode_json($response));
 }
 
-=head1 AUTHOR
-
-Atacama Developer,,,
-
-=head1 LICENSE
-
-This library is free software. You can redistribute it and/or modify
-it under the same terms as Perl itself.
-
-=cut
 
 __PACKAGE__->meta->make_immutable;
 
-1;
+1; # Magic true value required at end of module
+
+__END__

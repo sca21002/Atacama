@@ -1,5 +1,7 @@
 package Atacama::Form::Titel;
 
+# ABSTRACT: Form to edit Titel fields
+
 use HTML::FormHandler::Moose;
 extends 'HTML::FormHandler::Model::DBIC';
 use namespace::autoclean;
@@ -55,4 +57,7 @@ has_field 'titel_uw' => (
 has_field 'submit' => ( type => 'Submit', value => 'Speichern' );
 
 no HTML::FormHandler::Moose;
-1;
+
+1; # Magic true value required at end of module
+
+__END__

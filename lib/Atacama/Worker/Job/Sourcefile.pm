@@ -1,4 +1,7 @@
 use utf8;
+
+# ABSTRACT: Job for searching and collecting digitisation files
+
 package Atacama::Worker::Job::Sourcefile;
 use Moose;
     extends 'Atacama::Worker::Job::Base';
@@ -314,4 +317,4 @@ sub run {
     }
 }
 
-1;
+1; # Magic true value required at end of module

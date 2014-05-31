@@ -1,4 +1,7 @@
 package Atacama::Schema::ResultSet::Scanparameter;
+
+# ABSTRACT: Result set for Scanparameter 
+
 use strict;
 use warnings;
 use Data::Dumper;
@@ -107,4 +110,4 @@ sub save {
 	}
 }
 
-1;
+1; # Magic true value required at end of module

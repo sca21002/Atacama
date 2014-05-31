@@ -1,5 +1,7 @@
 package Atacama::Helper::TheSchwartz::Scoreboard;
 
+# ABSTRACT: Scoreboard of TheSchwartz job queue
+
 use Moose;
 use Atacama::Types qw(ArrayRef Dir File TheSchwartz_Job);
 use aliased 'Atacama::Helper::TheSchwartz::Job';
@@ -48,4 +50,7 @@ sub _build_jobs {
 }
                           
 __PACKAGE__->meta->make_immutable;
-1; 
+
+1; # Magic true value required at end of module
+
+__END__

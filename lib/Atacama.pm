@@ -1,4 +1,7 @@
 package Atacama;
+
+# ABSTRACT: Atacama- a Catalyst based web application for digitisation orders 
+
 use Moose;
 use namespace::autoclean;
 use English qw( -no_match_vars ) ;  # Avoids regex performance penalty
@@ -115,9 +118,9 @@ __PACKAGE__->log(Log::Log4perl::Catalyst->new(
     __PACKAGE__->path_to('log4perl.conf')->stringify
 ));
 
-=head1 NAME
+1; # Magic true value required at end of module
 
-Atacama - Catalyst based application
+__END__
 
 =head1 SYNOPSIS
 
@@ -125,21 +128,15 @@ Atacama - Catalyst based application
 
 =head1 DESCRIPTION
 
-[enter your description here]
+Atacama is a web application to manage the whole digitisation process from
+creating a digitisation order to publishing the digital object on the web.
+Digitisation orders are stored in a database.
+The actual position of an order in the workflow process is described by a set of
+status values.
+Orders can be assigned to one or more projects to organize the digitisation
+jobs.
 
 =head1 SEE ALSO
 
 L<Atacama::Controller::Root>, L<Catalyst>
 
-=head1 AUTHOR
-
-Atacama Developer,,,
-
-=head1 LICENSE
-
-This library is free software. You can redistribute it and/or modify
-it under the same terms as Perl itself.
-
-=cut
-
-1;

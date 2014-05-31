@@ -1,5 +1,7 @@
 package Atacama::LDAP::User;
 
+# ABSTRACT: User authenticated by LDAP
+
 use parent Catalyst::Authentication::Store::LDAP::User;
 
 use Storable qw(freeze);
@@ -42,7 +44,6 @@ sub for_session {
     return freeze $self;
 }
 
+1; # Magic true value required at end of module
 
-
-
-1;
+__END__

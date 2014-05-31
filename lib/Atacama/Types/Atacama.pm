@@ -6,7 +6,7 @@ use List::Util qw(first);
 use List::MoreUtils qw(all);
 use Data::Dumper;
 
-# ABSTRACT: Types library for project specific types 
+# ABSTRACT: Types library for Atacama specific types 
 
 use MooseX::Types -declare => [ qw(
     ArrayRef_of_Dir
@@ -43,4 +43,4 @@ coerce ArrayRef_of_Dir,
     via { [ map { Path::Tiny::path($_) } @$_ ] };
 
 
-1;
+1; # Magic true value required at end of module

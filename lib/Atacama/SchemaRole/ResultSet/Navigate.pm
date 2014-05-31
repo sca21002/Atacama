@@ -1,4 +1,7 @@
 package Atacama::SchemaRole::ResultSet::Navigate;
+
+# ABSTRACT: Role for navigating through a result set
+
 use Moose::Role;
 use Safe::Isa;
 use Regexp::Common qw (number);
@@ -75,5 +78,4 @@ sub seek_index {
     $self->search({})->slice($index-1, $index-1)->first;
 }
 
-
-1;
+1; # Magic true value required at end of module

@@ -1,26 +1,12 @@
 package Atacama::Controller::Job::Queue;
+
+# ABSTRACT: Conroller for the job queue
+
 use Moose;
 use namespace::autoclean;
 use Data::Dumper;
 use Storable();
 BEGIN {extends 'Catalyst::Controller'; }
-
-=head1 NAME
-
-Atacama::Controller::Job::Queue - Catalyst Controller
-
-=head1 DESCRIPTION
-
-Catalyst Controller.
-
-=head1 METHODS
-
-=cut
-
-
-=head2 index
-
-=cut
 
 sub queue : Chained('/job/jobs') PathPart('queue') CaptureArgs(0) {
     my ($self, $c) = @_;
@@ -99,18 +85,8 @@ sub json : Chained('queue') PathPart('json') Args(0) {
     );
 }
 
-
-=head1 AUTHOR
-
-Atacama Developer,,,
-
-=head1 LICENSE
-
-This library is free software. You can redistribute it and/or modify
-it under the same terms as Perl itself.
-
-=cut
-
 __PACKAGE__->meta->make_immutable;
 
-1;
+1; # Magic true value required at end of module
+
+__END__

@@ -1,5 +1,7 @@
 package UBR::Sisis::Schema;
 
+# ABSTRACT: Schema for the database of the Sisis-OPAC 
+
 use strict;
 use warnings;
 
@@ -12,4 +14,5 @@ extends 'DBIx::Class::Schema';
 __PACKAGE__->load_namespaces;
 
 __PACKAGE__->meta->make_immutable;
-1;
+
+1; # Magic true value required at end of module

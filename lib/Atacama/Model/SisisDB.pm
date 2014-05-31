@@ -1,5 +1,7 @@
 package Atacama::Model::SisisDB;
 
+# ABSTRACT: Model for Sisis database
+
 use strict;
 use base 'Catalyst::Model::DBIC::Schema';
 
@@ -7,9 +9,9 @@ __PACKAGE__->config(
     schema_class => 'UBR::Sisis::Schema',
 );
 
-=head1 NAME
+1; # Magic true value required at end of module
 
-Atacama::Model::SisisDB - Catalyst DBIC Schema Model
+__END__
 
 =head1 SYNOPSIS
 
@@ -18,16 +20,3 @@ See L<Atacama>
 =head1 DESCRIPTION
 
 L<Catalyst::Model::DBIC::Schema> Model using schema L<UBR::Sisis::Schema>
-
-=head1 AUTHOR
-
-Atacama Developer
-
-=head1 LICENSE
-
-This library is free software, you can redistribute it and/or modify
-it under the same terms as Perl itself.
-
-=cut
-
-1;

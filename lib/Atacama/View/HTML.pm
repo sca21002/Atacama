@@ -1,5 +1,7 @@
 package Atacama::View::HTML;
 
+# ABSTRACT: Default TT View in Atacama
+
 use strict;
 use warnings;
 
@@ -15,27 +17,12 @@ __PACKAGE__->config(
     WRAPPER            => 'site/wrapper.tt',
 );
 
-=head1 NAME
-
-Atacama::View::HTML - TT View for Atacama
+1; # Magic true value required at end of module
 
 =head1 DESCRIPTION
 
-TT View for Atacama.
+Default TT View in Atacama
 
 =head1 SEE ALSO
 
 L<Atacama>
-
-=head1 AUTHOR
-
-A clever guy
-
-=head1 LICENSE
-
-This library is free software. You can redistribute it and/or modify
-it under the same terms as Perl itself.
-
-=cut
-
-1;

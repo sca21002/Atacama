@@ -1,24 +1,13 @@
 use utf8;
 package Atacama::Controller::FirefoxSearchPlugins;
+
+# ABSTRACT: Controller FirefoxSearchPlugins
+
 use Modern::Perl;
 use Moose;
 use namespace::autoclean;
 
 BEGIN {extends 'Catalyst::Controller'; }
-
-=head1 NAME
-
-Atacama::Controller::FirefoxSearchPlugins - Catalyst Controller
-
-=head1 DESCRIPTION
-
-Catalyst Controller.
-
-=head1 METHODS
-
-=head2 list
-
-=cut
 
 sub firefoxsearchplugins
     :Chained('/base')
@@ -37,11 +26,6 @@ sub list : Chained('firefoxsearchplugins') PathPart('list') Args(0)  {
         template => 'firefoxsearchplugins/list.tt',
     );
 }
-
-
-=head2 get
-
-=cut
 
 sub get : Chained('firefoxsearchplugins') PathPart('get') Args(1) {
     my ( $self, $c, $filename ) = @_;
@@ -73,18 +57,8 @@ sub _dump_paths
                   );
 }
 
-
-=head1 AUTHOR
-
-atacama development,,,
-
-=head1 LICENSE
-
-This library is free software. You can redistribute it and/or modify
-it under the same terms as Perl itself.
-
-=cut
-
 __PACKAGE__->meta->make_immutable;
 
-1;
+1; # Magic true value required at end of module
+
+__END__

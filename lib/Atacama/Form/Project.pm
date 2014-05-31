@@ -1,5 +1,7 @@
 package Atacama::Form::Project;
 
+# ABSTRACT: Form to edit a project 
+
 use HTML::FormHandler::Moose;
 extends 'HTML::FormHandler::Model::DBIC';
 use namespace::autoclean;
@@ -31,4 +33,7 @@ has_field 'projectkeys.info';
 has_field 'submit' => ( type => 'Submit', value => 'Speichern' );
 
 no HTML::FormHandler::Moose;
-1;
+
+1; # Magic true value required at end of module
+
+__END__

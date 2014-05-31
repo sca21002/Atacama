@@ -1,5 +1,7 @@
 package Atacama::Form::Remedi;
 
+# ABSTRACT: Form to edit parameters for a job preparing files for the ingest
+
 use Atacama::Types qw(ArrayRef Bool Dir Path File);
 use HTML::FormHandler::Moose;
     extends 'HTML::FormHandler';
@@ -185,4 +187,7 @@ sub default_source_format {
 }
 
 no HTML::FormHandler::Moose;
-1;
+
+1; # Magic true value required at end of module
+
+__END__

@@ -1,5 +1,8 @@
 use utf8;
 package Atacama::Controller::Order;
+
+# ABSTRACT: Controller Order
+
 use Modern::Perl;
 use Moose;
 use namespace::autoclean;
@@ -9,20 +12,6 @@ use JSON;
 BEGIN {extends 'Catalyst::Controller'; }
 
 # ABSTRACT: Controller for listing and editing orders
-
-=head1 NAME
-
-Atacama::Controller::Order - Catalyst Controller
-
-=head1 DESCRIPTION
-
-Catalyst Controller.
-
-=head1 METHODS
-
-=head2 index
-
-=cut
 
 sub orders : Chained('/base') PathPart('order') CaptureArgs(0) {
     my ($self, $c) = @_;
@@ -314,17 +303,8 @@ sub list_to_hash {
     return \%order_params;
 }
 
-=head1 AUTHOR
-
-Atacama Developer,,,
-
-=head1 LICENSE
-
-This library is free software. You can redistribute it and/or modify
-it under the same terms as Perl itself.
-
-=cut
-
 __PACKAGE__->meta->make_immutable;
 
-1;
+1; # Magic true value required at end of module
+
+__END__

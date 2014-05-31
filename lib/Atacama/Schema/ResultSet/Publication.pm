@@ -1,4 +1,7 @@
 package Atacama::Schema::ResultSet::Publication;
+
+# ABSTRACT: Result set for Publication
+
 use strict;
 use warnings;
 
@@ -80,4 +83,6 @@ sub save {
     }
 }
 
-1;
+1; # Magic true value required at end of module
+
+__END__

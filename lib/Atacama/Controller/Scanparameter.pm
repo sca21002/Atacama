@@ -1,25 +1,11 @@
 package Atacama::Controller::Scanparameter;
+
+# ABSTRACT: Conroller for Scanparameter
+
 use Moose;
 use namespace::autoclean;
 use Data::Dumper;
 BEGIN {extends 'Catalyst::Controller'; }
-
-=head1 NAME
-
-Atacama::Controller::Scanparameter - Catalyst Controller
-
-=head1 DESCRIPTION
-
-Catalyst Controller.
-
-=head1 METHODS
-
-=cut
-
-
-=head2 index
-
-=cut
 
 sub scanparameters : Chained('/base') PathPart('scanparameter') CaptureArgs(0) {
     my ($self, $c) = @_;
@@ -43,17 +29,8 @@ sub json : Chained('scanparameters') {
     );
 }
 
-=head1 AUTHOR
-
-Atacama Developer,,,
-
-=head1 LICENSE
-
-This library is free software. You can redistribute it and/or modify
-it under the same terms as Perl itself.
-
-=cut
-
 __PACKAGE__->meta->make_immutable;
 
-1;
+1; # Magic true value required at end of module
+
+__END__

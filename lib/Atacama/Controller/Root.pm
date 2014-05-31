@@ -1,4 +1,7 @@
 package Atacama::Controller::Root;
+
+# ABSTRACT: Root controller 
+
 use Moose;
 use Data::Dumper;
 use namespace::autoclean;
@@ -11,23 +14,6 @@ BEGIN { extends 'Catalyst::Controller' }
 # so they function identically to actions created in MyApp.pm
 #
 __PACKAGE__->config(namespace => '');
-
-=head1 NAME
-
-Atacama::Controller::Root - Root Controller for Atacama
-
-=head1 DESCRIPTION
-
-[enter your description here]
-
-=head1 METHODS
-
-=head2 index
-
-The root page (/)
-
-=cut
-
 
 sub base : Chained('/login/required') PathPart('') CaptureArgs(0) Does('NoSSL'){
     my ( $self, $c ) = @_;
@@ -76,25 +62,10 @@ sub index : Chained('/base') PathPart('') {
     );
 }
 
-=head2 end
-
-Attempt to render a view, if needed.
-
-=cut
-
 sub end : ActionClass('RenderView') {}
-
-=head1 AUTHOR
-
-Atacama Developer,,,
-
-=head1 LICENSE
-
-This library is free software. You can redistribute it and/or modify
-it under the same terms as Perl itself.
-
-=cut
 
 __PACKAGE__->meta->make_immutable;
 
-1;
+1; # Magic true value required at end of module
+
+__END__

@@ -1,6 +1,8 @@
 use utf8;
 package Atacama::Helper::TheSchwartz::Job;
 
+# ABSTRACT: Job in the TheSchwartz job queue
+
 use Moose;
 use Atacama::Types qw(Bool DateTime File HashRef Str);
 use namespace::autoclean;
@@ -171,4 +173,7 @@ sub _build_additional_args {
 }
 
 __PACKAGE__->meta->make_immutable;
-1; 
+
+1; # Magic true value required at end of module
+
+__END__

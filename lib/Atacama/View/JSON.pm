@@ -1,11 +1,17 @@
 package Atacama::View::JSON;
 
+# ABSTRACT: TT View serving JSON in Atacama
+
 use strict;
 use base 'Catalyst::View::JSON';
 
-=head1 NAME
+__PACKAGE__->config( {
+    expose_stash => [ qw( page total records rows json_data)]
+} );
 
-Atacama::View::JSON - Catalyst JSON View
+1; # Magic true value required at end of module
+
+__END__
 
 =head1 SYNOPSIS
 
@@ -13,19 +19,8 @@ See L<Atacama>
 
 =head1 DESCRIPTION
 
-Catalyst JSON View.
+TT View serving JSON in Atacama
 
-=head1 AUTHOR
 
-A clever guy
 
-=head1 LICENSE
 
-This library is free software, you can redistribute it and/or modify
-it under the same terms as Perl itself.
-
-=cut
-
-__PACKAGE__->config({ expose_stash => [ qw( page total records rows json_data)] });
-
-1;

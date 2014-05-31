@@ -1,4 +1,7 @@
 package Atacama::Controller::Ocrfile;
+
+# ABSTRACT: Controller Ocrfile
+
 use Moose;
 use namespace::autoclean;
 use Data::Dumper;
@@ -6,23 +9,6 @@ use JSON;
 
 
 BEGIN {extends 'Catalyst::Controller'; }
-
-=head1 NAME
-
-Atacama::Controller::Ocrfile - Catalyst Controller
-
-=head1 DESCRIPTION
-
-Catalyst Controller.
-
-=head1 METHODS
-
-=cut
-
-
-=head2 index
-
-=cut
 
 sub ocrfiles : Chained('/order/order') PathPart('ocrfiles') CaptureArgs(0) {
     my ($self, $c) = @_;
@@ -94,17 +80,8 @@ sub json : Chained('ocrfiles') PathPart('json') Args(0) {
     #$c->response->body(encode_json($response));
 }
 
-=head1 AUTHOR
-
-Atacama Developer,,,
-
-=head1 LICENSE
-
-This library is free software. You can redistribute it and/or modify
-it under the same terms as Perl itself.
-
-=cut
-
 __PACKAGE__->meta->make_immutable;
 
-1;
+1; # Magic true value required at end of module
+
+__END__
