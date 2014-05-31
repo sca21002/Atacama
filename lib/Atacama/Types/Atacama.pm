@@ -1,13 +1,13 @@
 use utf8;
 package Atacama::Types::Atacama;
+
+# ABSTRACT: Types library for Atacama specific types
+
 use strict;
 use warnings;
 use List::Util qw(first);
 use List::MoreUtils qw(all);
 use Data::Dumper;
-
-# ABSTRACT: Types library for Atacama specific types 
-
 use MooseX::Types -declare => [ qw(
     ArrayRef_of_Dir
     Order_id

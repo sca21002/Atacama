@@ -1,8 +1,8 @@
 use utf8;
+package Atacama::Worker::Job::Sourcefile;
 
 # ABSTRACT: Job for searching and collecting digitisation files
 
-package Atacama::Worker::Job::Sourcefile;
 use Moose;
     extends 'Atacama::Worker::Job::Base';
 use Atacama::Types qw(
@@ -60,11 +60,6 @@ has 'scanfile_formats' => (
 
 has 'sourceformats' => ( is => 'lazy', isa => ArrayRef[Str] );
 
-has 'sourceformats' => (
-    is => 'rw',
-    isa => ArrayRef[Str],
-);
-    
 has  'sourcedirs' => (
     is => 'rw',
     isa => 'ArrayRef[Str]',

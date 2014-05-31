@@ -134,7 +134,7 @@ sub default_remedi_configfile {
     my @list = $self->all_remedi_configfiles;
     my $default = ( $library eq 'Staatliche Bibliothek Regensburg' )
         ? first { $_->basename eq  'remedi_de-155-355.conf' } @list
-        : ( $library eq 'Südost-Institut' )
+        : ( $library eq 'SÃ¼dost-Institut' )
         ? first { $_->basename eq 'remedi_de-M135-355.conf' } @list
         : ( $library eq 'Osteuropa-Institut' )
         ? first { $_->basename eq 'remedi_de-M357-355.conf' } @list
@@ -142,13 +142,13 @@ sub default_remedi_configfile {
         ? first { $_->basename eq 'remedi_de-355_hwkno.conf' } @list 
         : ( $library eq 'Johannes-Turmair-Gymnasium' ) 
         ? first { $_->basename eq 'remedi_de-Str1-355.conf' } @list    
-        : ( $library eq 'Siebenbürgische Bibliothek' )
+        : ( $library eq 'SiebenbÃ¼rgische Bibliothek' )
         ? first { $_->basename eq 'remedi_de-Gun1-355.conf' } @list
-        : ( $library eq 'Johannes-Künzig-Institut für Ostdeutsche Volkskunde' )
+        : ( $library eq 'Johannes-KÃ¼nzig-Institut fÃ¼r Ostdeutsche Volkskunde' )
         ? first { $_->basename eq 'remedi_de-Frei131-355.conf' } @list
         : ( $library eq 'Deutsche Nationalbibliothek' )
         ? first { $_->basename eq 'remedi_de-101-355.conf' } @list
-        : ( $library eq 'Bundesinstitut für die Kultur und Geschichte der Deutschen im östlichen Europa' )
+        : ( $library eq 'Bundesinstitut fÃ¼r die Kultur und Geschichte der Deutschen im Ã¶stlichen Europa' )
         ? first { $_->basename eq 'remedi_de-715-355.conf' } @list
         : ( $library eq 'Caritas-Bibliothek' )
         ? first { $_->basename eq 'remedi_de-Frei26-355.conf' } @list

@@ -1,5 +1,7 @@
 package UBR::Sisis::Schema::ResultSet::TitelBuchKey;
- 
+
+# ABSTRACT: Result set for TitelBuchKey
+
 use Moose;
 use MooseX::NonMoose;
 extends 'DBIx::Class::ResultSet';
@@ -28,4 +30,7 @@ sub get_titles {
 }
 
 __PACKAGE__->meta->make_immutable;
-1;
+
+1; # Magic true value required at end of module
+
+__END__

@@ -13,7 +13,7 @@ has 'order' => (
 
 has_field 'delete_scanfiles' => (
     type => 'Checkbox', default => 1,
-    label => 'zuvor Scandateien in der Datenbank löschen' 
+    label => 'zuvor Scandateien in der Datenbank lÃ¶schen' 
 );
 
 has_field 'scanfile_formats' => (

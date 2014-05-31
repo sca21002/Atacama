@@ -34,4 +34,4 @@ See L<Atacama>
 
 =head1 DESCRIPTION
 
-L<Catalyst::Model using schema L<TheSchwartz>
+L<Catalyst::Model> using schema L<TheSchwartz>

@@ -3,11 +3,16 @@ use strict;
 use warnings;
 use FindBin qw($Bin);
 use Path::Tiny;
-use Path::Class;
+#use Path::Class;
+my $remedi_root;
+BEGIN { 
+    die 'You must set REMEDI_ROOT' unless $ENV{REMEDI_ROOT};
+    $remedi_root = path( $ENV{REMEDI_ROOT} ); 
+}
 use lib path($Bin)->child('lib')->stringify,
         path($Bin)->parent->child('lib')->stringify,
-        path($Bin)->parent(2)->child('Remedi','lib')->stringify,
-        path($Bin)->parent(2)->child('Remedi','t','lib')->stringify;
+        $remedi_root->child('lib')->stringify,
+        $remedi_root->child('t','lib')->stringify;
         
 use Test::More;
 use AtacamaTestSchema;
@@ -34,7 +39,7 @@ $atacama_schema->resultset('Order')->create(
 );
 
 Helper::prepare_input_files({
-    input_dir =>  path($Bin)->parent(2)->child('Remedi','t','input_files')->stringify,
+    input_dir =>  $remedi_root->child('t','input_files')->stringify,
     rmdir_dirs => [ qw(archive reference thumbnail ingest) ],
     make_path => [ qw(archive reference thumbnail) ],
     copy => [
@@ -53,14 +58,17 @@ Helper::prepare_input_files({
 
 
 my %init_arg = (
-    remedi_configfile => path($Bin)->parent(2)->child('Remedi','t','config','remedi_de-355.conf')->stringify,
-    log_config_file => path($Bin)->parent(2)->child('Remedi','t','config', 'log4perl.conf')->stringify,
+    remedi_configfile => 
+        $remedi_root->child('t','config','remedi_de-355.conf')->stringify,
+    log_config_file => 
+        $remedi_root->child(qw(t config log4perl.conf))->stringify,
     atacama_config_path => path($Bin)->child('var')->stringify,
     order_id => 'ubr00003',
     does_csv => 1,
     does_mets => 1,
     image_path => '.',
-    source_pdf_file  => path($Bin)->parent(2)->child('Remedi','t','input_files', 'ubr00003.pdf')->stringify,
+    source_pdf_file  => 
+        $remedi_root->child(qw(t input_files ubr00003.pdf))->stringify,
 );
 my $job = Atacama::Worker::Job::Remedi->new(%init_arg);
 $job->run;

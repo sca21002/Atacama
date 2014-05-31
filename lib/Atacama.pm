@@ -1,6 +1,6 @@
 package Atacama;
 
-# ABSTRACT: Atacama- a Catalyst based web application for digitisation orders 
+# ABSTRACT: Atacama - a Catalyst based web application for digitisation orders 
 
 use Moose;
 use namespace::autoclean;
@@ -31,13 +31,12 @@ use Catalyst qw/
 
 extends 'Catalyst';
 
-our $VERSION = '0.07';
-$VERSION = eval $VERSION;
-
 has 'stage' => ( is => 'rw' ); 
 
 sub log_file_name {
-    __PACKAGE__->path_to( qw(log atacama.log) )->stringify;
+    my $logfile =  __PACKAGE__->path_to('log', 'atacama.log');
+    $logfile->dir->mkpath();
+    $logfile->stringify;    
 }
 
 

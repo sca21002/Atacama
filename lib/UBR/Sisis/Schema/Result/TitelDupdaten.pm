@@ -5,6 +5,7 @@ package UBR::Sisis::Schema::Result::TitelDupdaten;
 #   Author: sca21002, sca21002@googlemail.com
 #   Modifications by: knh11545, knh11545@ur.de
 
+=encoding utf8
 
 =head1 NAME
 

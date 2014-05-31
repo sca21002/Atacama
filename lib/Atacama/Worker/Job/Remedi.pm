@@ -1,8 +1,8 @@
 use utf8;
-
-# ABSTRACT: Job for preparing image and other files for the ingest 
-
 package Atacama::Worker::Job::Remedi;
+
+# ABSTRACT: Job for preparing image and other files for the ingest
+
 use Atacama::Types qw(Bool Dir File Path Str);
 use Moose;
 use MooseX::AttributeShortcuts;
@@ -342,7 +342,7 @@ sub start_mets {
     $init_arg{year_of_publication}
         =  $self->order->titel->erschjahr if $self->order->titel->erschjahr;    
     
-    Remedi::METS->new_with_config(%init_arg)->make_mets;
+    Remedi::METS::App->new_with_config(%init_arg)->make_mets;
     
 }
 
