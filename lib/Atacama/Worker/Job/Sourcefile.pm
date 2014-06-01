@@ -208,7 +208,7 @@ sub save_scanfile {
         $log->warn("Konnte $scanfile nicht verarbeiten: $@");
         $atacama_schema->resultset('Scanfile')->update_or_create({
             filename => $scanfile->basename,
-            filepath => $scanfile->dir->stringify,
+            filepath => $scanfile->parent->stringify,
             error    => $@,
         });
     }
@@ -241,7 +241,7 @@ sub save_pdffile{
         $log->warn("Konnte $pdffile nicht verarbeiten: $@");
         $atacama_schema->resultset('Pdffile')->update_or_create({
             filename => $pdffile->basename,
-            filepath => $pdffile->dir->stringify,
+            filepath => $pdffile->parent->stringify,
             error    => $@,
         });
     }
@@ -275,7 +275,7 @@ sub save_ocrfile {
         $log->warn("Konnte $ocrfile nicht verarbeiten: $@");
         $atacama_schema->resultset('Ocrfile')->update_or_create({
             filename => $ocrfile->basename,
-            filepath => $ocrfile->dir->stringify,
+            filepath => $ocrfile->parent->stringify,
             error    => $@,
         });
     }    
@@ -289,7 +289,10 @@ sub run {
     $log->info('Programm gestartet');
 
     $log->info('Gesuchte Formate: ' . join(' ', @{$self->sourceformats} ) ); 
-    
+
+    $log->trace(Dumper($self->pdf_re));
+    $log->trace(Dumper($self->single_page_re));
+
     my $next = $self->rule->iter( 
         $self->sourcedir, 
         { 

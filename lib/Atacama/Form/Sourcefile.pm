@@ -1,3 +1,4 @@
+use utf8;
 package Atacama::Form::Sourcefile;
 
 # ABSTRACT: Form to set parameters for searching and collecting files 

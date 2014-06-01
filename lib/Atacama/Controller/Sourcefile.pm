@@ -30,7 +30,11 @@ sub sourcefile : Chained('/order/order') PathPart('sourcefile') Args(0) {
             funcname => 'Atacama::Worker::Sourcefile',
             arg => {
                 order_id => $order->order_id,
-                scanfile_formats => (ref $form->params->{scanfile_formats} eq 'ARRAY' ? $form->params->{scanfile_formats} : [ $form->params->{scanfile_formats} ]),
+                scanfile_formats => (
+                    ref $form->params->{scanfile_formats} eq 'ARRAY' 
+                    ? $form->params->{scanfile_formats} 
+                    : [ $form->params->{scanfile_formats} ]
+                ),
                 status_id => $order->status_id, 
             },
         );

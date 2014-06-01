@@ -9,6 +9,7 @@ use English qw( -no_match_vars ) ;  # Avoids regex performance penalty
 use Log::Log4perl::Catalyst;
 use CPAN::Changes;
 use DateTime::Format::W3CDTF;
+use Path::Tiny;
 
 use Catalyst::Runtime 5.80;
     with 'CatalystX::DebugFilter';
@@ -46,13 +47,6 @@ sub _build_last_modified {
     return $dt->strftime('%d.%m.%Y %H:%M')
 }
 
-sub log_file_name {
-    my $logfile =  __PACKAGE__->path_to('log', 'atacama.log');
-    $logfile->dir->mkpath();
-    $logfile->stringify;    
-}
-
-
 # Configure the application.
 #
 # Note that settings in atacama.conf (or other external
@@ -81,7 +75,8 @@ __PACKAGE__->config(
         }
     }, 
     'Plugin::Session' => {
-        storage => "/tmp/session_$EFFECTIVE_USER_ID"                      
+        storage => path('tmp', getpwuid( $EFFECTIVE_USER_ID ), 'session')
+                    ->stringify,                      
     },
     
     'authentication' => {
