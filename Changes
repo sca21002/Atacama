@@ -2,6 +2,8 @@ This file documents the revision history for Perl web application Atacama.
 
 {{$NEXT}}
 
+0.082     2014-06-01 18:41:17+02:00 Europe/Berlin
+
     - Set/get path for scoreboard in atacama config file
     - Get date for 'last modified' from Changes file
 
