@@ -2,6 +2,9 @@ This file documents the revision history for Perl web application Atacama.
 
 {{$NEXT}}
 
+    - Set/get path for scoreboard in atacama config file
+    - Get date for 'last modified' from Changes file
+
 0.081     2014-05-31 13:31:00+02:00 Europe/Berlin
 
     - Change build prozess to Dist::Zilla 
