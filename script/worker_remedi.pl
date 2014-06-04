@@ -63,12 +63,10 @@ TRACE("Zeit: " . $dt->set_time_zone('Europe/Berlin')->strftime('%d.%m.%Y %T'));
 
 my $scoreboard_dir = $config_hash->{'Atacama::Controller::Job'}{scoreboard_dir};
 LOGFATAL("No scoreboard dir found!") unless $scoreboard_dir;
-$scoreboard_dir = path($scoreboard_dir);
+$scoreboard_dir = path($scoreboard_dir, 'theschwartz');
 $scoreboard_dir->mkpath;
 
-foreach my $file ( 
-    $scoreboard_dir->child('theschwartz')->children( qr/scoreboard\.\d+$/ ) 
-)  {
+foreach my $file ( $scoreboard_dir->children( qr/scoreboard\.\d+$/ ) )  {
     $file->remove;
 }
 

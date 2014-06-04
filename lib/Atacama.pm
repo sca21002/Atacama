@@ -2,6 +2,7 @@ package Atacama;
 
 # ABSTRACT: Atacama - a Catalyst based web application for digitisation orders 
 
+use Atacama::Types qw( Str );
 use Moose;
 use MooseX::AttributeShortcuts;
 use namespace::autoclean;
@@ -35,9 +36,19 @@ use Catalyst qw/
 
 extends 'Catalyst';
 
-has 'last_modified' => ( is => 'lazy', isa => 'Str' );
+has 'last_modified' => ( is => 'lazy', isa => Str );
 
 has 'stage' => ( is => 'rw' ); 
+
+sub system_user { scalar getpwuid( $EFFECTIVE_USER_ID ) } 
+
+sub log_file_name {
+    my $logfile = path(
+        '/tmp',  __PACKAGE__->system_user, qw(atacama log atacama.log)
+    );
+    $logfile->touchpath;
+    $logfile->stringify;
+}
 
 sub _build_last_modified {
 
@@ -75,8 +86,7 @@ __PACKAGE__->config(
         }
     }, 
     'Plugin::Session' => {
-        storage => path('tmp', getpwuid( $EFFECTIVE_USER_ID ), 'session')
-                    ->stringify,                      
+        storage => path('tmp', __PACKAGE__->system_user, 'session')->stringify
     },
     
     'authentication' => {

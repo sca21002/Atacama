@@ -6,6 +6,7 @@ use Moose;
 use namespace::autoclean;
 use Data::Dumper;
 use JSON;
+use Path::Tiny;
 use Try::Tiny;
 use Atacama::Helper::TheSchwartz::Scoreboard;
 use Data::Page;
@@ -17,13 +18,14 @@ sub scoreboard : Chained('/job/jobs') PathPart('scoreboard') CaptureArgs(0) {
 
     my $scoreboard;
     try {
-        $c->log->debug("Scoredir " . $c->config->{'Atacama::Controller::Job'}{score_dir});
+        my $score_dir = $c->config->{'Atacama::Controller::Job'}{scoreboard_dir};
+        $c->log->debug("Scoreboard_dir: $score_dir"); 
         $scoreboard = Atacama::Helper::TheSchwartz::Scoreboard->new(
-            dir => $c->config->{'Atacama::Controller::Job'}{score_dir},
+            dir => path($score_dir, 'theschwartz'),
         );
     }
     catch {
-        $c->error('Scoreboard nicht gefunden');
+        $c->error("Scoreboard nicht gefunden: $_");
         $c->detach('not_found');       
     };    
     $c->stash(scoreboard => $scoreboard);    
