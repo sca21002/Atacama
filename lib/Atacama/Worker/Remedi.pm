@@ -33,7 +33,7 @@ sub work {
         is_thesis_workflow
     )) {
         $init_arg{$key} = $theschwartz_job->arg->{$key}
-            if $theschwartz_job->arg->{$key};
+            if exists $theschwartz_job->arg->{$key};
     }
     my $job = Atacama::Worker::Job::Remedi->new(%init_arg);
     $job->run;
