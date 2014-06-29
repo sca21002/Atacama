@@ -2,6 +2,8 @@ This file documents the revision history for Perl web application Atacama.
 
 {{$NEXT}}
 
+0.084     2014-06-29 16:31:03+02:00 Europe/Berlin
+
     - The Change file is now found independent of the working dir 
 
 0.083     2014-06-28 20:52:10+02:00 Europe/Berlin
