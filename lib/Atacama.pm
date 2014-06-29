@@ -52,7 +52,7 @@ sub log_file_name {
 
 sub _build_last_modified {
 
-    my $changes = CPAN::Changes->load( 'Changes' );
+    my $changes = CPAN::Changes->load( path(__PACKAGE__->path_to('Changes') ) );
     my $date = ($changes->releases)[-1]->date;
     my $dt = DateTime::Format::W3CDTF->new()->parse_datetime( $date );
     return $dt->strftime('%d.%m.%Y %H:%M')
