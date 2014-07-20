@@ -2,6 +2,8 @@ This file documents the revision history for Perl web application Atacama.
 
 {{$NEXT}}
 
+    - Remedi worker is logging to the working directory of the order
+
 0.084     2014-06-29 16:31:03+02:00 Europe/Berlin
 
     - The Change file is now found independent of the working dir 

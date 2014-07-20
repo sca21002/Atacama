@@ -15,6 +15,11 @@ use Remedi::CSV::App;
 use Data::Dumper;
 use Path::Tiny;
 
+sub get_logfile_name {
+    my $path = path( Path::Tiny->tempdir, 'worker.log' );
+    $path->touchpath;    # doesn't work in one chained instruction, only Win32?? 
+    return $path->stringify;
+}
 
 has 'csv_basename' => (
     is => 'ro',
@@ -130,6 +135,15 @@ around BUILDARGS => sub {
       return $class->$orig(@_);
 };
 
+sub BUILD {
+    my $self = shift;
+    
+    my $log_msg = $self->prepare_working_dir() if $self->does_copy_files;
+    my $log = $self->log;
+    $log->info('Worker::Job::Remedi started');
+    $log->info($log_msg) if $log_msg;
+}
+
 sub _build_csv_basename {
     my $self = shift;
     
@@ -156,9 +170,23 @@ sub _build_image_path { path( (shift)->order_id ) }
 
 sub _build_log {
     my $self = shift;
-   
-    Log::Log4perl->init($self->log_config_file->stringify);
-    return Log::Log4perl->get_logger('Atacama::Worker::Job::Remedi');
+    
+    my ($debug_msg, $warn_msg);
+    if ( $self->log_config_file->is_file ) {
+        Log::Log4perl->init( $self->log_config_file->stringify );
+        my $appender = Log::Log4perl->appender_by_name('LOGFILE');
+        $appender->file_switch(path($self->working_dir,'remedi.log')->stringify)
+            if $appender;
+        $debug_msg = sprintf("log config file: '%s'", $self->log_config_file); 
+    } else {
+        Log::Log4perl->easy_init($Log::Log4perl::INFO);
+        $warn_msg = sprintf("log config '%s' not found", $self->log_config_file);
+        $warn_msg .= "\nInit easy logging mode";     
+    }    
+    my $logger = Log::Log4perl->get_logger('Atacama::Worker::Job::Remedi');
+    $logger->warn($warn_msg) if $warn_msg;
+    $logger->debug($debug_msg) if $debug_msg;
+    return $logger;
 }
 
 sub _build_ocrfiles {
@@ -245,7 +273,7 @@ sub copy_scanfiles {
     }    
 }
 
-sub empty_working_dir {
+sub clear_working_dir {
     my $self = shift;
     
     my $working_dir = $self->working_dir;
@@ -260,10 +288,12 @@ sub prepare_working_dir {
     my $self = shift;
     
     my $csv_saved = $self->save_csv_file() if $self->csv_file->exists;
-    $self->empty_working_dir();
+    $self->clear_working_dir();
     my $csv_file_restored = $self->restore_csv_file if $csv_saved;
-    $self->log->info("old CSV file saved as '$csv_file_restored'")
+    my $log_msg = 'working dir prepared';
+    $log_msg .= "\nold CSV file saved as '$csv_file_restored'"
         if $csv_file_restored;
+    return $log_msg;
 }
 
 sub restore_csv_file {
@@ -364,11 +394,8 @@ sub start_csv {
 
 sub run {
     my $self = shift;
-    
-    my $log_msg = $self->prepare_working_dir() if $self->does_copy_files;
-    my $log = $self->log;
-    $log->info('Program started');
-    $log->info($log_msg) if $log_msg;
+   
+    my $log = $self->log; 
     $self->order->update({status_id => 22});
     if ($self->does_copy_files) {
         $log->trace('Does copy files');    
