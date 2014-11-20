@@ -30,7 +30,7 @@ sub get_schema {
          @dbic_connect_info = @$connect_info;
     } else { croak("Falscher Typ fuer connect_info: " . ref  $connect_info); }    
     croak "Keine Datenbank-Verbindungsinformationen" unless  @dbic_connect_info;
-    say Dumper(\@dbic_connect_info);
+#    say Dumper(\@dbic_connect_info);
     my $schema = use_module($schemaclass)->connect(@dbic_connect_info);
     $schema->storage->ensure_connected;
     return $schema;
