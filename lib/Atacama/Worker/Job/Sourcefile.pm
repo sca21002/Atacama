@@ -27,8 +27,11 @@ has 'ext_reg' => (
         JPEG => qr/(?i:\.jpg$)/,
         PDF  => qr/(?i:\.pdf$)/,
         XML  => qr/(?i:\.xml$)/,
+        JOB  => qr/(?i:\.job$)/,
     } },
 );
+
+has 'job_re'         => ( is => 'lazy', isa => RegexpRef );
 
 has 'pdf_re'         => ( is => 'lazy', isa => RegexpRef );
 
@@ -61,27 +64,12 @@ has 'scanfile_formats' => (
 has 'sourceformats' => ( is => 'lazy', isa => ArrayRef[Str] );
 
 has  'sourcedirs' => (
-    is => 'rw',
-    isa => 'ArrayRef[Str]',
-    default => sub { [                  
-        '/rzblx8_DATA1/digitalisierung/auftraege/',
-        '/rzblx8_DATA2/digitalisierung/auftraege/',
-        '/rzblx8_DATA2/digitalisierung/auftraege/rdiss/',
-        '/rzblx8_DATA2/digitalisierung/auftraege/rdiss_2/',
-        '/rzblx8_DATA3/digitalisierung/auftraege/',
-        '/mnt/rzblx9/data/digitalisierung/auftraege/',
-        '/mnt/rzblx10b/data/digitalisierung/auftraege/',
-    ] },
-);
-
-has  'sourcedirs' => (
     is => 'ro',
     isa => ArrayRef_of_Dir,
     builder => '_build_sourcedirs',
     lazy => 1,
     coerce => 1,
 );
-
 
 has 'sourcedir' => ( is => 'lazy', isa => Dir, coerce => 1 );
 
@@ -104,6 +92,8 @@ sub _build_rule {
             my $rule_not = Path::Iterator::Rule->new;
             $rule_not->name($self->single_page_re);
             $rule_part->not($rule_not);
+        } elsif ($format eq 'JOB') {
+            $rule_part->name($self->job_re);    
         } else {
             $rule_part->name($self->single_page_re);
         }
@@ -122,11 +112,23 @@ sub _build_log {
 }
 
 
+sub _build_job_re {
+    my $self = shift;
+
+    my $order_id = $self->order_id;
+    my $job_re = $self->atacama_config->{'Atacama::Worker::Sourcefile'}{job_re}
+        || '';
+    $job_re =~ s/%order_id%/${order_id}/;
+    return qr/${job_re}/;
+}
+
+
 sub _build_pdf_re {
     my $self = shift;
 
     my $order_id = $self->order_id;
-    my $pdf_re = $self->atacama_config->{'Atacama::Worker::Sourcefile'}{pdf_re};
+    my $pdf_re = $self->atacama_config->{'Atacama::Worker::Sourcefile'}{pdf_re}
+    || '';
     $pdf_re =~ s/%order_id%/${order_id}/;
     return qr/${pdf_re}/;
 }
@@ -137,7 +139,8 @@ sub _build_single_page_re {
 
     my $order_id = $self->order_id;
     my $single_page_re 
-       = $self->atacama_config->{'Atacama::Worker::Sourcefile'}{single_page_re};
+       = $self->atacama_config->{'Atacama::Worker::Sourcefile'}{single_page_re}
+       || '';
     $single_page_re  =~ s/%order_id%/${order_id}/;
     return qr/${single_page_re}/;  
 }
@@ -168,7 +171,7 @@ sub _build_sourcedirs {
 sub _build_sourceformats {
     my $self = shift;
 
-    return [ @{$self->scanfile_formats}, 'PDF', 'XML' ];
+    return [ @{$self->scanfile_formats}, qw( PDF XML JOB ) ];
 }
 
 sub save_scanfile {
@@ -253,29 +256,64 @@ sub save_ocrfile {
     my $clause;
     
     my $log = $self->log;
-    $log->info("OCR-Datei: " . $ocrfile);
+    $log->info("OCR file: " . $ocrfile);
     my $atacama_schema = $self->atacama_schema;
     eval {
         $ocrfile = Remedi::RemediFile->new(
-	    file => $ocrfile,
+	        file => $ocrfile,
             regex_filestem_prefix => $self->order_id,
             regex_filestem_var    => qr/_\d{1,5}/, 
         );
         $clause->{order_id} = $self->order_id;
         $clause->{filename} = $ocrfile->basename;
-        $clause->{filepath} = $ocrfile->parent->stringify;;
-        $clause->{filesize} = -s $ocrfile;
+        $clause->{filepath} = $ocrfile->parent->stringify;
+        $clause->{filesize} = -s $ocrfile->stringify;
         $clause->{format} = 'XML';
         $clause->{md5} = $ocrfile->md5_checksum;
-        $log->trace("OCR-file: " . Dumper($clause));
+        $log->trace("OCR file: " . Dumper($clause));
     };
     unless ($@) {
         $atacama_schema->resultset('Ocrfile')->update_or_create($clause);
     } else {
-        $log->warn("Konnte $ocrfile nicht verarbeiten: $@");
+        $log->warn("Couldn't save '$ocrfile' into database: $@");
         $atacama_schema->resultset('Ocrfile')->update_or_create({
             filename => $ocrfile->basename,
             filepath => $ocrfile->parent->stringify,
+            error    => $@,
+        });
+    }    
+}
+
+
+sub save_jobfile {
+    my $self = shift;
+    my $jobfile = shift;
+    my $clause;
+    
+    my $log = $self->log;
+    $log->info("Job file: " . $jobfile);
+    my $atacama_schema = $self->atacama_schema;
+    eval {
+        $jobfile = Remedi::RemediFile->new(
+	        file => $jobfile,
+            regex_filestem_prefix => $self->order_id,
+            regex_filestem_var    => qr//, 
+        );
+        $clause->{order_id} = $self->order_id;
+        $clause->{filename} = $jobfile->basename;
+        $clause->{filepath} = $jobfile->parent->stringify;
+        $clause->{filesize} = -s $jobfile->stringify;
+        $clause->{format} = 'XML';
+        $clause->{md5} = $jobfile->md5_checksum;
+        $log->trace("Job file: " . Dumper($clause));
+    };
+    unless ($@) {
+        $atacama_schema->resultset('Jobfile')->update_or_create($clause);
+    } else {
+        $log->warn("Couldn't save '$jobfile' into database: $@");
+        $atacama_schema->resultset('Jobfile')->update_or_create({
+            filename => $jobfile->basename,
+            filepath => $jobfile->parent->stringify,
             error    => $@,
         });
     }    
@@ -309,6 +347,8 @@ sub run {
             $self->save_ocrfile($file);   
         } elsif ( $file =~ $self->ext_reg->{PDF} ) {
             $self->save_pdffile($file);   
+        } elsif ( $file =~ $self->ext_reg->{JOB} ) {
+            $self->save_jobfile($file);
         } else {
             $log->logdie("Kann $file nicht verarbeiten")
         } 

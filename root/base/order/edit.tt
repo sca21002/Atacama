@@ -546,17 +546,21 @@ title = 'Fehlerhafte Jobs' icon = 'alert' class = 'prevent' } ]; %]
     <div class="left">Auftragsnummer:</div>
     [% order_href.order_id %]
     [% IF order_href.scanfiles_count %]
-        (Scandateien: <a href="[% c.uri_for("/order/${order_href.order_id}/scanfiles/list") %]">
+        (Scan: <a href="[% c.uri_for("/order/${order_href.order_id}/scanfiles/list") %]">
         [% order_href.scanfiles_count %] </a> )
     [% END %]
     [% IF order_href.ocrfiles_count %]
-        (OCR-Dateien: <a href="[% c.uri_for("/order/${order_href.order_id}/ocrfiles/list") %]">
+        (OCR: <a href="[% c.uri_for("/order/${order_href.order_id}/ocrfiles/list") %]">
         [% order_href.ocrfiles_count %] </a> )
     [% END %] 
     [% IF order_href.pdffiles_count %]
-        ( PDF-Dateien: <a href="[% c.uri_for("/order/${order_href.order_id}/pdffiles/list") %]">
+        ( PDF: <a href="[% c.uri_for("/order/${order_href.order_id}/pdffiles/list") %]">
         [% order_href.pdffiles_count %] </a> )
     [% END %]
+    [% IF order_href.jobfiles_count %]
+        (Job: <a href="[% c.uri_for("/order/${order_href.order_id}/jobfiles/list") %]">
+        [% order_href.jobfiles_count %] </a> )
+    [% END %] 
   </fieldset>
 
   [% IF order_href.creation_date.hms %]

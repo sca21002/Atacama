@@ -25,6 +25,7 @@ sub sourcefile : Chained('/order/order') PathPart('sourcefile') Args(0) {
             $order->scanfiles->delete_all() || $c->detach('error');
             $order->pdffiles->delete_all()  || $c->detach('error');
             $order->ocrfiles->delete_all()  || $c->detach('error');
+            $order->jobfiles->delete_all()  || $c->detach('error');
         }
         my $job = TheSchwartz::Job->new (
             funcname => 'Atacama::Worker::Sourcefile',
