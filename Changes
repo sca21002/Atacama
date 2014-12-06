@@ -2,6 +2,8 @@ This file documents the revision history for Perl web application Atacama.
 
 {{$NEXT}}
 
+0.085     2014-12-06 13:24:31+01:00 Europe/Berlin
+
     - Jobfiles of ScanFlow workflow are prepared for saving
     - Remedi worker is logging to the working directory of the order
 
