@@ -2,6 +2,8 @@ This file documents the revision history for Perl web application Atacama.
 
 {{$NEXT}}
 
+    - Clearer error messages if source pdf file is wrong or missing
+
 0.086     2014-12-06 13:40:05+01:00 Europe/Berlin
 
 0.085     2014-12-06 13:24:31+01:00 Europe/Berlin

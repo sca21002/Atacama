@@ -3,7 +3,7 @@ package Atacama::Worker::Job::Remedi;
 
 # ABSTRACT: Job for preparing image and other files for the ingest
 
-use Atacama::Types qw(Bool Dir File Path Str);
+use Atacama::Types qw(Bool Dir File Path PDFFile Str);
 use Moose;
 use MooseX::AttributeShortcuts;
 extends 'Atacama::Worker::Job::Base';
@@ -121,7 +121,7 @@ has 'source_format' => (
 
 has 'source_pdf_file' => (
     is => 'rw',
-    isa => File,
+    isa => PDFFile,
     predicate => 1,
     coerce => 1,
 );
