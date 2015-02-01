@@ -2,6 +2,9 @@ This file documents the revision history for Perl web application Atacama.
 
 {{$NEXT}}
 
+    - A list of pages can be added in Remedi form to indicate pages
+      which should be output as JPEG 2000
+
 0.087     2014-12-07 19:04:29+01:00 Europe/Berlin
 
     - Clearer error messages if source pdf file is wrong or missing

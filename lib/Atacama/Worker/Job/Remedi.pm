@@ -81,6 +81,12 @@ has 'is_thesis_workflow' => (
     default => 0,
 );
 
+has 'jepg2000_list' => (
+    is => 'ro',
+    isa => Str,
+    default => '',
+);
+
 has '+log_config_basename' => (
     is => 'ro',
     isa => Str,
@@ -334,6 +340,13 @@ sub start_digifooter {
     }
     $init_arg{source_pdf_name} = $self->source_pdf_file->stringify
         if $self->source_pdf_file;
+    if ($self->jpeg2000_list) {
+        $init_arg{jpeg2000list} = $self->jpeg2000_list;  
+            # TODO: different notation 
+            # jpeg2000list (Remedi) vs. jpeg2000_list (Atacama)
+        $init_arg{dest_format_key} = 'list';
+            # TODO: Can we simplify this to one argument?
+    }
     while (my($key, $val) = each %init_arg) { $log->info("$key => $val") }
     Remedi::DigiFooter::App->new_with_config(%init_arg)->make_footer;
 }

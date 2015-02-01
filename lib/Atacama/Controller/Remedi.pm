@@ -28,6 +28,7 @@ sub remedi : Chained('/order/order') PathPart('remedi') Args(0) {
             source_format => $form->params->{source_format},
             order_id => $order->order_id,
             source_pdf_file => $form->params->{source_pdf_file},
+            jpeg2000_list => $form->params->{jpeg2000_list},
             does_copy_files => $form->params->{does_copy_files},
             does_digifooter => $form->params->{does_digifooter},
             does_mets => $form->params->{does_mets},

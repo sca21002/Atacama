@@ -1,3 +1,4 @@
+use utf8;
 package Atacama::Form::Remedi;
 
 # ABSTRACT: Form to edit parameters for a job preparing files for the ingest
@@ -60,10 +61,12 @@ has_field 'remedi_configfile' => (
     type => 'Select', label => 'Config-Datei',
     empty_select => '-- Select --',
 );
+
 has_field 'source_pdf_file' => (
     type => 'Select', label => 'PDF-Datei',
     empty_select => '-- Select --',
 );
+
 has_field 'source_format' => (
     type => 'Select', label => 'Format der Quelldateien',
     empty_select => '-- Select --',
@@ -72,15 +75,25 @@ has_field 'source_format' => (
         {value => 'TIFF', label => 'TIFF'},
     ],
 );
+
+has_field 'jpeg2000_list' => (
+    type => 'Text',
+    label => 'Liste der Dateien für JPEG2000',
+    size => 15,
+);
+
 has_field 'does_copy_files' => (
     type => 'Checkbox', default => 1, label => 'Dateien kopieren' 
 );
+
 has_field 'does_digifooter' => (
     type => 'Checkbox', label => 'Digifooter'
 );
+
 has_field 'does_mets' => (
     type => 'Checkbox', default => 1, label => 'METS'
 );
+
 has_field 'does_csv' => (
     type => 'Checkbox', default => 1, label => 'CSV'
 );

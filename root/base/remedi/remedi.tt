@@ -69,6 +69,7 @@
 [% form.field('source_pdf_file').render %]
 [% form.field('log_level').render %]
 [% form.field('source_format').render %]
+[% form.field('jpeg2000_list').render %]
 <div></div><hr /><br />
 [% form.field('does_copy_files').render %]
 [% form.field('does_digifooter').render %]

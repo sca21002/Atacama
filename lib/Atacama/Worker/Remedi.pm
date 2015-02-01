@@ -24,6 +24,7 @@ sub work {
         source_pdf_file
         resolution_correction
         source_format
+        jpeg2000_list
         does_copy_files
         does_csv
         does_digifooter
