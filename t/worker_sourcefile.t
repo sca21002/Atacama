@@ -30,9 +30,6 @@ BEGIN {
 ok( my $atacama_schema = AtacamaTestSchema->init_schema(populate => 1),
     'created a atacama test schema object' );
 
-
-
-
 Helper::prepare_input_files({
     input_dir =>  $remedi_root->child('t','input_files')->stringify,
     rmdir_dirs => [ qw(archive reference thumbnail ingest) ],
@@ -48,6 +45,7 @@ Helper::prepare_input_files({
           dir  => 'thumbnail',
         },       
         'ubr00003.pdf',
+        'ubr00003.job',
     ],
 });
 

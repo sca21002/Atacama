@@ -53,6 +53,7 @@ Helper::prepare_input_files({
           dir  => 'thumbnail',
         },        
         'ubr00003.pdf',
+        'ubr00003.job',
     ],
 });
 

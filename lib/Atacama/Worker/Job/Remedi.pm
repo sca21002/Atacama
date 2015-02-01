@@ -81,10 +81,17 @@ has 'is_thesis_workflow' => (
     default => 0,
 );
 
-has 'jepg2000_list' => (
+has 'jpeg2000_list' => (
     is => 'ro',
     isa => Str,
     default => '',
+);
+
+has 'jobfiles' => (
+    is => 'ro',
+    isa => 'ArrayRef[Atacama::Schema::Result::Jobfile]',
+    lazy => 1,
+    builder => '_build_jobfiles',
 );
 
 has '+log_config_basename' => (
@@ -174,6 +181,20 @@ sub _build_csv_save_dir {
 
 sub _build_image_path { path( (shift)->order_id ) }
 
+sub _build_jobfiles {
+    my $self = shift;
+    
+    my @jobfiles = $self->atacama_schema->resultset('Jobfile')->search(
+        { order_id => $self->order_id },
+        { order_by => 'filename' },
+    )->all;
+    $self->log->logcroak('More than one jobfile found in database') 
+        if @jobfiles > 1;
+    $self->log->logwarn("No jobfile found in database") unless @jobfiles;
+    return \@jobfiles;   
+}
+
+
 sub _build_log {
     my $self = shift;
     
@@ -219,6 +240,21 @@ sub _build_scanfiles {
     )->all;
     $self->log->croak("No scan files found in database") unless (@scanfiles);
     return \@scanfiles;   
+}
+
+sub copy_jobfiles {
+    my $self = shift;
+
+    my $log = $self->log;
+    foreach my $jobfile ( @{$self->jobfiles} ) {
+        $log->debug("jobfile: " . $jobfile->filename);
+        my $source_dir = path($jobfile->filepath);
+        my $source = path($source_dir,        $jobfile->filename);
+        my $dest   = path($self->working_dir, $jobfile->filename);
+        $source->copy($dest)
+            or $log->logdie("couldn't copy '$source' to '$dest': $!");
+        $log->info("$source --> $dest");
+    }    
 }
 
 sub copy_ocrfiles {
@@ -416,6 +452,7 @@ sub run {
         $self->copy_pdf()
             if $self->has_source_format and $self->source_format eq 'PDF';
         $self->copy_ocrfiles();
+        $self->copy_jobfiles();
     }
 
     if ($self->does_digifooter) {
