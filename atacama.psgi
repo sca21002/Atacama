@@ -4,7 +4,7 @@ use warnings;
 use Path::Tiny;
 use FindBin qw($Bin);
 use lib path($Bin, 'lib')->stringify,
-        path($Bin)->parent->child(qw(Remedi-0.052 lib))->stringify;
+        path($Bin)->parent->child(qw(Remedi lib))->stringify;
 use Plack::Builder;
 use Plack::Middleware::Debug;
 use English qw( -no_match_vars ) ;            # Avoids regex performance penalty

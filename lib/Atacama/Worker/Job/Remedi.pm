@@ -242,6 +242,35 @@ sub _build_scanfiles {
     return \@scanfiles;   
 }
 
+sub check_xt_images {
+    my $self = shift;
+
+    my $log = $self->log;
+    my $cb = sub { 
+        my $msg = shift;
+        $log->info("    $msg");
+    };
+    
+    $log->info('--- Checking for multiple images in pdf ---');
+    my $source = $self->source_pdf_file;
+    $log->logdie('No pdf source file!') unless $source;
+    my $pdf = Remedi::PDF::CAM::PDF->new(
+        file => $source,
+    );
+    my $xt_images = $pdf->extra_images($cb);
+    if (@$xt_images) {
+        my $output = "---------- Extra Images ----------\n";
+        foreach my $xt_image (@$xt_images) {
+            my ($page, $im_cnt) = each(%$xt_image);
+            $output .= "Page $page: $im_cnt extra image(s)\n";
+        }
+        $output .= "-------------- Ende --------------\n";    
+        $log->logdie($output);
+    } else {
+        $log->info('     No extra images found');
+    }        
+}
+
 sub copy_jobfiles {
     my $self = shift;
 
@@ -291,6 +320,7 @@ sub copy_pdf {
         $doc->cleanoutput($dest);
     }
     else {
+        $self->check_xt_images();
         $source->copy($dest) 
         or $log->logdie("Couldn't copy '$source' to '$dest': $!");
     }

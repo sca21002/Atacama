@@ -24,18 +24,24 @@ sub remedi : Chained('/order/order') PathPart('remedi') Args(0) {
         
         # funcname => 'Atacama::Worker::Remedi',
         my %query_values = (
-            remedi_configfile =>  $form->params->{remedi_configfile},    
-            source_format => $form->params->{source_format},
             order_id => $order->order_id,
-            source_pdf_file => $form->params->{source_pdf_file},
-            jpeg2000_list => $form->params->{jpeg2000_list},
-            does_copy_files => $form->params->{does_copy_files},
-            does_digifooter => $form->params->{does_digifooter},
-            does_mets => $form->params->{does_mets},
-            does_csv => $form->params->{does_csv},
-            is_thesis_workflow => $form->params->{does_thesis_workflow},      
-            log_level => $form->params->{log_level},        
         );
+        foreach my $key ( qw(
+            remedi_configfile
+            source_format
+            source_pdf_file
+            jpeg2000_list
+            does_copy_files
+            does_digifooter
+            does_mets
+            does_csv
+            is_thesis_workflow
+            log_level
+        )) {
+            $query_values{$key} = $form->params->{$key}
+                if $form->params->{$key};
+        }
+        $c->log->debug(\%query_values);
         $c->res->redirect(
             $c->uri_for_action( '/job/worker/add', ['remedi'], \%query_values )
         );

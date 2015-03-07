@@ -2,6 +2,9 @@ This file documents the revision history for Perl web application Atacama.
 
 {{$NEXT}}
 
+    - Update scripts for saving and deleting files 
+      of finished orders
+
 0.089     2015-02-01 16:27:22+01:00 Europe/Berlin
 
     - Job file is copied to working directory
