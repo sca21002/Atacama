@@ -1,23 +1,21 @@
-#!/usr/bin/perl -w
-use strict;
-use warnings;
-use File::Spec;
-use FindBin;
-use lib (
-    File::Spec->catfile($FindBin::Bin,'..','..','lib'),
-        );
+#!/usr/bin/env perl
+use utf8;
+use Modern::Perl;
+use FindBin qw($Bin);
+use Path::Tiny;
+use lib path($Bin)->parent(2)->child('lib')->stringify;
 use Atacama::Schema;
-use feature qw(say);
 use Log::Log4perl qw(:easy);
 use Win32 qw(CSIDL_PERSONAL);
-use IO::All;
-use Path::Class;
+#use IO::All;
 use Data::Dumper;
+use Path::Class;
 
 $| = 1;
 
-my $logfile = File::Spec->catfile(
-    Win32::GetFolderPath(CSIDL_PERSONAL), 'check_dirs_for_delete.log'
+my $logfile = path( 
+    Win32::GetFolderPath(CSIDL_PERSONAL), 
+    'check_dirs_for_delete.log',
 );
 
 Log::Log4perl->easy_init(
@@ -29,28 +27,18 @@ Log::Log4perl->easy_init(
     }  
 );
 
-my $hostname = '<host>';
-
-my $database = 'atacama';
-my $dsn_source = "DBI:mysql:database=$database;host=$hostname";
-my $dsn_target = "DBI:mysql:database=$database";
-my $user = 'atacama';
-my $password =  '<password>';
-my $param = {
-    AutoCommit => 1,
-    mysql_enable_utf8   => 1,
-};
-
-my $schema = Atacama::Schema->connect(
-    $dsn_source,
-    $user,
-    $password,
-    $param,
-);
+my $schema = Atacama::Helper::get_schema( path($Bin)->parent(2) );
 
 
-my $dir = Path::Class::Dir->new('\\\\rzblx8\DATA2\digitalisierung\auftraege');
-#my $dir = Path::Class::Dir->new('\\\\rzblx8\DATA3\digitalisierung\auftraege');
+#my $dir = Path::Class::Dir->new('\\\\rzblx8\DATA2\digitalisierung\auftraege');
+#$dir = Path::Class::Dir->new('\\\\rzblx8\DATA3\digitalisierung\auftraege');
+my $dir = Path::Class::Dir->new('\\\\rzblx9\data\digitalisierung\auftraege');
+#my $dir = Path::Class::Dir->new('\\\\rzblx9\data\scanflow');
+#my $dir = Path::Class::Dir->new('\\\\rzblx9\data\digitalisierung\scanner');
+#my $dir = Path::Class::Dir->new('\\\\rzblx9\data\digitalisierung\scanflow');
+#my $dir = Path::Class::Dir->new('\\\\rzblx10b\data\digitalisierung\auftraege');
+
+
 my $geloescht = 0;
 
 $dir->recurse(
@@ -66,7 +54,7 @@ sub list_files {
     my $entry = shift;
     if ($entry->is_dir) {
         TRACE("Verzeichnis " . $entry . " wird geprueft");
-        my $order_id = $entry->dir_list(-1);
+        my $order_id = $entry->basename;
         if ($order_id =~ /^ubr\d{5}/) {
             TRACE("order_id: " . $order_id);
             my $rs = $schema->resultset('Scanfile')->search(
@@ -92,7 +80,7 @@ sub list_files {
                         }
                     }    
                 } else {
-                    WARN("Mehr als ein Volume angegeben fuer die Scandateien");    
+                    WARN("'$order_id': Mehr als ein Volume angegeben fuer die Scandateien");    
                 }
             }
         }
@@ -116,8 +104,13 @@ sub check_dir {
    
     foreach my $entry (@list) {
         if ($entry->is_dir) {
-            if ($entry->children) { check_dir($entry, $order_id); }
-            unless ( $entry->children ) { 
+            if ($entry->basename eq 'thumbnails') {
+                my $verbose = 1;
+                INFO("'$entry' wird mit Unterverzeicnissen gelöscht."); 
+                $entry->rmtree($verbose);
+            }
+            elsif ($entry->children) { check_dir($entry, $order_id); }
+            elsif ( not $entry->children ) { 
                 TRACE($entry . " ist ein leeres Verzeichnis und wird gelöscht.");
                 if ( rmdir $entry->stringify) {
                     INFO( $entry . " wurde geloescht");    
@@ -130,12 +123,13 @@ sub check_dir {
             }
         } else {
             my ($suffix) = $entry->basename =~ qr/.*\.([^.]*)$/;
-            if ( $suffix && $suffix =~ /pdf|OIP|job|jo_|OJP|TMP|tmp/
+            if ( $suffix && $suffix =~ /pdf|OIP|job|jo_|OJP|TMP|tmp|csv|bmp/
                  or $entry->basename eq 'Thumbs.db'
+                 or $entry->basename =~ /^aaa\d+$/
                  or $entry->basename =~ /^setupRight/
                  or $suffix && $order_id
                     && $entry->basename =~ /^$order_id/
-                    && $suffix =~ /tif|tiff|jpg|txt|doc/
+                    && $suffix =~ /tif|tiff|jpg|txt|doc|xml|JPG/
                ) {
                 TRACE('Datei ' . $entry->stringify . ' wird gelöscht.'); 
                 $geloescht += -s $entry->stringify;
