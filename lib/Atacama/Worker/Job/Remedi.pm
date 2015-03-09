@@ -14,6 +14,7 @@ use Remedi::METS::App;
 use Remedi::CSV::App;
 use Data::Dumper;
 use Path::Tiny;
+use Remedi::PDF::CAM::PDF;
 
 sub get_logfile_name {
     my $path = path( Path::Tiny->tempdir, 'worker.log' );

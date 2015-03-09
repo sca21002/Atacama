@@ -25,6 +25,7 @@ sub remedi : Chained('/order/order') PathPart('remedi') Args(0) {
         # funcname => 'Atacama::Worker::Remedi',
         my %query_values = (
             order_id => $order->order_id,
+            log_level => $form->params->{log_level}
         );
         foreach my $key ( qw(
             remedi_configfile
@@ -35,12 +36,13 @@ sub remedi : Chained('/order/order') PathPart('remedi') Args(0) {
             does_digifooter
             does_mets
             does_csv
-            is_thesis_workflow
-            log_level
         )) {
             $query_values{$key} = $form->params->{$key}
                 if $form->params->{$key};
         }
+        # TODO: inconsistent API
+        $query_values{is_thesis_workflow} = 1 
+            if $form->params->{does_thesis_workflow};
         $c->log->debug(\%query_values);
         $c->res->redirect(
             $c->uri_for_action( '/job/worker/add', ['remedi'], \%query_values )

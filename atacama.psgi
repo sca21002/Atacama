@@ -3,8 +3,7 @@ use strict;
 use warnings;
 use Path::Tiny;
 use FindBin qw($Bin);
-use lib path($Bin, 'lib')->stringify,
-        path($Bin)->parent->child(qw(Remedi lib))->stringify;
+use lib path($Bin, 'lib')->stringify;
 use Plack::Builder;
 use Plack::Middleware::Debug;
 use English qw( -no_match_vars ) ;            # Avoids regex performance penalty
