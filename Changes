@@ -2,6 +2,8 @@ This file documents the revision history for Perl web application Atacama.
 
 {{$NEXT}}
 
+    - Check for extra images changed to PDF::API2 functionalities 
+
 0.091     2015-03-09 17:49:56+01:00 Europe/Berlin
 
     - Fix bug introduced in 0.090

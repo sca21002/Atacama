@@ -246,26 +246,30 @@ sub _build_scanfiles {
 sub check_xt_images {
     my $self = shift;
 
-    my $log = $self->log;
-    my $cb = sub { 
-        my $msg = shift;
-        $log->info("    $msg");
-    };
-    
+    my $log = $self->log; 
     $log->info('--- Checking for multiple images in pdf ---');
-    my $source = $self->source_pdf_file;
-    $log->logdie('No pdf source file!') unless $source;
-    my $pdf = Remedi::PDF::CAM::PDF->new(
-        file => $source,
+    my $source_pdf_file = $self->source_pdf_file;
+    $log->logdie('No pdf source file!') unless $source_pdf_file;
+    $log->debug('Source PDF: ', $source_pdf_file); 
+    my $pdf = Remedi::PDF::API2->open(
+        file => $source_pdf_file,
     );
-    my $xt_images = $pdf->extra_images($cb);
-    if (@$xt_images) {
+    my $pages = $pdf->pages;
+    $log->debug("PDF pages: $pages");
+    my %xt_image;
+    for (my  $i = 1; $i <= $pages; $i++) {
+        my $page = $pdf->openpage($i);
+        my $count_images = $page->count_images;
+        if ($count_images > 1) {
+            $xt_image{$i} = $count_images;
+        }    
+    } 
+    if (%xt_image) {
         my $output = "---------- Extra Images ----------\n";
-        foreach my $xt_image (@$xt_images) {
-            my ($page, $im_cnt) = each(%$xt_image);
-            $output .= "Page $page: $im_cnt extra image(s)\n";
-        }
-        $output .= "-------------- Ende --------------\n";    
+        foreach my $page (sort {$a <=> $b} keys %xt_image) {
+            $output .= "Page $page: " . $xt_image{$page} .  " images\n";
+        }    
+        $output .= "-------------- End --------------\n";
         $log->logdie($output);
     } else {
         $log->info('     No extra images found');
