@@ -2,6 +2,8 @@ This file documents the revision history for Perl web application Atacama.
 
 {{$NEXT}}
 
+0.093     2015-03-23 14:36:31+01:00 Europe/Berlin
+
     - Release memory claimed by pdf while checking multiple images
 
 0.092     2015-03-11 13:05:00+01:00 Europe/Berlin
