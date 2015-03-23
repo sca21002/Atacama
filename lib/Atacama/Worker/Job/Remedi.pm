@@ -263,7 +263,8 @@ sub check_xt_images {
         if ($count_images > 1) {
             $xt_image{$i} = $count_images;
         }    
-    } 
+    }
+    $pdf->release if $pdf; 
     if (%xt_image) {
         my $output = "---------- Extra Images ----------\n";
         foreach my $page (sort {$a <=> $b} keys %xt_image) {

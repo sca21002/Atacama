@@ -2,6 +2,8 @@ This file documents the revision history for Perl web application Atacama.
 
 {{$NEXT}}
 
+    - Release memory claimed by pdf while checking multiple images
+
 0.092     2015-03-11 13:05:00+01:00 Europe/Berlin
 
     - Check for extra images changed to PDF::API2 functionalities 
