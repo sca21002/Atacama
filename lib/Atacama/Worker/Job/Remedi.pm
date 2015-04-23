@@ -326,7 +326,7 @@ sub copy_pdf {
         $doc->cleanoutput($dest);
     }
     else {
-        $self->check_xt_images();
+        # $self->check_xt_images();
         $source->copy($dest) 
         or $log->logdie("Couldn't copy '$source' to '$dest': $!");
     }
