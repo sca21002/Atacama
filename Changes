@@ -2,6 +2,8 @@ This file documents the revision history for Perl web application Atacama.
 
 {{$NEXT}}
 
+0.094     2015-04-23 17:05:01+02:00 Europe/Berlin
+
     - Disable checking for extra images
       Since PDF tagging in OCR is enabled this check isn't usefull
       anymore 
