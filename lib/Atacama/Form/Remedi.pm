@@ -108,7 +108,10 @@ sub _build_is_thesis_workflow {
     my $self = shift;
     
     my @projects = $self->order->projects->all;
-    return ( first { $_->id == 3 or  $_->id == 26 or  $_->id == 40 } @projects ) ? 1 : 0;
+    return ( 
+        first { 
+            $_->id == 3 or  $_->id == 26 or $_->id == 30 or $_->id == 40 
+        } @projects ) ? 1 : 0;
 }
 
 sub _build_source_pdf_files {

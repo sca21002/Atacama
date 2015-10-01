@@ -2,6 +2,9 @@ This file documents the revision history for Perl web application Atacama.
 
 {{$NEXT}}
 
+    - Project MD2 is marked as a thesis workflow
+      Default values in Remedi form follow the thesis workflow pattern 
+
 0.094     2015-04-23 17:05:01+02:00 Europe/Berlin
 
     - Disable checking for extra images
