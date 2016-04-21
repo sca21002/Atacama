@@ -36,7 +36,7 @@ $data = {
 $sisis_schema->resultset('D01buch')->create($data);        
 $data = {
     katkey => 979288,
-    autor_avs => 'Schröder, Albert',
+    autor_avs => 'SchrÃ¶der, Albert',
     titel_avs => 'Deutsche Ofenplatten',
     verlagsort => 'Leipzig',
     verlag => 'Bibliogr. Inst.',
