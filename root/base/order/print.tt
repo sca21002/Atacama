@@ -152,7 +152,7 @@ Seitenzahl im PDF = Tiff-Zahl  \dotfill & \usebox{\kk}\\
 Karten am Ende in richtiger Reihenfolge\dotfill  & \usebox{\kk}\\ 
 Optimiertes PDF abspeichern \dotfill & \usebox{\kk}\\ 
 Im ESA ver\"offentlichen\dotfill & \usebox{\kk}\\ 
-Verschieben auf "rzblx8" (DATA2, DATA3) \dotfill & \usebox{\kk}\\ 
+Verschieben auf "rzbvm036" (data2) \dotfill & \usebox{\kk}\\ 
 Original-Ordner \"uberpr\"ufen: Zeutschel (.OIP, .OJP, Tiff), \\Treventus Scanrobot
 (Setup, Thumbnails, Tiffs  [keine JPGs im Ordner!!!])\dotfill  & \usebox{\kk}\\ 
 \end{tabular}

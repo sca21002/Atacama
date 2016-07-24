@@ -67,5 +67,7 @@ my $str = 'Deutsche Ofenplatten. - Leipzig : Bibliogr. Inst., 1936';
 $mech->content_contains('"mediennr":"TEMP1446895"');
 $mech->content_contains('"katkey":"979288"');
 $mech->content_contains('"bvnr":"BV005390971"');
-$mech->content_contains('"library_id":"3"');
+$mech->content_contains('"library_id":3');
+diag $mech->response()->decoded_content();
+
 done_testing();

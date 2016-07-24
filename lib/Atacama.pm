@@ -86,7 +86,8 @@ __PACKAGE__->config(
         }
     }, 
     'Plugin::Session' => {
-        storage => path('tmp', __PACKAGE__->system_user, 'session')->stringify
+#        storage => path('tmp', __PACKAGE__->system_user, 'session')->stringify
+        storage => '/tmp/atacdev/atacama/session'
     },
     
     'authentication' => {
