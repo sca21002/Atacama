@@ -1,0 +1,14 @@
+Petra Schröder (BVB)
+
+1. digitool_VHVO_2016_02_11.csv 
+Enthält pid und bibliographische MD des METS-Objektes (Bandes).
+Ist aus Rückversorgungsliste erzeugt worden.
+
+2. erzeuge_Inhaltsverzeichnisse.pl
+Liest Datei aus 1. ein:
+Funktion write_list() : Erzeugt CSV-Datei mit Informationen zu Kapiteln aus Inhaltsverzeichnis : VHVO_Kapitel.csv 
+                        Datei wird als JSON per http geholt
+						Wird in xml übersetzt und per xslt-Stylesheet zu csv verarbeitet
+Funktion download_files() : Lädt die Dateien auf ein vereinbartes Verzeichnis bei Euch  herunter. 
+                            Download wird über http-request angestoßen.
+                            Mehrere StructMap-IDs kann man über ',' verbunden als Parameter ids übergeben
