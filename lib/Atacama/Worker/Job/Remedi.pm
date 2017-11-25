@@ -18,7 +18,7 @@ use Remedi::PDF::CAM::PDF;
 
 sub get_logfile_name {
     my $path = path( Path::Tiny->tempdir, 'worker.log' );
-    $path->touchpath;    # doesn't work in one chained instruction, only Win32?? 
+    $path->touchpath;    # doesn't work in one chained instruction, only Win32??
     return $path->stringify;
 }
 
@@ -54,7 +54,7 @@ has 'does_csv' => (
     isa => Bool,
     default => 0,
 );
-            
+
 
 has 'does_digifooter' => (
     is => 'ro',
@@ -151,7 +151,7 @@ around BUILDARGS => sub {
 
 sub BUILD {
     my $self = shift;
-    
+
     my $log_msg = $self->prepare_working_dir() if $self->does_copy_files;
     my $log = $self->log;
     $log->info('Worker::Job::Remedi started');
@@ -160,19 +160,19 @@ sub BUILD {
 
 sub _build_csv_basename {
     my $self = shift;
-    
+
     return $self->order_id . '.csv';
 }
 
 sub _build_csv_file {
     my $self = shift;
-    
+
     return path($self->working_dir, $self->csv_basename);
 }
 
 sub _build_csv_save_dir {
     my $self = shift;
-    
+
     my $csv_save_dir = path($self->working_base, 'csv_save');
     $csv_save_dir->mkpath( {error => \my $err} );
     $self->log->logdie("Coldn't create '$csv_save_dir': " . Dumper($err))
@@ -184,33 +184,33 @@ sub _build_image_path { path( (shift)->order_id ) }
 
 sub _build_jobfiles {
     my $self = shift;
-    
+
     my @jobfiles = $self->atacama_schema->resultset('Jobfile')->search(
         { order_id => $self->order_id },
         { order_by => 'filename' },
     )->all;
-    $self->log->logcroak('More than one jobfile found in database') 
+    $self->log->logcroak('More than one jobfile found in database')
         if @jobfiles > 1;
     $self->log->logwarn("No jobfile found in database") unless @jobfiles;
-    return \@jobfiles;   
+    return \@jobfiles;
 }
 
 
 sub _build_log {
     my $self = shift;
-    
+
     my ($debug_msg, $warn_msg);
     if ( $self->log_config_file->is_file ) {
         Log::Log4perl->init( $self->log_config_file->stringify );
         my $appender = Log::Log4perl->appender_by_name('LOGFILE');
         $appender->file_switch(path($self->working_dir,'remedi.log')->stringify)
             if $appender;
-        $debug_msg = sprintf("log config file: '%s'", $self->log_config_file); 
+        $debug_msg = sprintf("log config file: '%s'", $self->log_config_file);
     } else {
         Log::Log4perl->easy_init($Log::Log4perl::INFO);
         $warn_msg = sprintf("log config '%s' not found", $self->log_config_file);
-        $warn_msg .= "\nInit easy logging mode";     
-    }    
+        $warn_msg .= "\nInit easy logging mode";
+    }
     my $logger = Log::Log4perl->get_logger('Atacama::Worker::Job::Remedi');
     $logger->warn($warn_msg) if $warn_msg;
     $logger->debug($debug_msg) if $debug_msg;
@@ -219,38 +219,38 @@ sub _build_log {
 
 sub _build_ocrfiles {
     my $self = shift;
-    
-    
+
+
     my @ocrfiles = $self->atacama_schema->resultset('Ocrfile')->search(
         { order_id => $self->order_id },
         { order_by => 'filename' },
     )->all;
     $self->log->info("No ocr files found in database") unless (@ocrfiles);
-    return \@ocrfiles;   
+    return \@ocrfiles;
 }
 
 
 
 sub _build_scanfiles {
     my $self = shift;
-    
-    
+
+
     my @scanfiles = $self->atacama_schema->resultset('Scanfile')->search(
         { order_id => $self->order_id },
         { order_by => 'filename' },
     )->all;
     $self->log->croak("No scan files found in database") unless (@scanfiles);
-    return \@scanfiles;   
+    return \@scanfiles;
 }
 
 sub check_xt_images {
     my $self = shift;
 
-    my $log = $self->log; 
+    my $log = $self->log;
     $log->info('--- Checking for multiple images in pdf ---');
     my $source_pdf_file = $self->source_pdf_file;
     $log->logdie('No pdf source file!') unless $source_pdf_file;
-    $log->debug('Source PDF: ', $source_pdf_file); 
+    $log->debug('Source PDF: ', $source_pdf_file);
     my $pdf = Remedi::PDF::API2->open(
         file => $source_pdf_file,
     );
@@ -262,19 +262,19 @@ sub check_xt_images {
         my $count_images = $page->count_images;
         if ($count_images > 1) {
             $xt_image{$i} = $count_images;
-        }    
+        }
     }
-    $pdf->release if $pdf; 
+    $pdf->release if $pdf;
     if (%xt_image) {
         my $output = "---------- Extra Images ----------\n";
         foreach my $page (sort {$a <=> $b} keys %xt_image) {
             $output .= "Page $page: " . $xt_image{$page} .  " images\n";
-        }    
+        }
         $output .= "-------------- End --------------\n";
         $log->logdie($output);
     } else {
         $log->info('     No extra images found');
-    }        
+    }
 }
 
 sub copy_jobfiles {
@@ -289,7 +289,7 @@ sub copy_jobfiles {
         $source->copy($dest)
             or $log->logdie("couldn't copy '$source' to '$dest': $!");
         $log->info("$source --> $dest");
-    }    
+    }
 }
 
 sub copy_ocrfiles {
@@ -304,16 +304,16 @@ sub copy_ocrfiles {
         $source->copy($dest)
             or $log->logdie("couldn't copy '$source' to '$dest': $!");
         $log->info("$source --> $dest");
-    }    
+    }
 }
 
 sub copy_pdf {
     my $self = shift;
-    
+
     my $log = $self->log;
     my $source = $self->source_pdf_file;
     $log->logdie('No pdf source file!') unless $source;
-    my $dest = path($self->working_dir, $self->order_id . '.pdf');  
+    my $dest = path($self->working_dir, $self->order_id . '.pdf');
     if ($source->basename =~ /^UBR\d{2}A\d{6}\.pdf/) {
         $log->info("EOD-PDF: " . $source);
         my $doc = CAM::PDF->new($source) || $log->logdie("$CAM::PDF::errstr\n");
@@ -321,18 +321,18 @@ sub copy_pdf {
         if (!$doc->deletePages($pagenums)) {
             $log->logdie("Failed to delete a page\n");
         } else {
-            $log->info("4 Seiten vorne und 1 hinten im PDF gelöscht!");    
+            $log->info("4 Seiten vorne und 1 hinten im PDF gelöscht!");
         }
         $doc->cleanoutput($dest);
     }
     else {
         # $self->check_xt_images();
-        $source->copy($dest) 
+        $source->copy($dest)
         or $log->logdie("Couldn't copy '$source' to '$dest': $!");
     }
 
-    $self->source_pdf_file($dest);  		
-    $log->info("$source --> $dest");    
+    $self->source_pdf_file($dest);
+    $log->info("$source --> $dest");
 }
 
 
@@ -345,26 +345,26 @@ sub copy_scanfiles {
         my $source_dir = $scanfile->filepath;
         my $source = path($source_dir, $scanfile->filename);
         my $dest   = path($self->working_dir, $scanfile->filename);
-        $source->copy($dest) 
+        $source->copy($dest)
             or $log->logdie("Couldn't copy '$source' to '$dest': $!");
         $log->info("$source --> $dest");
-    }    
+    }
 }
 
 sub clear_working_dir {
     my $self = shift;
-    
+
     my $working_dir = $self->working_dir;
     $working_dir->remove_tree( {keep_root => 1, error => \my $err} );
     $self->log->logdie(
         "Couldn't remove '$working_dir' recursively " . Dumper($err)
     )  if @$err;
-    return 1; 
+    return 1;
 }
 
 sub prepare_working_dir {
     my $self = shift;
-    
+
     my $csv_saved = $self->save_csv_file() if $self->csv_file->exists;
     $self->clear_working_dir();
     my $csv_file_restored = $self->restore_csv_file if $csv_saved;
@@ -376,10 +376,10 @@ sub prepare_working_dir {
 
 sub restore_csv_file {
     my $self = shift;
-    
+
     my $csv_file_saved = path($self->csv_save_dir, $self->csv_basename);
     my $now = DateTime->now->strftime("%Y-%m-%d-%H-%M");
-    my $csv_saved_target 
+    my $csv_saved_target
         = path($self->working_dir, $self->order_id . '_' . $now . '.csv');
     $csv_file_saved->copy($csv_saved_target)
         or $self->log->logdie(
@@ -390,7 +390,7 @@ sub restore_csv_file {
 
 sub save_csv_file {
     my $self = shift;
-    
+
     $self->csv_file->move(path($self->csv_save_dir, $self->csv_file->basename))
         or $self->log->logdie( "Couldn't move '" . $self->csv_file . "' to '"
                                . $self->csv_save_dir . "'" );
@@ -399,7 +399,7 @@ sub save_csv_file {
 
 sub start_digifooter {
     my $self = shift;
-    
+
     my $log = $self->log;
     my %init_arg = (
         image_path      => $self->image_path->stringify,
@@ -413,8 +413,8 @@ sub start_digifooter {
     $init_arg{source_pdf_name} = $self->source_pdf_file->stringify
         if $self->source_pdf_file;
     if ($self->jpeg2000_list) {
-        $init_arg{jpeg2000list} = $self->jpeg2000_list;  
-            # TODO: different notation 
+        $init_arg{jpeg2000list} = $self->jpeg2000_list;
+            # TODO: different notation
             # jpeg2000list (Remedi) vs. jpeg2000_list (Atacama)
         $init_arg{dest_format_key} = 'list';
             # TODO: Can we simplify this to one argument?
@@ -440,8 +440,8 @@ sub start_mets {
         $log->info('OCR files found');
     }
     else { $log->info('No OCR files found'); }
-    
-    my %init_arg = ( 
+
+    my %init_arg = (
         image_path          => $self->image_path->stringify,
         bv_nr               => $self->order->titel->bvnr,
         log_level           => $self->log_level,
@@ -455,16 +455,17 @@ sub start_mets {
     $init_arg{author}
         =  $self->order->titel->autor_avs if $self->order->titel->autor_avs;
     $init_arg{year_of_publication}
-        =  $self->order->titel->erschjahr if $self->order->titel->erschjahr;    
-    
+        =  $self->order->titel->erschjahr if $self->order->titel->erschjahr;
+    $init_arg{with_pagelabel} = 1 if $self->is_thesis_workflow;
+
     Remedi::METS::App->new_with_config(%init_arg)->make_mets;
-    
+
 }
 
 
 sub start_csv {
     my $self = shift;
-    
+
     my %init_arg = (
         image_path => $self->image_path->stringify,
         configfile => $self->remedi_configfile,
@@ -474,16 +475,16 @@ sub start_csv {
     );
     $init_arg{source_pdf_file} = $self->source_pdf_file
         if $self->has_source_pdf_file;
-    Remedi::CSV::App->new_with_config(%init_arg)->make_csv;     
+    Remedi::CSV::App->new_with_config(%init_arg)->make_csv;
 }
 
 sub run {
     my $self = shift;
-   
-    my $log = $self->log; 
+
+    my $log = $self->log;
     $self->order->update({status_id => 22});
     if ($self->does_copy_files) {
-        $log->trace('Does copy files');    
+        $log->trace('Does copy files');
         $self->copy_scanfiles();
         $self->copy_pdf()
             if $self->has_source_format and $self->source_format eq 'PDF';
@@ -500,13 +501,13 @@ sub run {
         $log->trace('Does csv');
         $self->start_csv();
     }
-    
+
     if ($self->does_mets) {
         $log->trace('Does mets');
         $self->start_mets();
     }
 
-    $self->order->update({status_id => 26});    
+    $self->order->update({status_id => 26});
 }
 
 1; # Magic true value required at end of module
