@@ -2,6 +2,8 @@ This file documents the revision history for Perl web application Atacama.
 
 {{$NEXT}}
 
+    - Change server path from rzblx8 to rzbvm036
+
 0.095     2015-10-01 08:59:53+02:00 Europe/Berlin
 
     - Project MD2 is marked as a thesis workflow
