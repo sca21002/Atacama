@@ -1,6 +1,8 @@
 This file documents the revision history for Perl web application Atacama.
 
 {{$NEXT}}
+
+0.096     2017-11-25 13:54:04+01:00 Europe/Berlin
     
     - Set 'with_pagelabel' for make_mets if a thesis workflow is set
     - Change server path from rzblx8 to rzbvm036
